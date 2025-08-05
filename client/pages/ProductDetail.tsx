@@ -74,6 +74,11 @@ export default function ProductDetail() {
           setProduct(fallbackProduct);
           setSelectedColor(fallbackProduct.colors[0]);
         }
+
+        // Load related products
+        const allProducts = await getProducts();
+        const related = allProducts.filter(p => p.id !== id).slice(0, 4);
+        setRelatedProducts(related);
       } catch (error) {
         console.error("Error loading product:", error);
         setProduct(fallbackProduct);
