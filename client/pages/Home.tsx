@@ -140,7 +140,7 @@ export default function Home() {
               </div>
               <div className="text-center group hover:scale-105 transition-transform duration-300">
                 <div className="font-poppins font-bold text-3xl lg:text-4xl text-white flex items-center justify-center group-hover:text-primary transition-colors duration-300">
-                  4.9
+                  4.1
                   <Star className="h-5 w-5 fill-current text-yellow-400 ml-2 animate-pulse" />
                 </div>
                 <div className="text-sm text-white/80">Customer Rating</div>
