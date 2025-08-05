@@ -27,7 +27,7 @@ const features = [
   {
     icon: Shield,
     title: "Quality Guarantee",
-    description: "30-day money back guarantee",
+    description: "10-day money back guarantee",
   },
   {
     icon: Recycle,
