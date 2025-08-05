@@ -134,7 +134,7 @@ export function Layout({ children }: LayoutProps) {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <span className="text-primary-foreground font-bold text-lg">S2</span>
                 </div>
-                <span className="font-poppins font-bold text-xl text-foreground">S2 Wear</span>
+                <span className="font-poppins font-bold text-xl text-foreground">s2wears</span>
               </div>
               <p className="text-muted-foreground max-w-md">
                 Modern, comfortable clothing for the contemporary lifestyle. Quality materials, 
