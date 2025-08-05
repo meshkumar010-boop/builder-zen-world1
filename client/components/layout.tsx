@@ -163,9 +163,9 @@ export function Layout({ children }: LayoutProps) {
             <div>
               <h3 className="font-poppins font-semibold text-foreground mb-4">Contact</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>support@s2wear.com</li>
-                <li>+1 (555) 123-4567</li>
-                <li>Follow us on social media</li>
+                <li>s2wersofficial@gmail.com</li>
+                <li>+919009500502</li>
+                <li>+919009880838</li>
               </ul>
             </div>
           </div>
