@@ -411,6 +411,65 @@ export default function ProductDetail() {
             </Card>
           </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-20 pt-16 border-t border-border">
+            <h2 className="font-poppins font-bold text-2xl lg:text-3xl text-foreground mb-8 text-center">
+              You May Also Like
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((relatedProduct) => (
+                <Link
+                  key={relatedProduct.id}
+                  to={`/product/${relatedProduct.id}`}
+                  className="block group"
+                >
+                  <Card className="group-hover:shadow-lg transition-all duration-300 border-0 bg-card cursor-pointer overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="relative overflow-hidden rounded-t-lg">
+                        <img
+                          src={relatedProduct.images[0] || "/placeholder.svg"}
+                          alt={relatedProduct.name}
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 left-3">
+                          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
+                            {relatedProduct.category}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          {relatedProduct.name}
+                        </h3>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-poppins font-semibold text-foreground">
+                              {formatINR(relatedProduct.price)}
+                            </span>
+                            {relatedProduct.originalPrice &&
+                              relatedProduct.originalPrice > relatedProduct.price && (
+                                <span className="text-sm text-muted-foreground line-through">
+                                  {formatINR(relatedProduct.originalPrice)}
+                                </span>
+                              )}
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Star className="h-3 w-3 fill-current text-yellow-500" />
+                            <span className="text-xs text-muted-foreground">
+                              {relatedProduct.rating || 4.5}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
