@@ -134,7 +134,7 @@ export default function Home() {
             <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto animate-slide-up stagger-delay-4">
               <div className="text-center group hover:scale-105 transition-transform duration-300">
                 <div className="font-poppins font-bold text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
-                  15K+
+                  9.3K+
                 </div>
                 <div className="text-sm text-white/80">Happy Customers</div>
               </div>
