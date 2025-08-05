@@ -4,13 +4,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "extract": "node -e \"const AdmZip = require('adm-zip'); const zip = new AdmZip('./builder-zen-world-main.zip'); zip.extractAllTo('./', true); console.log('Extracted');\""
   },
   "dependencies": {
-    "adm-zip": "^0.5.16",
     "next": "^14.0.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "adm-zip": "^0.5.10"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
