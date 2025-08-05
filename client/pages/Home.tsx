@@ -22,7 +22,7 @@ const features = [
   {
     icon: Truck,
     title: "Free Shipping",
-    description: "Free delivery on orders over $50",
+    description: "Free delivery",
   },
   {
     icon: Shield,
