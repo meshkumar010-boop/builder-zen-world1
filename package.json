@@ -5,7 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "extract": "node -e \"const AdmZip = require('adm-zip'); const zip = new AdmZip('./builder-zen-world-main.zip'); zip.extractAllTo('./', true); console.log('Extracted');\""
+    "extract": "node -e \"const AdmZip = require('adm-zip'); const zip = new AdmZip('./builder-zen-world-main/glow-realm.zip'); zip.extractAllTo('./', true); console.log('Extracted inner zip');\""
   },
   "dependencies": {
     "next": "^14.0.0",
