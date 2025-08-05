@@ -151,7 +151,7 @@ export default function ProductDetail() {
 
     const message = `Hello! 👋\n\nI want to place my order for this amazing product:\n\n🛍️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
 
-    const phoneNumber = "919009402002";
+    const phoneNumber = "919009880838";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
     window.open(whatsappUrl, "_blank");
