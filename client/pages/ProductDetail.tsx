@@ -15,6 +15,7 @@ import {
   formatINR,
   getDiscountPercentage,
   getProduct,
+  getProducts,
   type Product,
 } from "@/services/products";
 
