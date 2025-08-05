@@ -1,28 +1,28 @@
-import { Link } from 'react-router-dom'
-import { useTheme } from './theme-provider'
-import { useCart } from '@/hooks/useCart'
-import { Button } from './ui/button'
-import { ShoppingCart, Sun, Moon, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { Link } from "react-router-dom";
+import { useTheme } from "./theme-provider";
+import { useCart } from "@/hooks/useCart";
+import { Button } from "./ui/button";
+import { ShoppingCart, Sun, Moon, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
-  const { theme, setTheme } = useTheme()
-  const { itemCount } = useCart()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const { itemCount } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
-    { name: 'Cart', href: '/cart' },
-  ]
+    { name: "Home", href: "/" },
+    { name: "Products", href: "/products" },
+    { name: "Cart", href: "/cart" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,11 +31,18 @@ export function Layout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group animate-slide-in-left">
+            <Link
+              to="/"
+              className="flex items-center space-x-2 group animate-slide-in-left"
+            >
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animate-glow">
-                <span className="text-primary-foreground font-bold text-lg">S2</span>
+                <span className="text-primary-foreground font-bold text-lg">
+                  S2
+                </span>
               </div>
-              <span className="font-poppins font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-300">S2 Wears</span>
+              <span className="font-poppins font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-300">
+                S2 Wears
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -60,7 +67,7 @@ export function Layout({ children }: LayoutProps) {
                 onClick={toggleTheme}
                 className="text-foreground hover:text-primary transition-all duration-300 hover:scale-110 hover:rotate-12"
               >
-                {theme === 'dark' ? (
+                {theme === "dark" ? (
                   <Sun className="h-5 w-5 animate-spin-slow" />
                 ) : (
                   <Moon className="h-5 w-5 animate-pulse" />
@@ -120,9 +127,7 @@ export function Layout({ children }: LayoutProps) {
       </nav>
 
       {/* Main content */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
       {/* Footer */}
       <footer className="bg-card border-t border-border">
@@ -132,19 +137,25 @@ export function Layout({ children }: LayoutProps) {
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-lg">S2</span>
+                  <span className="text-primary-foreground font-bold text-lg">
+                    S2
+                  </span>
                 </div>
-                <span className="font-poppins font-bold text-xl text-foreground">s2wears</span>
+                <span className="font-poppins font-bold text-xl text-foreground">
+                  s2wears
+                </span>
               </div>
               <p className="text-muted-foreground max-w-md">
-                Modern, comfortable clothing for the contemporary lifestyle. Quality materials, 
-                timeless designs, and sustainable practices.
+                Modern, comfortable clothing for the contemporary lifestyle.
+                Quality materials, timeless designs, and sustainable practices.
               </p>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h3 className="font-poppins font-semibold text-foreground mb-4">Quick Links</h3>
+              <h3 className="font-poppins font-semibold text-foreground mb-4">
+                Quick Links
+              </h3>
               <ul className="space-y-2">
                 {navigation.map((item) => (
                   <li key={item.name}>
@@ -161,7 +172,9 @@ export function Layout({ children }: LayoutProps) {
 
             {/* Contact */}
             <div>
-              <h3 className="font-poppins font-semibold text-foreground mb-4">Contact</h3>
+              <h3 className="font-poppins font-semibold text-foreground mb-4">
+                Contact
+              </h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li>s2wearsofficial@gmail.com</li>
                 <li>+919009500502</li>
@@ -176,5 +189,5 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

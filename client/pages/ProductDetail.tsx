@@ -77,7 +77,7 @@ export default function ProductDetail() {
 
         // Load related products
         const allProducts = await getProducts();
-        const related = allProducts.filter(p => p.id !== id).slice(0, 4);
+        const related = allProducts.filter((p) => p.id !== id).slice(0, 4);
         setRelatedProducts(related);
       } catch (error) {
         console.error("Error loading product:", error);
@@ -447,7 +447,8 @@ export default function ProductDetail() {
                               {formatINR(relatedProduct.price)}
                             </span>
                             {relatedProduct.originalPrice &&
-                              relatedProduct.originalPrice > relatedProduct.price && (
+                              relatedProduct.originalPrice >
+                                relatedProduct.price && (
                                 <span className="text-sm text-muted-foreground line-through">
                                   {formatINR(relatedProduct.originalPrice)}
                                 </span>

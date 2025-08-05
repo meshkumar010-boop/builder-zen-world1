@@ -152,16 +152,23 @@ export default function Home() {
                 <div className="text-sm text-white/80">Sustainable</div>
               </div>
             </div>
-
-
           </div>
         </div>
 
         {/* Decorative Elements */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '4s'}}></div>
-        <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
+        <div
+          className="absolute bottom-20 right-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+        <div
+          className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "6s" }}
+        ></div>
       </section>
 
       {/* Featured Products Carousel */}
@@ -182,8 +189,14 @@ export default function Home() {
             <div className="text-center py-8">
               <div className="flex justify-center space-x-2">
                 <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                <div
+                  className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                  style={{ animationDelay: "0.1s" }}
+                ></div>
+                <div
+                  className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
               </div>
               <p className="text-muted-foreground mt-4 animate-pulse">
                 Loading featured products...
@@ -195,7 +208,9 @@ export default function Home() {
                 No products available yet.
               </p>
               <Link to="/admin/dashboard">
-                <Button variant="outline" className="hover-lift">Add Products via Admin Panel</Button>
+                <Button variant="outline" className="hover-lift">
+                  Add Products via Admin Panel
+                </Button>
               </Link>
             </div>
           ) : (
@@ -221,7 +236,10 @@ export default function Home() {
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div className="absolute bottom-3 left-3 right-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                          <Button size="sm" className="w-full bg-white text-black hover:bg-white/90">
+                          <Button
+                            size="sm"
+                            className="w-full bg-white text-black hover:bg-white/90"
+                          >
                             Quick View
                           </Button>
                         </div>
@@ -298,7 +316,11 @@ export default function Home() {
 
           <div className="text-center mt-12 animate-fade-in">
             <Link to="/products">
-              <Button size="lg" variant="outline" className="group hover-lift animate-pulse-glow">
+              <Button
+                size="lg"
+                variant="outline"
+                className="group hover-lift animate-pulse-glow"
+              >
                 View All Products
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
               </Button>
@@ -315,14 +337,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className={`text-center space-y-4 group hover-lift animate-slide-up stagger-delay-${index + 1}`}>
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110 animate-float" style={{animationDelay: `${index * 2}s`}}>
+              <div
+                key={index}
+                className={`text-center space-y-4 group hover-lift animate-slide-up stagger-delay-${index + 1}`}
+              >
+                <div
+                  className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110 animate-float"
+                  style={{ animationDelay: `${index * 2}s` }}
+                >
                   <feature.icon className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="font-poppins font-semibold text-xl text-foreground group-hover:text-primary transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">{feature.description}</p>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
@@ -330,7 +360,10 @@ export default function Home() {
 
         {/* Background elements */}
         <div className="absolute top-20 right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl animate-float" style={{animationDelay: '3s'}}></div>
+        <div
+          className="absolute bottom-20 left-20 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "3s" }}
+        ></div>
       </section>
 
       {/* CTA Section */}
@@ -344,7 +377,11 @@ export default function Home() {
             Wears. Quality, comfort, and style - all in one place.
           </p>
           <Link to="/products">
-            <Button size="lg" variant="secondary" className="shadow-soft-lg hover-lift animate-bounce-in stagger-delay-2 hover-glow">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="shadow-soft-lg hover-lift animate-bounce-in stagger-delay-2 hover-glow"
+            >
               Start Shopping
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
             </Button>
@@ -354,9 +391,18 @@ export default function Home() {
         {/* Background animations */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
           <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-float"></div>
-          <div className="absolute top-20 right-20 w-32 h-32 bg-white rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-10 left-1/4 w-16 h-16 bg-white rounded-full animate-float" style={{animationDelay: '4s'}}></div>
-          <div className="absolute bottom-20 right-1/4 w-24 h-24 bg-white rounded-full animate-float" style={{animationDelay: '6s'}}></div>
+          <div
+            className="absolute top-20 right-20 w-32 h-32 bg-white rounded-full animate-float"
+            style={{ animationDelay: "2s" }}
+          ></div>
+          <div
+            className="absolute bottom-10 left-1/4 w-16 h-16 bg-white rounded-full animate-float"
+            style={{ animationDelay: "4s" }}
+          ></div>
+          <div
+            className="absolute bottom-20 right-1/4 w-24 h-24 bg-white rounded-full animate-float"
+            style={{ animationDelay: "6s" }}
+          ></div>
         </div>
       </section>
     </div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -104,7 +104,9 @@
 
   body {
     @apply bg-background text-foreground font-inter;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     scroll-behavior: auto;
   }
 
@@ -112,22 +114,31 @@
     scroll-behavior: auto;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-poppins;
   }
 }
 
 @layer utilities {
   .font-inter {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   .font-poppins {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 
   .gradient-orange {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary)) 100%
+    );
   }
 
   .shadow-soft {
@@ -181,7 +192,9 @@
   }
 
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .hover-lift:hover {
@@ -190,7 +203,9 @@
   }
 
   .hover-glow {
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
   }
 
   .hover-glow:hover {
@@ -235,7 +250,8 @@
 
 /* Keyframe animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -253,7 +269,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
   }
   50% {
