@@ -126,7 +126,7 @@ export default function Home() {
   useEffect(() => {
     const bannerTimer = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % promotionalBanners.length);
-    }, 2000); // Auto-slide every 2 seconds
+    }, 3000); // Auto-slide every 3 seconds
     return () => clearInterval(bannerTimer);
   }, []);
 
