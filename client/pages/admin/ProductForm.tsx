@@ -515,7 +515,7 @@ function ProductFormContent() {
           <Card className="border-0 shadow-soft">
             <CardHeader>
               <CardTitle>Product Images</CardTitle>
-              <p className="text-sm text-muted-foreground">Upload high-quality images that showcase your product from different angles</p>
+              <p className="text-sm text-muted-foreground">Upload files or add image URLs to showcase your product from different angles</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
