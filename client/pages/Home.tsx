@@ -320,20 +320,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => setCurrentBanner((prev) => prev === 0 ? promotionalBanners.length - 1 : prev - 1)}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-
-            <button
-              onClick={() => setCurrentBanner((prev) => (prev + 1) % promotionalBanners.length)}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300"
-            >
-              <ArrowRight className="h-5 w-5" />
-            </button>
           </div>
         </div>
       </section>
