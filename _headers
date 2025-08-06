@@ -1,0 +1,4 @@
+# Netlify headers for S2 Wears
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
