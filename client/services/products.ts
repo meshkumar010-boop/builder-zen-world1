@@ -337,12 +337,13 @@ export async function uploadProductImage(
 ): Promise<string> {
   console.log("Attempting Firebase upload for:", file.name, "Size:", file.size);
 
-  try {
-    // Test Firebase connection first
-    if (!storage) {
-      throw new Error("Firebase storage not initialized");
-    }
+  // Check Firebase connection first
+  if (!checkFirebaseConnection() || !storage) {
+    console.log("Firebase storage not available, skipping upload");
+    throw new Error("Firebase storage not available - will use local storage");
+  }
 
+  try {
     const timestamp = Date.now();
     const cleanFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
     const filename = `products/${productId}/${timestamp}_${cleanFileName}`;
@@ -350,16 +351,26 @@ export async function uploadProductImage(
 
     console.log("Uploading to Firebase path:", filename);
 
-    // Upload file with timeout
+    // Calculate timeout based on file size (minimum 30s, max 120s)
+    const fileSize = file.size;
+    const baseDuration = 30000; // 30 seconds base
+    const additionalTime = Math.min(fileSize / 1024 / 1024 * 10000, 90000); // 10s per MB, max 90s additional
+    const timeoutDuration = baseDuration + additionalTime;
+
+    console.log(`Upload timeout set to ${Math.round(timeoutDuration / 1000)}s for ${Math.round(fileSize / 1024)}KB file`);
+
+    // Upload file with dynamic timeout
     const uploadPromise = uploadBytes(storageRef, file);
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Upload timeout")), 30000),
+      setTimeout(() => reject(new Error(`Upload timeout after ${Math.round(timeoutDuration / 1000)}s`)), timeoutDuration),
     );
 
     const snapshot = (await Promise.race([
       uploadPromise,
       timeoutPromise,
     ])) as any;
+
+    console.log("Firebase upload completed, getting download URL...");
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     console.log("Firebase upload successful:", downloadURL);
@@ -367,11 +378,23 @@ export async function uploadProductImage(
   } catch (error) {
     console.error("Firebase upload failed:", error);
 
-    // Re-throw the error so the caller can handle it
-    // (ProductForm will convert to base64 as fallback)
-    throw new Error(
-      `Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-    );
+    // Provide more specific error messages
+    let errorMessage = "Upload failed";
+
+    if (error instanceof Error) {
+      if (error.message.includes("timeout")) {
+        errorMessage = "Upload timed out - file might be too large or connection too slow";
+      } else if (error.message.includes("permission")) {
+        errorMessage = "Permission denied - check Firebase storage rules";
+      } else if (error.message.includes("network")) {
+        errorMessage = "Network error - check your internet connection";
+      } else {
+        errorMessage = error.message;
+      }
+    }
+
+    // Re-throw with better error message
+    throw new Error(errorMessage);
   }
 }
 
