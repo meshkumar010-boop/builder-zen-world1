@@ -238,8 +238,8 @@ export default function Home() {
               <div className={`${banner.background} text-white relative overflow-hidden`}>
                 {/* Modern content layout */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="py-12 sm:py-16 lg:py-20">
-                    <div className="text-center space-y-6 sm:space-y-8">
+                  <div className="py-6 sm:py-8 lg:py-10">
+                    <div className="text-center space-y-4 sm:space-y-5">
                       {/* Badge */}
                       <div className="flex justify-center">
                         <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
@@ -250,10 +250,10 @@ export default function Home() {
 
                       {/* Title */}
                       <div className="space-y-4">
-                        <h2 className="font-poppins font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight">
+                        <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl text-white leading-tight">
                           {banner.title}
                         </h2>
-                        <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                        <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
                           {banner.description.includes('FLASH25') ? (
                             <>
                               Use code <span className="bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full font-mono font-bold text-sm border border-white/20">FLASH25</span> at checkout
@@ -266,12 +266,12 @@ export default function Home() {
 
                       {/* Timer Section */}
                       {banner.timer && (
-                        <div className="py-6">
-                          <div className="flex justify-center items-center space-x-4 sm:space-x-6">
+                        <div className="py-3">
+                          <div className="flex justify-center items-center space-x-3 sm:space-x-4">
                             {Object.entries(banner.timer).map(([unit, value]) => (
-                              <div key={unit} className="bg-white/15 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
-                                <div className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white">{value}</div>
-                                <div className="text-sm sm:text-base text-white/80 font-medium capitalize">{unit}</div>
+                              <div key={unit} className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
+                                <div className="font-bold text-xl sm:text-2xl text-white">{value}</div>
+                                <div className="text-xs sm:text-sm text-white/80 font-medium capitalize">{unit}</div>
                               </div>
                             ))}
                           </div>
@@ -280,17 +280,17 @@ export default function Home() {
 
                       {/* Features Grid */}
                       {banner.features && (
-                        <div className="py-6">
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
+                        <div className="py-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
                             {banner.features.map((feature, featureIndex) => (
                               <div
                                 key={featureIndex}
-                                className="bg-white/15 backdrop-blur-md rounded-xl p-4 sm:p-6 text-center border border-white/20 shadow-lg hover:bg-white/20 hover:scale-105 transition-all duration-300"
+                                className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 text-center border border-white/20 shadow-lg hover:bg-white/20 hover:scale-105 transition-all duration-300"
                                 style={{animationDelay: `${featureIndex * 0.1}s`}}
                               >
-                                <div className="text-2xl sm:text-3xl mb-3">{feature.icon}</div>
-                                <div className="font-semibold text-sm sm:text-base text-white mb-1">{feature.title}</div>
-                                <div className="text-xs sm:text-sm text-white/80">{feature.subtitle}</div>
+                                <div className="text-xl sm:text-2xl mb-2">{feature.icon}</div>
+                                <div className="font-semibold text-xs sm:text-sm text-white mb-1">{feature.title}</div>
+                                <div className="text-xs text-white/80">{feature.subtitle}</div>
                               </div>
                             ))}
                           </div>
@@ -298,14 +298,14 @@ export default function Home() {
                       )}
 
                       {/* CTA Button */}
-                      <div className="pt-4">
+                      <div className="pt-2">
                         <Link to="/products">
                           <Button
-                            size="lg"
-                            className={`${banner.buttonStyle} font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 px-8 py-4 text-base sm:text-lg rounded-xl`}
+                            size="default"
+                            className={`${banner.buttonStyle} font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 px-6 py-3 text-sm sm:text-base rounded-lg`}
                           >
                             {banner.buttonText}
-                            <ArrowRight className="ml-2 h-5 w-5" />
+                            <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
                         </Link>
                       </div>
