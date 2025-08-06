@@ -10,7 +10,7 @@ import { auth } from '@/lib/firebase';
 
 // Authorized admin emails - only these emails can access admin panel
 const AUTHORIZED_ADMIN_EMAILS = [
-  's2wersofficial@gmail.com',
+  's2wearsofficial@gmail.com',
   'additya@s2wears.com',
   // Add more admin emails here
 ];
