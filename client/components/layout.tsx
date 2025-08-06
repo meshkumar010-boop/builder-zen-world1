@@ -163,6 +163,20 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </nav>
 
+      {/* Offline Mode Banner */}
+      {!isOnline && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div className="flex items-center justify-center space-x-2 text-yellow-800 dark:text-yellow-200">
+              <WifiOff className="h-4 w-4" />
+              <span className="text-sm font-medium">
+                Offline Mode - Using cached data. Some features may be limited.
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main content */}
       <main className="flex-1">{children}</main>
 
