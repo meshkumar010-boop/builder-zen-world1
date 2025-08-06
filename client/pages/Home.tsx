@@ -233,15 +233,6 @@ export default function Home() {
                             {product.category}
                           </span>
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="absolute bottom-3 left-3 right-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                          <Button
-                            size="sm"
-                            className="w-full bg-white text-black hover:bg-white/90"
-                          >
-                            Quick View
-                          </Button>
-                        </div>
                       </div>
 
                       <div className="p-4 space-y-3">
