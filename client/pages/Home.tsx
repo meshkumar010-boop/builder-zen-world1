@@ -235,9 +235,9 @@ export default function Home() {
                   : 'translate-x-full opacity-0'
               }`}
             >
-              <div className={`${banner.background} text-white py-8 sm:py-12 relative overflow-hidden`}>
+              <div className={`${banner.background} text-white py-8 sm:py-12 relative overflow-hidden h-[500px] sm:h-[600px] flex items-center`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                  <div className="space-y-4 sm:space-y-6">
+                  <div className="space-y-4 sm:space-y-6 flex flex-col justify-center min-h-[400px] sm:min-h-[500px]">
                     <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium animate-bounce">
                       <span>{banner.badge.icon}</span>
                       <span>{banner.badge.text}</span>
@@ -255,36 +255,40 @@ export default function Home() {
                       )}
                     </p>
 
-                    {/* Timer for flash sale */}
-                    {banner.timer && (
-                      <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
-                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                          <div className="font-bold text-lg sm:text-xl">{banner.timer.hours}</div>
-                          <div>Hours</div>
-                        </div>
-                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                          <div className="font-bold text-lg sm:text-xl">{banner.timer.minutes}</div>
-                          <div>Minutes</div>
-                        </div>
-                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                          <div className="font-bold text-lg sm:text-xl">{banner.timer.seconds}</div>
-                          <div>Seconds</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Features grid */}
-                    {banner.features && (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mt-6 sm:mt-8">
-                        {banner.features.map((feature, featureIndex) => (
-                          <div key={featureIndex} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 text-center animate-scale-in" style={{animationDelay: `${featureIndex * 0.2}s`}}>
-                            <div className="text-xl sm:text-2xl mb-2">{feature.icon}</div>
-                            <div className="font-semibold text-sm sm:text-base">{feature.title}</div>
-                            <div className="text-xs sm:text-sm text-white/80">{feature.subtitle}</div>
+                    {/* Timer for flash sale - Fixed height container */}
+                    <div className="h-16 sm:h-20 flex items-center justify-center">
+                      {banner.timer && (
+                        <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
+                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                            <div className="font-bold text-lg sm:text-xl">{banner.timer.hours}</div>
+                            <div>Hours</div>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                            <div className="font-bold text-lg sm:text-xl">{banner.timer.minutes}</div>
+                            <div>Minutes</div>
+                          </div>
+                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                            <div className="font-bold text-lg sm:text-xl">{banner.timer.seconds}</div>
+                            <div>Seconds</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Features grid - Fixed height container */}
+                    <div className="h-32 sm:h-40 flex items-center justify-center">
+                      {banner.features && (
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
+                          {banner.features.map((feature, featureIndex) => (
+                            <div key={featureIndex} className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-center animate-scale-in" style={{animationDelay: `${featureIndex * 0.2}s`}}>
+                              <div className="text-lg sm:text-xl mb-1">{feature.icon}</div>
+                              <div className="font-semibold text-xs sm:text-sm">{feature.title}</div>
+                              <div className="text-xs text-white/80">{feature.subtitle}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     <Link to="/products">
                       <Button size="sm" className={`sm:text-base ${banner.buttonStyle} font-bold shadow-xl animate-bounce-in px-4 sm:px-6 sm:py-3`}>
@@ -304,7 +308,7 @@ export default function Home() {
         </div>
 
         {/* Set consistent height for all banners */}
-        <div className="h-auto" style={{ minHeight: '600px' }}></div>
+        <div className="h-[500px] sm:h-[600px]"></div>
 
         {/* Slide indicators */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
