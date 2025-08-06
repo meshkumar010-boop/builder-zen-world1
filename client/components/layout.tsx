@@ -85,8 +85,19 @@ export function Layout({ children }: LayoutProps) {
               ))}
             </div>
 
-            {/* Right side - Theme toggle and Cart */}
+            {/* Right side - Connection Status, Theme toggle and Cart */}
             <div className="flex items-center space-x-4 animate-slide-in-right">
+              {/* Connection Status Indicator */}
+              <div className={`flex items-center space-x-1 text-xs ${isOnline ? 'text-green-600' : 'text-yellow-600'}`}>
+                {isOnline ? (
+                  <Wifi className="h-4 w-4" />
+                ) : (
+                  <WifiOff className="h-4 w-4" />
+                )}
+                <span className="hidden sm:inline">
+                  {isOnline ? 'Online' : 'Offline'}
+                </span>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
