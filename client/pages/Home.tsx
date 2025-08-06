@@ -440,29 +440,6 @@ export default function Home() {
                                 </div>
                               )}
                           </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                addItem({
-                                  id: product.id!,
-                                  name: product.name,
-                                  price: product.price,
-                                  image:
-                                    product.images[0] || "/placeholder.svg",
-                                  size: product.sizes[0] || "M",
-                                  color: product.colors[0]?.name || "Default",
-                                  quantity: 1,
-                                });
-                              }}
-                              className="hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 hover-glow"
-                            >
-                              <ShoppingCart className="h-4 w-4" />
-                            </Button>
-                          </div>
                         </div>
                       </div>
                     </CardContent>
