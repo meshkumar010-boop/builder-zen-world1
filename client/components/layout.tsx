@@ -14,6 +14,7 @@ export function Layout({ children }: LayoutProps) {
   const { theme, setTheme } = useTheme();
   const { itemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
