@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { useTheme } from "./theme-provider";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "./ui/button";
-import { ShoppingCart, Sun, Moon, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, Sun, Moon, Menu, X, Wifi, WifiOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { checkFirebaseConnection } from "@/lib/firebase";
 
 interface LayoutProps {
   children: React.ReactNode;
