@@ -15,6 +15,15 @@ export default function Cart() {
     itemCount,
   } = useCart();
 
+  // Ensure page starts from top when Cart is loaded
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+  }, []);
+
   const handleUpdateQuantity = (
     id: number,
     size: string,
