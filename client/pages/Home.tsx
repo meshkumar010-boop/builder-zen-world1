@@ -223,6 +223,113 @@ export default function Home() {
         ></div>
       </section>
 
+      {/* Promotional Banner Carousel */}
+      <section className="py-8 bg-background overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative h-48 lg:h-64 rounded-2xl overflow-hidden">
+            {promotionalBanners.map((banner, index) => (
+              <div
+                key={banner.id}
+                className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
+                  index === currentBanner ? "translate-x-0" :
+                  index < currentBanner ? "-translate-x-full" : "translate-x-full"
+                }`}
+              >
+                <div className={`w-full h-full ${banner.bgColor} relative overflow-hidden`}>
+                  {/* Background Image */}
+                  <div
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                      backgroundImage: `url('${banner.image}')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+
+                  {/* Content */}
+                  <div className="relative z-10 h-full flex items-center">
+                    <div className="w-full px-8 lg:px-16">
+                      <div className="max-w-4xl mx-auto flex items-center justify-between">
+                        <div className="space-y-2 lg:space-y-4">
+                          {/* Badge */}
+                          <div className="inline-flex items-center bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                            {banner.badge}
+                          </div>
+
+                          {/* Title */}
+                          <h2 className={`font-poppins font-bold text-2xl lg:text-4xl ${banner.textColor} leading-tight`}>
+                            {banner.title}
+                          </h2>
+
+                          {/* Subtitle */}
+                          <p className={`text-lg lg:text-xl ${banner.textColor}/90 font-medium`}>
+                            {banner.subtitle}
+                          </p>
+
+                          {/* Description */}
+                          <p className={`text-sm lg:text-base ${banner.textColor}/80`}>
+                            {banner.description}
+                          </p>
+
+                          {/* CTA Button */}
+                          <div className="pt-2">
+                            <Link to="/products">
+                              <Button
+                                size="lg"
+                                className="bg-white text-gray-900 hover:bg-white/90 font-semibold shadow-lg"
+                              >
+                                Shop Now
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+
+                        {/* Decorative Elements */}
+                        <div className="hidden lg:block relative">
+                          <div className="w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                          <div className="absolute top-8 left-8 w-16 h-16 bg-white/20 rounded-full blur-lg"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Navigation Dots */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              {promotionalBanners.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBanner(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentBanner
+                      ? "bg-white w-6"
+                      : "bg-white/50 hover:bg-white/75"
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setCurrentBanner((prev) => prev === 0 ? promotionalBanners.length - 1 : prev - 1)}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+
+            <button
+              onClick={() => setCurrentBanner((prev) => (prev + 1) % promotionalBanners.length)}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Products Carousel */}
       <section className="py-20 bg-card relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
