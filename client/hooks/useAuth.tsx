@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, checkFirebaseConnection } from '@/lib/firebase';
 
 // Authorized admin emails - only these emails can access admin panel
 const AUTHORIZED_ADMIN_EMAILS = [
