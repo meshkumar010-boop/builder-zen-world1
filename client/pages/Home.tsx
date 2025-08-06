@@ -209,6 +209,18 @@ export default function Home() {
                   key={product.id}
                   to={`/product/${product.id}`}
                   className={`block group animate-scale-in stagger-delay-${(index % 4) + 1}`}
+                  onClick={() => {
+                    // Auto-add to cart when product is clicked
+                    addItem({
+                      id: product.id!,
+                      name: product.name,
+                      price: product.price,
+                      image: product.images[0] || "/placeholder.svg",
+                      size: product.sizes[0] || "M",
+                      color: product.colors[0]?.name || "Default",
+                      quantity: 1,
+                    });
+                  }}
                 >
                   <Card className="group-hover:shadow-soft-lg transition-all duration-500 border-0 bg-background cursor-pointer hover-lift overflow-hidden">
                     <CardContent className="p-0">
@@ -262,29 +274,6 @@ export default function Home() {
                                   % OFF
                                 </div>
                               )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                addItem({
-                                  id: product.id!,
-                                  name: product.name,
-                                  price: product.price,
-                                  image:
-                                    product.images[0] || "/placeholder.svg",
-                                  size: product.sizes[0] || "M",
-                                  color: product.colors[0]?.name || "Default",
-                                  quantity: 1,
-                                });
-                              }}
-                              className="hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 hover-glow"
-                            >
-                              <ShoppingCart className="h-4 w-4" />
-                            </Button>
                           </div>
                         </div>
                       </div>
