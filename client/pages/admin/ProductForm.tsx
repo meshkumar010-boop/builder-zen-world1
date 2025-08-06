@@ -16,13 +16,14 @@ import {
   uploadProductImage,
   type Product 
 } from '@/services/products';
-import { 
-  ArrowLeft, 
-  Upload, 
-  X, 
+import {
+  ArrowLeft,
+  Upload,
+  X,
   Plus,
   Save,
-  ImageIcon
+  ImageIcon,
+  Link as LinkIcon
 } from 'lucide-react';
 
 const CATEGORIES = ['T-Shirts', 'Hoodies', 'Jackets', 'Sweatshirts', 'Pants', 'Accessories'];
