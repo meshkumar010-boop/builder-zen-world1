@@ -61,6 +61,8 @@ function ProductFormContent() {
 
   const [newFeature, setNewFeature] = useState('');
   const [newColor, setNewColor] = useState({ name: '', value: '#000000' });
+  const [imageUrl, setImageUrl] = useState('');
+  const [validatingUrl, setValidatingUrl] = useState(false);
 
   // For development/demo purposes, allow access without authentication
   const isDevelopment = window.location.hostname === 'localhost' ||
