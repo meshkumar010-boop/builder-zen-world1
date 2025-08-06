@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, Minus, ShoppingBag, MessageCircle } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatINR } from "@/services/products";
+import { useEffect } from "react";
 
 export default function Cart() {
   const {
