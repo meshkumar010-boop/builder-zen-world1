@@ -15,6 +15,13 @@ export default function Products() {
   const [activeCategory, setActiveCategory] = useState('All')
 
   useEffect(() => {
+    // Ensure page starts from top when Products page is loaded
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+
     loadProducts()
   }, [])
 
