@@ -200,27 +200,25 @@ export async function getProduct(id: string): Promise<Product | null> {
     console.warn("Error reading from localStorage:", error);
   }
 
-  // Try Firebase as secondary option
-  try {
-    console.log("Fetching from Firebase for product ID:", id);
-    const docRef = doc(db, PRODUCTS_COLLECTION, id);
-    const docSnap = await getDoc(docRef);
+  // Try Firebase only if connection is available
+  if (checkFirebaseConnection()) {
+    try {
+      console.log("Fetching from Firebase for product ID:", id);
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const rawProduct = {
-        id: docSnap.id,
-        ...docSnap.data(),
-      };
-      const product = sanitizeProduct(rawProduct);
-      console.log("Product found in Firebase:", product.name);
-      return product;
+      if (docSnap.exists()) {
+        const rawProduct = {
+          id: docSnap.id,
+          ...docSnap.data(),
+        };
+        const product = sanitizeProduct(rawProduct);
+        console.log("Product found in Firebase:", product.name);
+        return product;
+      }
+    } catch (error) {
+      console.warn("Firebase fetch failed:", error);
     }
-  } catch (error) {
-    console.warn(
-      "Firebase fetch failed (network/extension issue):",
-      error.message,
-    );
-    // This is common with Chrome extensions or network issues
   }
 
   // Final fallback - load all products and find the one we need
