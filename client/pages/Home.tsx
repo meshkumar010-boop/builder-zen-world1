@@ -36,10 +36,55 @@ const features = [
   },
 ];
 
+// Promotional banners data
+const promotionalBanners = [
+  {
+    id: 1,
+    title: "🔥 MEGA SALE",
+    subtitle: "Up to 70% OFF on Premium Collection",
+    description: "Limited time offer - Don't miss out!",
+    bgColor: "bg-gradient-to-r from-red-500 to-pink-600",
+    textColor: "text-white",
+    badge: "HOT DEAL",
+    image: "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 2,
+    title: "✨ NEW ARRIVALS",
+    subtitle: "Fresh Styles Just Dropped",
+    description: "Be the first to wear the latest trends",
+    bgColor: "bg-gradient-to-r from-blue-500 to-purple-600",
+    textColor: "text-white",
+    badge: "NEW",
+    image: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 3,
+    title: "⚡ FLASH SALE",
+    subtitle: "24 Hours Only - Extra 50% OFF",
+    description: "Hurry up! Limited quantities available",
+    bgColor: "bg-gradient-to-r from-orange-500 to-yellow-500",
+    textColor: "text-white",
+    badge: "FLASH",
+    image: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 4,
+    title: "🎯 FREE SHIPPING",
+    subtitle: "On All Orders - No Minimum",
+    description: "Shop now and save on delivery",
+    bgColor: "bg-gradient-to-r from-green-500 to-teal-600",
+    textColor: "text-white",
+    badge: "FREE",
+    image: "https://images.pexels.com/photos/6069112/pexels-photo-6069112.jpeg?auto=compress&cs=tinysrgb&w=800"
+  }
+];
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentBanner, setCurrentBanner] = useState(0);
   const { addItem } = useCart();
 
   // Load featured products
