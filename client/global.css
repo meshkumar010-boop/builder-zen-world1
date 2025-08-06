@@ -226,6 +226,14 @@
     animation: shine 3s ease-in-out infinite;
   }
 
+  .animate-slide-in-banner {
+    animation: slideInBanner 0.5s ease-out;
+  }
+
+  .animate-slide-out-banner {
+    animation: slideOutBanner 0.5s ease-in;
+  }
+
   .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
