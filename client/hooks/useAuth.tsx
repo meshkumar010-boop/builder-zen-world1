@@ -72,6 +72,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!AUTHORIZED_ADMIN_EMAILS.includes(email)) {
         throw new Error('Unauthorized: This email is not authorized for admin access');
       }
+
+      if (!checkFirebaseConnection() || !auth) {
+        // Offline mode: simple demo authentication
+        if (email === 'admin@s2wears.com' && password === 'admin123') {
+          const mockUser = {
+            uid: 'demo-admin',
+            email: 'admin@s2wears.com',
+            displayName: 'Demo Admin'
+          } as User;
+          setUser(mockUser);
+          setIsAdmin(true);
+          return;
+        } else {
+          throw new Error('Invalid credentials. Use admin@s2wears.com / admin123 for demo mode');
+        }
+      }
+
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
@@ -84,6 +101,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!AUTHORIZED_ADMIN_EMAILS.includes(email)) {
         throw new Error('Unauthorized: This email is not authorized for admin access');
       }
+
+      if (!checkFirebaseConnection() || !auth) {
+        throw new Error('Firebase is not available. Admin accounts can only be created when online.');
+      }
+
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
@@ -92,6 +114,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
+      if (!checkFirebaseConnection() || !auth) {
+        // Offline mode logout
+        setUser(null);
+        setIsAdmin(false);
+        return;
+      }
+
       await signOut(auth);
     } catch (error) {
       throw error;
