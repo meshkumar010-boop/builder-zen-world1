@@ -265,6 +265,28 @@ function ProductFormContent() {
 
       console.log('Image processing completed, added', newImages.length, 'images');
 
+      // Show success message with upload method info
+      const cloudImages = newImages.filter(img => img.startsWith('https://') && img.includes('firebase')).length;
+      const localImages = newImages.filter(img => img.startsWith('data:')).length;
+
+      let successMessage = `✅ Successfully added ${newImages.length} image${newImages.length > 1 ? 's' : ''}`;
+      if (cloudImages > 0 && localImages > 0) {
+        successMessage += ` (${cloudImages} uploaded to cloud, ${localImages} saved locally)`;
+      } else if (cloudImages > 0) {
+        successMessage += ` (uploaded to cloud)`;
+      } else if (localImages > 0) {
+        successMessage += ` (saved locally as backup)`;
+      }
+
+      // Show temporary success message
+      const originalError = error;
+      setError('');
+      setTimeout(() => {
+        setError(originalError);
+      }, 3000);
+
+      console.log(successMessage);
+
       // Clear the file input
       e.target.value = '';
     } catch (err: any) {
