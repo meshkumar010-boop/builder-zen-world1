@@ -40,7 +40,37 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bannerSlide, setBannerSlide] = useState(0);
   const { addItem } = useCart();
+
+  // Banner messages for sliding
+  const bannerMessages = [
+    {
+      icon: "🎉",
+      text: "MEGA SALE: Up to 60% OFF",
+      subtext: "Limited time offer on all products"
+    },
+    {
+      icon: "🆕",
+      text: "New Bundle Collection Coming Soon!",
+      subtext: "Exclusive winter essentials"
+    },
+    {
+      icon: "🚚",
+      text: "Free Shipping on Orders ₹2000+",
+      subtext: "Fast delivery across India"
+    },
+    {
+      icon: "⚡",
+      text: "Flash Sale: Extra 25% OFF",
+      subtext: "Use code FLASH25 at checkout"
+    },
+    {
+      icon: "🎁",
+      text: "Special Gift with Every Order",
+      subtext: "Surprise accessories included"
+    }
+  ];
 
   // Load featured products
   useEffect(() => {
@@ -69,6 +99,14 @@ export default function Home() {
     }
   }, [featuredProducts.length]);
 
+  // Auto-rotate banner every 3 seconds
+  useEffect(() => {
+    const bannerTimer = setInterval(() => {
+      setBannerSlide((prev) => (prev + 1) % bannerMessages.length);
+    }, 3000);
+    return () => clearInterval(bannerTimer);
+  }, [bannerMessages.length]);
+
   // Prevent auto-scroll when home page loads
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -76,16 +114,44 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Promotional Banner - Mobile Optimized */}
+      {/* Auto-Sliding Promotional Banner */}
       <div className="bg-gradient-to-r from-primary to-orange-500 text-white py-2 sm:py-3 px-2 sm:px-4 text-center overflow-hidden relative">
-        <div className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-4 animate-slide-x">
-          <span className="text-xs sm:text-sm font-medium animate-pulse">🎉 MEGA SALE: Up to 60% OFF</span>
-          <span className="hidden sm:inline text-sm">•</span>
-          <span className="text-xs sm:text-sm font-medium animate-pulse">🆕 New Bundle Collection Coming Soon!</span>
-          <span className="hidden md:inline text-sm">•</span>
-          <span className="text-xs sm:text-sm font-medium animate-pulse hidden sm:block">🚚 Free Shipping on Orders ₹2000+</span>
+        <div className="relative h-12 sm:h-14 flex items-center justify-center">
+          {bannerMessages.map((message, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 transition-all duration-500 transform ${
+                index === bannerSlide
+                  ? 'translate-x-0 opacity-100'
+                  : index < bannerSlide
+                  ? '-translate-x-full opacity-0'
+                  : 'translate-x-full opacity-0'
+              }`}
+            >
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <span className="text-sm sm:text-base animate-bounce">{message.icon}</span>
+                <span className="text-xs sm:text-sm font-bold animate-pulse">{message.text}</span>
+              </div>
+              <span className="hidden md:inline text-sm opacity-75">•</span>
+              <span className="text-xs sm:text-sm opacity-90 hidden sm:block">{message.subtext}</span>
+            </div>
+          ))}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine"></div>
+
+        {/* Slide indicators */}
+        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
+          {bannerMessages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setBannerSlide(index)}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                index === bannerSlide ? 'bg-white' : 'bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine pointer-events-none"></div>
       </div>
 
       {/* Hero Section */}
