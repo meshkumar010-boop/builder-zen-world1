@@ -673,7 +673,7 @@ function ProductFormContent() {
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    💡 Tip: Images with 💾 are saved locally, ☁️ are uploaded to cloud, 🎭 are demo images. First image is the main product image.
+                    💡 Tip: Images with 💾 are saved locally, 🔗 are from URLs, ☁️ are uploaded to cloud, 🎭 are demo images. First image is the main product image.
                   </p>
                 </div>
               )}
