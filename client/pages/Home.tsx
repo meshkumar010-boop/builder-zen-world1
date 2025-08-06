@@ -40,35 +40,62 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [bannerSlide, setBannerSlide] = useState(0);
+  const [promotionalSlide, setPromotionalSlide] = useState(0);
   const { addItem } = useCart();
 
-  // Banner messages for sliding
-  const bannerMessages = [
+  // Promotional banners for sliding section
+  const promotionalBanners = [
     {
-      icon: "🎉",
-      text: "MEGA SALE: Up to 60% OFF",
-      subtext: "Limited time offer on all products"
+      type: "flash-sale",
+      background: "bg-gradient-to-r from-red-500 to-pink-600",
+      badge: { icon: "⚡", text: "LIMITED TIME OFFER" },
+      title: "Flash Sale: Extra 25% OFF",
+      description: "Use code FLASH25 at checkout",
+      timer: { hours: "23", minutes: "45", seconds: "12" },
+      buttonText: "Shop Now & Save 25%",
+      buttonStyle: "bg-white text-red-600 hover:bg-white/90"
     },
     {
-      icon: "🆕",
-      text: "New Bundle Collection Coming Soon!",
-      subtext: "Exclusive winter essentials"
+      type: "coming-soon",
+      background: "bg-gradient-to-r from-purple-600 to-blue-600",
+      badge: { icon: "🎁", text: "COMING SOON" },
+      title: "New Bundle Collection",
+      description: "Get ready for our exclusive winter bundle collection featuring premium hoodies, t-shirts, and accessories. Pre-order now and save up to 40%!",
+      features: [
+        { icon: "👕", title: "Winter Essentials", subtitle: "Hoodies & Sweatshirts" },
+        { icon: "🎒", title: "Accessories Pack", subtitle: "Bags & Caps" },
+        { icon: "💫", title: "Special Edition", subtitle: "Limited Designs" }
+      ],
+      buttonText: "Notify Me When Available",
+      buttonStyle: "bg-white text-purple-600 hover:bg-white/90"
     },
     {
-      icon: "🚚",
-      text: "Free Shipping on Orders ₹2000+",
-      subtext: "Fast delivery across India"
+      type: "mega-discount",
+      background: "bg-gradient-to-r from-green-500 to-emerald-600",
+      badge: { icon: "🔥", text: "MEGA DISCOUNT" },
+      title: "Buy 2 Get 1 FREE",
+      description: "Mix and match any items from our collection. Third item will be the lowest priced item.",
+      features: [
+        { icon: "🏆", title: "Premium Quality", subtitle: "100% Cotton" },
+        { icon: "🚚", title: "Free Delivery", subtitle: "On All Orders" },
+        { icon: "🔄", title: "Easy Returns", subtitle: "15 Day Policy" }
+      ],
+      buttonText: "Shop Buy 2 Get 1 FREE",
+      buttonStyle: "bg-white text-green-600 hover:bg-white/90"
     },
     {
-      icon: "⚡",
-      text: "Flash Sale: Extra 25% OFF",
-      subtext: "Use code FLASH25 at checkout"
-    },
-    {
-      icon: "🎁",
-      text: "Special Gift with Every Order",
-      subtext: "Surprise accessories included"
+      type: "vip-membership",
+      background: "bg-gradient-to-r from-amber-500 to-orange-600",
+      badge: { icon: "🎆", text: "VIP EXCLUSIVE" },
+      title: "Join S2 VIP Club",
+      description: "Get exclusive access to early sales, special discounts, and limited edition products.",
+      features: [
+        { icon: "⭐", title: "Early Access", subtitle: "To New Releases" },
+        { icon: "🎡", title: "Special Discounts", subtitle: "VIP Only Deals" },
+        { icon: "🎁", title: "Birthday Gifts", subtitle: "Free Surprises" }
+      ],
+      buttonText: "Join VIP Club FREE",
+      buttonStyle: "bg-white text-orange-600 hover:bg-white/90"
     }
   ];
 
@@ -99,13 +126,13 @@ export default function Home() {
     }
   }, [featuredProducts.length]);
 
-  // Auto-rotate banner every 3 seconds
+  // Auto-rotate promotional banners every 3 seconds
   useEffect(() => {
-    const bannerTimer = setInterval(() => {
-      setBannerSlide((prev) => (prev + 1) % bannerMessages.length);
+    const promotionalTimer = setInterval(() => {
+      setPromotionalSlide((prev) => (prev + 1) % promotionalBanners.length);
     }, 3000);
-    return () => clearInterval(bannerTimer);
-  }, [bannerMessages.length]);
+    return () => clearInterval(promotionalTimer);
+  }, [promotionalBanners.length]);
 
   // Prevent auto-scroll when home page loads
   useEffect(() => {
@@ -114,45 +141,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Auto-Sliding Promotional Banner */}
-      <div className="bg-gradient-to-r from-primary to-orange-500 text-white py-2 sm:py-3 px-2 sm:px-4 text-center overflow-hidden relative">
-        <div className="relative h-12 sm:h-14 flex items-center justify-center">
-          {bannerMessages.map((message, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 transition-all duration-500 transform ${
-                index === bannerSlide
-                  ? 'translate-x-0 opacity-100'
-                  : index < bannerSlide
-                  ? '-translate-x-full opacity-0'
-                  : 'translate-x-full opacity-0'
-              }`}
-            >
-              <div className="flex items-center space-x-1 sm:space-x-2">
-                <span className="text-sm sm:text-base animate-bounce">{message.icon}</span>
-                <span className="text-xs sm:text-sm font-bold animate-pulse">{message.text}</span>
-              </div>
-              <span className="hidden md:inline text-sm opacity-75">•</span>
-              <span className="text-xs sm:text-sm opacity-90 hidden sm:block">{message.subtext}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Slide indicators */}
-        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
-          {bannerMessages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setBannerSlide(index)}
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                index === bannerSlide ? 'bg-white' : 'bg-white/40'
-              }`}
-            />
-          ))}
-        </div>
-
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine pointer-events-none"></div>
-      </div>
 
       {/* Hero Section */}
       <section
@@ -246,46 +234,117 @@ export default function Home() {
         <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
       </section>
 
-      {/* Limited Time Offer Banner - Mobile Optimized */}
-      <section className="bg-gradient-to-r from-red-500 to-pink-600 text-white py-6 sm:py-8 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="space-y-3 sm:space-y-4">
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium animate-bounce">
-              <span>⚡</span>
-              <span>LIMITED TIME OFFER</span>
+      {/* Auto-Sliding Promotional Banners */}
+      <section className="relative overflow-hidden">
+        <div className="relative h-auto">
+          {promotionalBanners.map((banner, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 w-full transition-all duration-700 transform ${
+                index === promotionalSlide
+                  ? 'translate-x-0 opacity-100'
+                  : index < promotionalSlide
+                  ? '-translate-x-full opacity-0'
+                  : 'translate-x-full opacity-0'
+              }`}
+            >
+              <div className={`${banner.background} text-white py-8 sm:py-12 relative overflow-hidden`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium animate-bounce">
+                      <span>{banner.badge.icon}</span>
+                      <span>{banner.badge.text}</span>
+                    </div>
+                    <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl animate-pulse-glow px-4 sm:px-0">
+                      {banner.title}
+                    </h2>
+                    <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto px-4 sm:px-0">
+                      {banner.description.includes('FLASH25') ? (
+                        <>
+                          Use code <span className="bg-white/20 px-2 sm:px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm">FLASH25</span> at checkout
+                        </>
+                      ) : (
+                        banner.description
+                      )}
+                    </p>
+
+                    {/* Timer for flash sale */}
+                    {banner.timer && (
+                      <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
+                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                          <div className="font-bold text-lg sm:text-xl">{banner.timer.hours}</div>
+                          <div>Hours</div>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                          <div className="font-bold text-lg sm:text-xl">{banner.timer.minutes}</div>
+                          <div>Minutes</div>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                          <div className="font-bold text-lg sm:text-xl">{banner.timer.seconds}</div>
+                          <div>Seconds</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Features grid */}
+                    {banner.features && (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mt-6 sm:mt-8">
+                        {banner.features.map((feature, featureIndex) => (
+                          <div key={featureIndex} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 text-center animate-scale-in" style={{animationDelay: `${featureIndex * 0.2}s`}}>
+                            <div className="text-xl sm:text-2xl mb-2">{feature.icon}</div>
+                            <div className="font-semibold text-sm sm:text-base">{feature.title}</div>
+                            <div className="text-xs sm:text-sm text-white/80">{feature.subtitle}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <Link to="/products">
+                      <Button size="sm" className={`sm:text-base ${banner.buttonStyle} font-bold shadow-xl animate-bounce-in px-4 sm:px-6 sm:py-3`}>
+                        {banner.buttonText}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Floating elements */}
+                <div className="absolute top-4 left-4 w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-full animate-float"></div>
+                <div className="absolute bottom-4 right-4 w-16 sm:w-20 h-16 sm:h-20 bg-white/10 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+                <div className="absolute top-1/2 left-4 sm:left-8 w-6 sm:w-8 h-6 sm:h-8 bg-white/10 rounded-full animate-float" style={{animationDelay: '4s'}}></div>
+              </div>
             </div>
-            <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl animate-pulse-glow px-4 sm:px-0">
-              Flash Sale: Extra 25% OFF
-            </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto px-4 sm:px-0">
-              Use code <span className="bg-white/20 px-2 sm:px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm">FLASH25</span> at checkout
-            </p>
-            <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
-              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                <div className="font-bold text-lg sm:text-xl">23</div>
-                <div>Hours</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                <div className="font-bold text-lg sm:text-xl">45</div>
-                <div>Minutes</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                <div className="font-bold text-lg sm:text-xl">12</div>
-                <div>Seconds</div>
-              </div>
-            </div>
-            <Link to="/products">
-              <Button size="sm" className="sm:text-base bg-white text-red-600 hover:bg-white/90 font-bold shadow-xl animate-bounce-in px-4 sm:px-6">
-                Shop Now & Save 25%
-              </Button>
-            </Link>
-          </div>
+          ))}
         </div>
 
-        {/* Floating elements */}
-        <div className="absolute top-4 left-4 w-16 h-16 bg-white/10 rounded-full animate-float"></div>
-        <div className="absolute bottom-4 right-4 w-20 h-20 bg-white/10 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-8 w-8 h-8 bg-white/10 rounded-full animate-float" style={{animationDelay: '4s'}}></div>
+        {/* Set height based on current slide */}
+        <div className="h-auto" style={{ minHeight: promotionalSlide === 1 || promotionalSlide === 2 || promotionalSlide === 3 ? '600px' : '400px' }}></div>
+
+        {/* Slide indicators */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+          {promotionalBanners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setPromotionalSlide(index)}
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                index === promotionalSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Navigation arrows */}
+        <button
+          onClick={() => setPromotionalSlide((prev) => (prev - 1 + promotionalBanners.length) % promotionalBanners.length)}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300 z-20"
+        >
+          <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+        </button>
+        <button
+          onClick={() => setPromotionalSlide((prev) => (prev + 1) % promotionalBanners.length)}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300 z-20"
+        >
+          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+        </button>
       </section>
 
       {/* Featured Products Carousel */}
@@ -441,49 +500,6 @@ export default function Home() {
         <div className="absolute bottom-20 left-20 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl animate-float" style={{animationDelay: '3s'}}></div>
       </section>
 
-      {/* New Bundle Preview Banner */}
-      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-full text-sm font-medium animate-pulse">
-              <span>🎁</span>
-              <span>COMING SOON</span>
-            </div>
-            <h2 className="font-poppins font-bold text-3xl lg:text-4xl animate-glow">
-              New Bundle Collection
-            </h2>
-            <p className="text-lg text-white/90 max-w-2xl mx-auto">
-              Get ready for our exclusive winter bundle collection featuring premium hoodies, t-shirts, and accessories. Pre-order now and save up to 40%!
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center animate-scale-in">
-                <div className="text-2xl mb-2">👕</div>
-                <div className="font-semibold">Winter Essentials</div>
-                <div className="text-sm text-white/80">Hoodies & Sweatshirts</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center animate-scale-in" style={{animationDelay: '0.2s'}}>
-                <div className="text-2xl mb-2">🎒</div>
-                <div className="font-semibold">Accessories Pack</div>
-                <div className="text-sm text-white/80">Bags & Caps</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center animate-scale-in" style={{animationDelay: '0.4s'}}>
-                <div className="text-2xl mb-2">💫</div>
-                <div className="font-semibold">Special Edition</div>
-                <div className="text-sm text-white/80">Limited Designs</div>
-              </div>
-            </div>
-            <Button size="lg" className="bg-white text-purple-600 hover:bg-white/90 font-bold shadow-xl">
-              Notify Me When Available
-            </Button>
-          </div>
-        </div>
-
-        {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full animate-float"></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 bg-white rounded-full animate-float" style={{animationDelay: '3s'}}></div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-primary relative overflow-hidden">
