@@ -114,6 +114,14 @@ export default function Home() {
     }
   }, [featuredProducts.length]);
 
+  // Auto-rotate promotional banners
+  useEffect(() => {
+    const bannerTimer = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % promotionalBanners.length);
+    }, 2000); // Auto-slide every 2 seconds
+    return () => clearInterval(bannerTimer);
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
