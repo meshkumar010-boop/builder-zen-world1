@@ -235,16 +235,25 @@ function ProductFormContent() {
         try {
           // First try Firebase upload
           const tempId = `${Date.now()}-${i}`;
+          console.log(`Attempting Firebase upload for ${file.name}...`);
           const firebaseUrl = await uploadProductImage(file, tempId);
-          console.log(`File ${file.name} uploaded to Firebase:`, firebaseUrl);
+          console.log(`✅ File ${file.name} uploaded to Firebase:`, firebaseUrl);
           newImages.push(firebaseUrl);
         } catch (firebaseError) {
-          console.warn('Firebase upload failed, converting to base64:', firebaseError);
+          console.warn(`❌ Firebase upload failed for ${file.name}:`, firebaseError);
 
-          // Fallback: Convert to base64 for persistence
-          const base64Url = await fileToBase64(file);
-          console.log(`File ${file.name} converted to base64 (${Math.round(base64Url.length / 1024)}KB)`);
-          newImages.push(base64Url);
+          // Show user-friendly message about fallback
+          console.log(`🔄 Converting ${file.name} to base64 format as fallback...`);
+
+          try {
+            // Fallback: Convert to base64 for persistence
+            const base64Url = await fileToBase64(file);
+            console.log(`✅ File ${file.name} converted to base64 (${Math.round(base64Url.length / 1024)}KB)`);
+            newImages.push(base64Url);
+          } catch (base64Error) {
+            console.error(`❌ Base64 conversion failed for ${file.name}:`, base64Error);
+            throw new Error(`Failed to process ${file.name}: ${base64Error instanceof Error ? base64Error.message : 'Unknown error'}`);
+          }
         }
       }
 
