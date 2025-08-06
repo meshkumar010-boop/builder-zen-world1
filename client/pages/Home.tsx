@@ -221,120 +221,138 @@ export default function Home() {
         <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
       </section>
 
-      {/* Auto-Sliding Promotional Banners */}
-      <section className="relative overflow-hidden">
-        <div className="relative h-auto">
+      {/* Modern Auto-Sliding Promotional Banners */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-900">
+        <div className="relative">
           {promotionalBanners.map((banner, index) => (
             <div
               key={index}
-              className={`absolute inset-0 w-full transition-all duration-700 transform ${
+              className={`transition-all duration-700 transform ${
                 index === promotionalSlide
-                  ? 'translate-x-0 opacity-100'
+                  ? 'translate-x-0 opacity-100 relative'
                   : index < promotionalSlide
-                  ? '-translate-x-full opacity-0'
-                  : 'translate-x-full opacity-0'
+                  ? '-translate-x-full opacity-0 absolute inset-0'
+                  : 'translate-x-full opacity-0 absolute inset-0'
               }`}
             >
-              <div className={`${banner.background} text-white py-6 sm:py-8 relative overflow-hidden h-[350px] sm:h-[400px] flex items-center`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                  <div className="space-y-3 sm:space-y-4 flex flex-col justify-center min-h-[250px] sm:min-h-[300px]">
-                    <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium animate-bounce">
-                      <span>{banner.badge.icon}</span>
-                      <span>{banner.badge.text}</span>
-                    </div>
-                    <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl animate-pulse-glow px-4 sm:px-0">
-                      {banner.title}
-                    </h2>
-                    <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto px-4 sm:px-0">
-                      {banner.description.includes('FLASH25') ? (
-                        <>
-                          Use code <span className="bg-white/20 px-2 sm:px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm">FLASH25</span> at checkout
-                        </>
-                      ) : (
-                        banner.description
-                      )}
-                    </p>
+              <div className={`${banner.background} text-white relative overflow-hidden`}>
+                {/* Modern content layout */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="py-12 sm:py-16 lg:py-20">
+                    <div className="text-center space-y-6 sm:space-y-8">
+                      {/* Badge */}
+                      <div className="flex justify-center">
+                        <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                          <span className="text-lg">{banner.badge.icon}</span>
+                          <span className="font-semibold">{banner.badge.text}</span>
+                        </div>
+                      </div>
 
-                    {/* Timer for flash sale - Fixed height container */}
-                    <div className="h-12 sm:h-16 flex items-center justify-center">
+                      {/* Title */}
+                      <div className="space-y-4">
+                        <h2 className="font-poppins font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight">
+                          {banner.title}
+                        </h2>
+                        <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                          {banner.description.includes('FLASH25') ? (
+                            <>
+                              Use code <span className="bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full font-mono font-bold text-sm border border-white/20">FLASH25</span> at checkout
+                            </>
+                          ) : (
+                            banner.description
+                          )}
+                        </p>
+                      </div>
+
+                      {/* Timer Section */}
                       {banner.timer && (
-                        <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
-                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                            <div className="font-bold text-lg sm:text-xl">{banner.timer.hours}</div>
-                            <div>Hours</div>
-                          </div>
-                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                            <div className="font-bold text-lg sm:text-xl">{banner.timer.minutes}</div>
-                            <div>Minutes</div>
-                          </div>
-                          <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
-                            <div className="font-bold text-lg sm:text-xl">{banner.timer.seconds}</div>
-                            <div>Seconds</div>
+                        <div className="py-6">
+                          <div className="flex justify-center items-center space-x-4 sm:space-x-6">
+                            {Object.entries(banner.timer).map(([unit, value]) => (
+                              <div key={unit} className="bg-white/15 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
+                                <div className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white">{value}</div>
+                                <div className="text-sm sm:text-base text-white/80 font-medium capitalize">{unit}</div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
-                    </div>
 
-                    {/* Features grid - Fixed height container */}
-                    <div className="h-24 sm:h-32 flex items-center justify-center">
+                      {/* Features Grid */}
                       {banner.features && (
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
-                          {banner.features.map((feature, featureIndex) => (
-                            <div key={featureIndex} className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-center animate-scale-in" style={{animationDelay: `${featureIndex * 0.2}s`}}>
-                              <div className="text-lg sm:text-xl mb-1">{feature.icon}</div>
-                              <div className="font-semibold text-xs sm:text-sm">{feature.title}</div>
-                              <div className="text-xs text-white/80">{feature.subtitle}</div>
-                            </div>
-                          ))}
+                        <div className="py-6">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
+                            {banner.features.map((feature, featureIndex) => (
+                              <div
+                                key={featureIndex}
+                                className="bg-white/15 backdrop-blur-md rounded-xl p-4 sm:p-6 text-center border border-white/20 shadow-lg hover:bg-white/20 hover:scale-105 transition-all duration-300"
+                                style={{animationDelay: `${featureIndex * 0.1}s`}}
+                              >
+                                <div className="text-2xl sm:text-3xl mb-3">{feature.icon}</div>
+                                <div className="font-semibold text-sm sm:text-base text-white mb-1">{feature.title}</div>
+                                <div className="text-xs sm:text-sm text-white/80">{feature.subtitle}</div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
-                    </div>
 
-                    <Link to="/products">
-                      <Button size="sm" className={`sm:text-base ${banner.buttonStyle} font-bold shadow-xl animate-bounce-in px-4 sm:px-6 sm:py-3`}>
-                        {banner.buttonText}
-                      </Button>
-                    </Link>
+                      {/* CTA Button */}
+                      <div className="pt-4">
+                        <Link to="/products">
+                          <Button
+                            size="lg"
+                            className={`${banner.buttonStyle} font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 px-8 py-4 text-base sm:text-lg rounded-xl`}
+                          >
+                            {banner.buttonText}
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Floating elements */}
-                <div className="absolute top-4 left-4 w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-full animate-float"></div>
-                <div className="absolute bottom-4 right-4 w-16 sm:w-20 h-16 sm:h-20 bg-white/10 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-                <div className="absolute top-1/2 left-4 sm:left-8 w-6 sm:w-8 h-6 sm:h-8 bg-white/10 rounded-full animate-float" style={{animationDelay: '4s'}}></div>
+                {/* Modern floating elements */}
+                <div className="absolute top-8 left-8 w-20 h-20 bg-white/5 rounded-full blur-xl animate-float"></div>
+                <div className="absolute bottom-8 right-8 w-32 h-32 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+                <div className="absolute top-1/2 left-12 w-16 h-16 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
+                <div className="absolute top-1/4 right-12 w-24 h-24 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '6s'}}></div>
+
+                {/* Gradient overlay for depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Set consistent height for all banners */}
-        <div className="h-[350px] sm:h-[400px]"></div>
-
-        {/* Slide indicators */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        {/* Modern slide indicators */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
           {promotionalBanners.map((_, index) => (
             <button
               key={index}
               onClick={() => setPromotionalSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                index === promotionalSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'
+              className={`w-3 h-3 rounded-full transition-all duration-300 backdrop-blur-sm border ${
+                index === promotionalSlide
+                  ? 'bg-white border-white scale-125 shadow-lg'
+                  : 'bg-white/30 border-white/50 hover:bg-white/50 hover:scale-110'
               }`}
             />
           ))}
         </div>
 
-        {/* Navigation arrows */}
+        {/* Modern navigation arrows */}
         <button
           onClick={() => setPromotionalSlide((prev) => (prev - 1 + promotionalBanners.length) % promotionalBanners.length)}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300 z-20"
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
         >
-          <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
         <button
           onClick={() => setPromotionalSlide((prev) => (prev + 1) % promotionalBanners.length)}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-300 z-20"
+          className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
         >
-          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+          <ArrowRight className="h-5 w-5" />
         </button>
       </section>
 
