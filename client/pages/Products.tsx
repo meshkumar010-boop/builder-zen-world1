@@ -67,28 +67,28 @@ export default function Products() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="font-poppins font-bold text-4xl md:text-5xl text-foreground mb-4 animate-slide-up">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        {/* Header - Mobile Optimized */}
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="font-poppins font-bold text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 animate-slide-up px-4 sm:px-0">
             Our Collection
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in stagger-delay-1">
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in stagger-delay-1 px-4 sm:px-0">
             Discover premium streetwear that combines comfort, style, and quality craftsmanship
           </p>
         </div>
 
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12 animate-scale-in stagger-delay-2">
+        {/* Filter Buttons - Mobile Optimized */}
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:gap-4 mb-8 sm:mb-12 animate-scale-in stagger-delay-2 px-2 sm:px-0">
           {CATEGORIES.map((category, index) => (
             <Button
               key={category}
               variant={activeCategory === category ? "default" : "outline"}
               onClick={() => setActiveCategory(category)}
-              className={`font-medium transition-all duration-300 hover-lift ${activeCategory === category ? 'animate-pulse-glow' : 'hover-glow'}`}
+              className={`text-xs sm:text-sm font-medium transition-all duration-300 hover-lift px-2 sm:px-3 py-1 sm:py-2 ${activeCategory === category ? 'animate-pulse-glow' : 'hover-glow'}`}
               style={{animationDelay: `${index * 0.1}s`}}
             >
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               {category}
             </Button>
           ))}
@@ -107,7 +107,7 @@ export default function Products() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product, index) => (
               <Link
                 key={product.id}
@@ -132,7 +132,7 @@ export default function Products() {
                       <img
                         src={product.images[0] || '/placeholder.svg'}
                         alt={product.name}
-                        className="w-full h-64 object-cover group-hover:scale-110 transition-all duration-500"
+                        className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-110 transition-all duration-500"
                       />
                       <div className="absolute top-3 left-3 transform group-hover:scale-105 transition-transform duration-300">
                         <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium animate-pulse-glow">
