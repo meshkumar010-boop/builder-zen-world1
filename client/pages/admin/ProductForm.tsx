@@ -560,34 +560,100 @@ function ProductFormContent() {
               <p className="text-sm text-muted-foreground">Upload high-quality images that showcase your product from different angles</p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="images">Upload Product Images (Recommended: 3-5 images)</Label>
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
-                  <input
-                    type="file"
-                    id="images"
-                    multiple
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    disabled={uploadingImages}
-                  />
-                  <label htmlFor="images" className="cursor-pointer">
-                    <div className="space-y-3">
+              <div className="space-y-4">
+                <Label>Add Product Images (Recommended: 3-5 images)</Label>
+
+                {/* Upload Method Selection */}
+                <div className="flex space-x-4 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setUploadMethod('file')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      uploadMethod === 'file'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }`}
+                  >
+                    Upload Files
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUploadMethod('url')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      uploadMethod === 'url'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }`}
+                  >
+                    Add URL
+                  </button>
+                </div>
+
+                {/* File Upload Section */}
+                {uploadMethod === 'file' && (
+                  <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
+                    <input
+                      type="file"
+                      id="images"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploadingImages}
+                    />
+                    <label htmlFor="images" className="cursor-pointer">
+                      <div className="space-y-3">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                          <Upload className="h-8 w-8 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-base font-medium text-foreground">
+                            {uploadingImages ? 'Uploading to cloud storage...' : 'Click to upload product images'}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            PNG, JPG, WEBP up to 5MB each. Images automatically upload to free cloud storage. First image will be the main product image.
+                          </p>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                )}
+
+                {/* URL Input Section */}
+                {uploadMethod === 'url' && (
+                  <div className="border-2 border-dashed border-border rounded-lg p-6">
+                    <div className="space-y-4">
                       <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
                         <ImageIcon className="h-8 w-8 text-primary" />
                       </div>
-                      <div>
-                        <p className="text-base font-medium text-foreground">
-                          {uploadingImages ? 'Uploading images...' : 'Click to upload product images'}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          PNG, JPG, WEBP up to 5MB each. Images will upload to cloud or save locally. First image will be the main product image.
+                      <div className="space-y-3">
+                        <Label htmlFor="imageUrl">Image URL</Label>
+                        <div className="flex space-x-2">
+                          <Input
+                            id="imageUrl"
+                            type="url"
+                            placeholder="https://example.com/image.jpg"
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
+                            className="flex-1"
+                            disabled={uploadingImages}
+                          />
+                          <Button
+                            type="button"
+                            onClick={handleAddImageUrl}
+                            disabled={uploadingImages || !imageUrl.trim()}
+                            className="px-6"
+                          >
+                            {uploadingImages ? 'Adding...' : 'Add Image'}
+                          </Button>
+                        </div>
+                        <p className="text-sm text-muted-foreground text-center">
+                          Enter a direct link to an image (JPG, PNG, WEBP). The image will be validated before adding.
                         </p>
                       </div>
                     </div>
-                  </label>
-                </div>
+                  </div>
+                )}
               </div>
 
               {formData.images.length > 0 && (
@@ -650,7 +716,7 @@ function ProductFormContent() {
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    💡 Tip: Images with 💾 are saved locally, ☁️ are uploaded to cloud, 🎭 are demo images. First image is the main product image.
+                    💡 Tip: Images with 💾 are saved locally, ���️ are uploaded to cloud, 🎭 are demo images. First image is the main product image.
                   </p>
                 </div>
               )}
