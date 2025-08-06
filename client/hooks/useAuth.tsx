@@ -40,6 +40,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    // Check if Firebase auth is available
+    if (!checkFirebaseConnection() || !auth) {
+      console.log('Firebase auth not available, using demo mode');
+      // In offline mode, create a mock admin user for demo purposes
+      const mockUser = {
+        uid: 'demo-admin',
+        email: 'admin@s2wears.com',
+        displayName: 'Demo Admin'
+      } as User;
+
+      setUser(mockUser);
+      setIsAdmin(true);
+      setLoading(false);
+      return;
+    }
+
+    // Normal Firebase auth flow
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsAdmin(user ? AUTHORIZED_ADMIN_EMAILS.includes(user.email || '') : false);
