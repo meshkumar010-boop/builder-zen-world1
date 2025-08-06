@@ -643,7 +643,12 @@ function ProductFormContent() {
                                 💾
                               </div>
                             )}
-                            {image.startsWith('https://') && !image.includes('pexels') && (
+                            {image.startsWith('https://') && !image.includes('pexels') && !image.includes('firebasestorage') && (
+                              <div className="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded" title="Image URL">
+                                🔗
+                              </div>
+                            )}
+                            {image.includes('firebasestorage') && (
                               <div className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded" title="Uploaded to cloud">
                                 ☁️
                               </div>
