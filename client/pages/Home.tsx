@@ -76,14 +76,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Promotional Banner */}
-      <div className="bg-gradient-to-r from-primary to-orange-500 text-white py-3 px-4 text-center overflow-hidden relative">
-        <div className="flex items-center justify-center space-x-4 animate-slide-x">
-          <span className="text-sm font-medium animate-pulse">🎉 MEGA SALE: Up to 60% OFF</span>
+      {/* Promotional Banner - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-primary to-orange-500 text-white py-2 sm:py-3 px-2 sm:px-4 text-center overflow-hidden relative">
+        <div className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-4 animate-slide-x">
+          <span className="text-xs sm:text-sm font-medium animate-pulse">🎉 MEGA SALE: Up to 60% OFF</span>
           <span className="hidden sm:inline text-sm">•</span>
-          <span className="text-sm font-medium animate-pulse">🆕 New Bundle Collection Coming Soon!</span>
-          <span className="hidden sm:inline text-sm">•</span>
-          <span className="text-sm font-medium animate-pulse">🚚 Free Shipping on Orders ₹2000+</span>
+          <span className="text-xs sm:text-sm font-medium animate-pulse">🆕 New Bundle Collection Coming Soon!</span>
+          <span className="hidden md:inline text-sm">•</span>
+          <span className="text-xs sm:text-sm font-medium animate-pulse hidden sm:block">🚚 Free Shipping on Orders ₹2000+</span>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine"></div>
       </div>
@@ -110,15 +110,15 @@ export default function Home() {
               <span>Elevate Your Style</span>
             </div>
 
-            {/* Main Heading */}
-            <div className="space-y-6">
-              <h1 className="font-poppins font-bold text-5xl lg:text-7xl text-white leading-tight animate-slide-up stagger-delay-1">
+            {/* Main Heading - Mobile Optimized */}
+            <div className="space-y-4 sm:space-y-6">
+              <h1 className="font-poppins font-bold text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-white leading-tight animate-slide-up stagger-delay-1">
                 Fashion That
                 <span className="block bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent animate-glow">
                   Defines You
                 </span>
               </h1>
-              <p className="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed animate-fade-in stagger-delay-2">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed animate-fade-in stagger-delay-2 px-4 sm:px-0">
                 Discover premium clothing that blends contemporary style with
                 unmatched comfort. Where fashion meets personality.
               </p>
@@ -146,26 +146,26 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Social Proof Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto animate-slide-up stagger-delay-4">
+            {/* Social Proof Stats - Mobile Optimized */}
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 pt-8 sm:pt-12 max-w-2xl mx-auto animate-slide-up stagger-delay-4 px-4 sm:px-0">
               <div className="text-center group hover:scale-105 transition-transform duration-300">
-                <div className="font-poppins font-bold text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
+                <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
                   9.3k
                 </div>
-                <div className="text-sm text-white/80">Happy Customers</div>
+                <div className="text-xs sm:text-sm text-white/80">Happy Customers</div>
               </div>
               <div className="text-center group hover:scale-105 transition-transform duration-300">
-                <div className="font-poppins font-bold text-3xl lg:text-4xl text-white flex items-center justify-center group-hover:text-primary transition-colors duration-300">
+                <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white flex items-center justify-center group-hover:text-primary transition-colors duration-300">
                   4.1
-                  <Star className="h-5 w-5 fill-current text-yellow-400 ml-2 animate-pulse" />
+                  <Star className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 fill-current text-yellow-400 ml-1 sm:ml-2 animate-pulse" />
                 </div>
-                <div className="text-sm text-white/80">Customer Rating</div>
+                <div className="text-xs sm:text-sm text-white/80">Customer Rating</div>
               </div>
               <div className="text-center group hover:scale-105 transition-transform duration-300">
-                <div className="font-poppins font-bold text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
+                <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
                   100%
                 </div>
-                <div className="text-sm text-white/80">Sustainable</div>
+                <div className="text-xs sm:text-sm text-white/80">Sustainable</div>
               </div>
             </div>
 
@@ -180,36 +180,36 @@ export default function Home() {
         <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
       </section>
 
-      {/* Limited Time Offer Banner */}
-      <section className="bg-gradient-to-r from-red-500 to-pink-600 text-white py-8 relative overflow-hidden">
+      {/* Limited Time Offer Banner - Mobile Optimized */}
+      <section className="bg-gradient-to-r from-red-500 to-pink-600 text-white py-6 sm:py-8 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="space-y-4">
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-full text-sm font-medium animate-bounce">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium animate-bounce">
               <span>⚡</span>
               <span>LIMITED TIME OFFER</span>
             </div>
-            <h2 className="font-poppins font-bold text-3xl lg:text-4xl animate-pulse-glow">
+            <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl animate-pulse-glow px-4 sm:px-0">
               Flash Sale: Extra 25% OFF
             </h2>
-            <p className="text-lg text-white/90 max-w-2xl mx-auto">
-              Use code <span className="bg-white/20 px-3 py-1 rounded-full font-mono font-bold">FLASH25</span> at checkout
+            <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto px-4 sm:px-0">
+              Use code <span className="bg-white/20 px-2 sm:px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm">FLASH25</span> at checkout
             </p>
-            <div className="flex justify-center space-x-4 text-sm">
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                <div className="font-bold text-xl">23</div>
+            <div className="flex justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
+              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                <div className="font-bold text-lg sm:text-xl">23</div>
                 <div>Hours</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                <div className="font-bold text-xl">45</div>
+              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                <div className="font-bold text-lg sm:text-xl">45</div>
                 <div>Minutes</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                <div className="font-bold text-xl">12</div>
+              <div className="bg-white/10 backdrop-blur-sm px-2 sm:px-4 py-2 rounded-lg">
+                <div className="font-bold text-lg sm:text-xl">12</div>
                 <div>Seconds</div>
               </div>
             </div>
             <Link to="/products">
-              <Button size="lg" className="bg-white text-red-600 hover:bg-white/90 font-bold shadow-xl animate-bounce-in">
+              <Button size="sm" className="sm:text-base bg-white text-red-600 hover:bg-white/90 font-bold shadow-xl animate-bounce-in px-4 sm:px-6">
                 Shop Now & Save 25%
               </Button>
             </Link>
@@ -257,7 +257,7 @@ export default function Home() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {featuredProducts.map((product, index) => (
                 <Link
                   key={product.id}
@@ -282,7 +282,7 @@ export default function Home() {
                         <img
                           src={product.images[0] || "/placeholder.svg"}
                           alt={product.name}
-                          className="w-full h-64 object-cover group-hover:scale-110 transition-all duration-500"
+                          className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-110 transition-all duration-500"
                         />
                         <div className="absolute top-3 left-3 transform group-hover:scale-105 transition-transform duration-300">
                           <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium animate-pulse-glow">
