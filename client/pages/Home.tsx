@@ -90,6 +90,13 @@ export default function Home() {
 
   // Load featured products
   useEffect(() => {
+    // Ensure page starts from top when Home page is loaded
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+
     loadFeaturedProducts();
   }, []);
 
