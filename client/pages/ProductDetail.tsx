@@ -178,22 +178,22 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-6 sm:py-8 lg:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
-          <Link to="/" className="hover:text-foreground transition-colors">
+        {/* Breadcrumb - Mobile Optimized */}
+        <nav className="flex items-center space-x-2 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8 overflow-x-auto">
+          <Link to="/" className="hover:text-foreground transition-colors whitespace-nowrap">
             Home
           </Link>
           <span>/</span>
           <Link
             to="/products"
-            className="hover:text-foreground transition-colors"
+            className="hover:text-foreground transition-colors whitespace-nowrap"
           >
             Products
           </Link>
           <span>/</span>
-          <span className="text-foreground">{product.name}</span>
+          <span className="text-foreground truncate">{product.name}</span>
         </nav>
 
         {/* Back Button */}
@@ -205,7 +205,7 @@ export default function ProductDetail() {
           Back to Products
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {/* Product Images */}
           <div className="space-y-4">
             <div className="aspect-square bg-card rounded-2xl overflow-hidden">
@@ -220,8 +220,8 @@ export default function ProductDetail() {
               />
             </div>
 
-            {/* Thumbnail Images */}
-            <div className="grid grid-cols-3 gap-3">
+            {/* Thumbnail Images - Mobile Optimized */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 gap-2 sm:gap-3">
               {(product.images || []).map((image, index) => (
                 <button
                   key={`thumbnail-${index}`}
@@ -249,7 +249,7 @@ export default function ProductDetail() {
                 <span>{product.category}</span>
               </div>
 
-              <h1 className="font-poppins font-bold text-3xl lg:text-4xl text-foreground mb-4">
+              <h1 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl text-foreground mb-4">
                 {product.name}
               </h1>
 
@@ -273,12 +273,12 @@ export default function ProductDetail() {
 
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="font-poppins font-bold text-3xl text-foreground">
+                  <div className="font-poppins font-bold text-2xl sm:text-3xl text-foreground">
                     {formatINR(product.price)}
                   </div>
                   {product.originalPrice &&
                     product.originalPrice > product.price && (
-                      <div className="font-poppins text-xl text-muted-foreground line-through">
+                      <div className="font-poppins text-lg sm:text-xl text-muted-foreground line-through">
                         {formatINR(product.originalPrice)}
                       </div>
                     )}
@@ -328,17 +328,17 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Size Selection */}
+            {/* Size Selection - Mobile Optimized */}
             <div className="space-y-3">
               <h3 className="font-poppins font-semibold text-foreground">
                 Size
               </h3>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
                 {(product.sizes || []).map((size) => (
                   <button
                     key={`size-${size}`}
                     onClick={() => setSelectedSize(size)}
-                    className={`py-3 px-4 border-2 rounded-lg font-medium transition-all ${
+                    className={`py-2 sm:py-3 px-2 sm:px-4 border-2 rounded-lg font-medium transition-all text-sm sm:text-base ${
                       selectedSize === size
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border hover:border-primary"
@@ -375,19 +375,19 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Add to Cart */}
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
+            {/* Add to Cart - Mobile Optimized */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button
                   size="lg"
-                  className="flex-1 shadow-soft-lg"
+                  className="flex-1 shadow-soft-lg text-sm sm:text-base py-3 sm:py-4"
                   onClick={handleAddToCart}
                 >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Add to Cart
                 </Button>
-                <Button variant="outline" size="lg" className="sm:w-auto">
-                  <Heart className="h-5 w-5" />
+                <Button variant="outline" size="lg" className="sm:w-auto py-3 sm:py-4">
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
 
@@ -395,10 +395,10 @@ export default function ProductDetail() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                className="w-full border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 text-sm sm:text-base py-3 sm:py-4"
                 onClick={handleWhatsAppShare}
               >
-                <MessageCircle className="mr-2 h-5 w-5" />
+                <MessageCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Order via WhatsApp
               </Button>
             </div>
@@ -439,7 +439,7 @@ export default function ProductDetail() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {relatedProducts.map((relatedProduct, index) => (
                 <Link
                   key={relatedProduct.id}
@@ -464,7 +464,7 @@ export default function ProductDetail() {
                         <img
                           src={relatedProduct.images[0] || '/placeholder.svg'}
                           alt={relatedProduct.name}
-                          className="w-full h-48 object-cover group-hover:scale-110 transition-all duration-500"
+                          className="w-full h-40 sm:h-44 lg:h-48 object-cover group-hover:scale-110 transition-all duration-500"
                         />
                         <div className="absolute top-3 left-3">
                           <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
