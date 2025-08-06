@@ -15,7 +15,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db, storage, checkFirebaseConnection, safeFirebaseOperation } from "@/lib/firebase";
 
 export interface Product {
   id?: string;
