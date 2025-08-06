@@ -218,6 +218,14 @@
     animation: spin 3s linear infinite;
   }
 
+  .animate-slide-x {
+    animation: slideX 20s linear infinite;
+  }
+
+  .animate-shine {
+    animation: shine 3s ease-in-out infinite;
+  }
+
   .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
