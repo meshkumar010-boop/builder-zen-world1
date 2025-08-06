@@ -9,10 +9,31 @@ import { useEffect } from 'react'
 export default function Cart() {
   const { items: cartItems, updateQuantity, removeItem, totalPrice, itemCount } = useCart()
 
-  // Prevent auto-scroll when cart page loads
+  // Prevent auto-scroll when cart page loads and handle scroll to top
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    // Smooth scroll to top when cart loads
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Prevent any background scrolling
+    document.body.style.overflowX = 'hidden';
+
+    return () => {
+      document.body.style.overflowX = 'auto';
+    };
   }, [])
+
+  // Handle quantity changes with smooth user experience
+  useEffect(() => {
+    // Save scroll position when items change
+    const scrollY = window.scrollY;
+
+    // Restore scroll position after DOM updates
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: scrollY, behavior: 'auto' });
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [cartItems.length])
 
   const handleUpdateQuantity = (id: number, size: string, color: string, newQuantity: number) => {
     updateQuantity(id, size, color, newQuantity)
@@ -75,7 +96,7 @@ export default function Cart() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4 max-h-screen overflow-y-auto pr-2">
             {cartItems.map((item) => (
               <Card key={`${item.id}-${item.size}-${item.color}`} className="border-0 bg-card">
                 <CardContent className="p-6">
