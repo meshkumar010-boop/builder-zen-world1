@@ -71,20 +71,6 @@ export default function Home() {
       buttonStyle: "bg-white text-purple-600 hover:bg-white/90"
     },
     {
-      type: "mega-discount",
-      background: "bg-gradient-to-r from-green-500 to-emerald-600",
-      badge: { icon: "🔥", text: "MEGA DISCOUNT" },
-      title: "Buy 2 Get 1 FREE",
-      description: "Mix and match any items from our collection. Third item will be the lowest priced item.",
-      features: [
-        { icon: "🏆", title: "Premium Quality", subtitle: "100% Cotton" },
-        { icon: "🚚", title: "Free Delivery", subtitle: "On All Orders" },
-        { icon: "🔄", title: "Easy Returns", subtitle: "15 Day Policy" }
-      ],
-      buttonText: "Shop Buy 2 Get 1 FREE",
-      buttonStyle: "bg-white text-green-600 hover:bg-white/90"
-    },
-    {
       type: "vip-membership",
       background: "bg-gradient-to-r from-amber-500 to-orange-600",
       badge: { icon: "🎆", text: "VIP EXCLUSIVE" },
@@ -317,8 +303,8 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Set height based on current slide */}
-        <div className="h-auto" style={{ minHeight: promotionalSlide === 1 || promotionalSlide === 2 || promotionalSlide === 3 ? '600px' : '400px' }}></div>
+        {/* Set consistent height for all banners */}
+        <div className="h-auto" style={{ minHeight: '600px' }}></div>
 
         {/* Slide indicators */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
