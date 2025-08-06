@@ -90,7 +90,6 @@ export default function Home() {
           <div className="space-y-8 max-w-4xl mx-auto">
             {/* Badge */}
             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-full text-sm font-medium animate-bounce-in glass-effect">
-              <span className="animate-float">✨</span>
               <span>Elevate Your Style</span>
             </div>
 
