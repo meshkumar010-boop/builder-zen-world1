@@ -16,6 +16,11 @@ export function Layout({ children }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
 
+  // Close mobile menu and ensure scroll position is maintained
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
