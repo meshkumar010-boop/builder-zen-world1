@@ -15,6 +15,7 @@ import {
   formatINR,
   getDiscountPercentage,
   getProduct,
+  getProducts,
   type Product,
 } from "@/services/products";
 
@@ -49,6 +50,7 @@ export default function ProductDetail() {
   } | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -81,9 +83,27 @@ export default function ProductDetail() {
     };
 
     loadProduct();
+    loadRelatedProducts();
     // Prevent auto-scroll when navigating to product
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [id]);
+
+  // Load related products
+  const loadRelatedProducts = async () => {
+    try {
+      const allProducts = await getProducts();
+      const currentProduct = await getProduct(id || '');
+      if (currentProduct) {
+        // Get products from same category, excluding current product
+        const related = allProducts
+          .filter(p => p.id !== id && p.category === currentProduct.category)
+          .slice(0, 4);
+        setRelatedProducts(related);
+      }
+    } catch (error) {
+      console.error('Error loading related products:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -405,6 +425,110 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
+        <section className="py-16 bg-card/50 mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="font-poppins font-bold text-3xl text-foreground mb-4">
+                You Might Also Like
+              </h2>
+              <p className="text-muted-foreground">
+                Discover more products from the {product.category} collection
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((relatedProduct, index) => (
+                <Link
+                  key={relatedProduct.id}
+                  to={`/product/${relatedProduct.id}`}
+                  className="block group hover:scale-105 transition-all duration-300"
+                  onClick={() => {
+                    // Auto-add to cart when related product is clicked
+                    addItem({
+                      id: relatedProduct.id!,
+                      name: relatedProduct.name,
+                      price: relatedProduct.price,
+                      image: relatedProduct.images[0] || '/placeholder.svg',
+                      size: relatedProduct.sizes[0] || 'M',
+                      color: relatedProduct.colors[0]?.name || 'Default',
+                      quantity: 1,
+                    });
+                  }}
+                >
+                  <Card className="group-hover:shadow-soft-lg transition-all duration-500 border-0 bg-background cursor-pointer overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="relative overflow-hidden rounded-t-lg">
+                        <img
+                          src={relatedProduct.images[0] || '/placeholder.svg'}
+                          alt={relatedProduct.name}
+                          className="w-full h-48 object-cover group-hover:scale-110 transition-all duration-500"
+                        />
+                        <div className="absolute top-3 left-3">
+                          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
+                            {relatedProduct.category}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                            {relatedProduct.name}
+                          </h3>
+                          <div className="flex items-center space-x-1">
+                            <Star className="h-3 w-3 fill-current text-yellow-500" />
+                            <span className="text-xs text-muted-foreground">
+                              {relatedProduct.rating || 4.5}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-poppins font-semibold text-lg text-foreground group-hover:text-primary transition-colors duration-300">
+                                {formatINR(relatedProduct.price)}
+                              </span>
+                              {relatedProduct.originalPrice &&
+                                relatedProduct.originalPrice > relatedProduct.price && (
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    {formatINR(relatedProduct.originalPrice)}
+                                  </span>
+                                )}
+                            </div>
+                            {relatedProduct.originalPrice &&
+                              relatedProduct.originalPrice > relatedProduct.price && (
+                                <div className="text-xs text-green-600 font-medium bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+                                  {getDiscountPercentage(
+                                    relatedProduct.originalPrice,
+                                    relatedProduct.price,
+                                  )}
+                                  % OFF
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            <div className="text-center mt-8">
+              <Link to="/products">
+                <Button variant="outline" size="lg" className="group">
+                  View All Products
+                  <ArrowLeft className="ml-2 h-4 w-4 rotate-180 group-hover:translate-x-2 transition-transform duration-300" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
