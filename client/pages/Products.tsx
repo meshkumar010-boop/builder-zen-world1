@@ -113,6 +113,18 @@ export default function Products() {
                 key={product.id}
                 to={`/product/${product.id}`}
                 className={`block group animate-scale-in stagger-delay-${(index % 4) + 1}`}
+                onClick={() => {
+                  // Auto-add to cart when product is clicked
+                  addItem({
+                    id: product.id!,
+                    name: product.name,
+                    price: product.price,
+                    image: product.images[0] || '/placeholder.svg',
+                    size: product.sizes[0] || 'M',
+                    color: product.colors[0]?.name || 'Default',
+                    quantity: 1,
+                  });
+                }}
               >
                 <Card className="group-hover:shadow-soft-lg transition-all duration-500 border-0 bg-card cursor-pointer hover-lift overflow-hidden">
                   <CardContent className="p-0">
