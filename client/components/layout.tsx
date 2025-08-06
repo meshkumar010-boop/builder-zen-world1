@@ -157,7 +157,7 @@ export function Layout({ children }: LayoutProps) {
                     key={item.name}
                     to={item.href}
                     className="block px-3 py-2 text-foreground hover:text-primary hover:bg-accent rounded-md transition-colors duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   >
                     {item.name}
                   </Link>
