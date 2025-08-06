@@ -265,6 +265,64 @@ function ProductFormContent() {
     }
   };
 
+  // Function to validate and add image URL
+  const handleAddImageUrl = async () => {
+    if (!imageUrl.trim()) {
+      setError('Please enter an image URL');
+      return;
+    }
+
+    // Basic URL validation
+    try {
+      const url = new URL(imageUrl.trim());
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        setError('Please enter a valid HTTP or HTTPS URL');
+        return;
+      }
+    } catch {
+      setError('Please enter a valid URL');
+      return;
+    }
+
+    setValidatingUrl(true);
+    setError('');
+
+    try {
+      // Test if the URL is a valid image
+      const img = new Image();
+
+      const isValidImage = await new Promise((resolve) => {
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = imageUrl.trim();
+
+        // Set timeout for slow images
+        setTimeout(() => resolve(false), 10000);
+      });
+
+      if (!isValidImage) {
+        setError('The URL does not point to a valid image. Please check the link.');
+        setValidatingUrl(false);
+        return;
+      }
+
+      // Add the validated URL to images
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrl.trim()]
+      }));
+
+      // Clear the input
+      setImageUrl('');
+      console.log('Image URL added successfully:', imageUrl.trim());
+
+    } catch (err) {
+      setError('Failed to validate image URL. Please try again.');
+    } finally {
+      setValidatingUrl(false);
+    }
+  };
+
   const removeImage = (index: number) => {
     const imageToRemove = formData.images[index];
 
