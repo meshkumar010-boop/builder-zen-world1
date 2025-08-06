@@ -29,18 +29,18 @@ export function Layout({ children }: LayoutProps) {
       {/* Navigation */}
       <nav className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo */}
             <Link
               to="/"
               className="flex items-center space-x-2 group animate-slide-in-left"
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animate-glow">
-                <span className="text-primary-foreground font-bold text-lg">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animate-glow">
+                <span className="text-primary-foreground font-bold text-sm sm:text-lg">
                   S2
                 </span>
               </div>
-              <span className="font-poppins font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-300">
+              <span className="font-poppins font-bold text-lg sm:text-xl text-foreground group-hover:text-primary transition-colors duration-300">
                 S2 Wears
               </span>
             </Link>
@@ -106,15 +106,15 @@ export function Layout({ children }: LayoutProps) {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Navigation - Enhanced */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-border">
-              <div className="py-2 space-y-1">
+            <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
+              <div className="py-3 space-y-1">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className="block px-3 py-2 text-foreground hover:text-primary hover:bg-accent rounded-md transition-colors duration-200"
+                    className="block px-4 py-3 text-foreground hover:text-primary hover:bg-accent rounded-lg mx-2 transition-all duration-200 font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
@@ -131,10 +131,10 @@ export function Layout({ children }: LayoutProps) {
 
       {/* Footer */}
       <footer className="bg-card border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {/* Brand */}
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 sm:col-span-2 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <span className="text-primary-foreground font-bold text-lg">
@@ -145,7 +145,7 @@ export function Layout({ children }: LayoutProps) {
                   S2 Wears
                 </span>
               </div>
-              <p className="text-muted-foreground max-w-md">
+              <p className="text-sm sm:text-base text-muted-foreground max-w-md">
                 Modern, comfortable clothing for the contemporary lifestyle.
                 Quality materials, timeless designs, and sustainable practices.
               </p>
@@ -175,8 +175,8 @@ export function Layout({ children }: LayoutProps) {
               <h3 className="font-poppins font-semibold text-foreground mb-4">
                 Contact
               </h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>s2wersofficial@gmail.com</li>
+              <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
+                <li className="break-all">s2wersofficial@gmail.com</li>
                 <li>+919009500502</li>
                 <li>+919009880838</li>
                 <li className="flex items-center space-x-2">
