@@ -81,42 +81,46 @@ const PRODUCTS_COLLECTION = "products";
 
 // Get all products
 export async function getProducts(): Promise<Product[]> {
-  // First try localStorage (faster and more reliable)
+  // Always get localStorage first for immediate display
   const localProducts = getLocalProducts();
 
-  // Try Firebase in background to sync data
-  try {
-    console.log("Fetching products from Firebase...");
-    const productsRef = collection(db, PRODUCTS_COLLECTION);
-    const q = query(productsRef, orderBy("createdAt", "desc"));
-    const querySnapshot = await getDocs(q);
-
-    const firebaseProducts = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Product[];
-
-    console.log("Firebase products found:", firebaseProducts.length);
-
-    // Update localStorage with latest Firebase data
-    if (firebaseProducts.length > 0) {
-      localStorage.setItem(
-        "s2-wear-products",
-        JSON.stringify(firebaseProducts),
-      );
-      return firebaseProducts;
-    }
-  } catch (error) {
-    console.warn(
-      "Firebase connection failed (using localStorage):",
-      error.message,
-    );
-    // This is common with Chrome extensions blocking requests
+  // Try Firebase only if connection is available
+  if (!checkFirebaseConnection()) {
+    console.log("Firebase not available, using localStorage products:", localProducts.length);
+    return localProducts;
   }
 
-  // Return localStorage data (includes sample products if empty)
-  console.log("Using localStorage products:", localProducts.length);
-  return localProducts;
+  return safeFirebaseOperation(
+    async () => {
+      console.log("Fetching products from Firebase...");
+      const productsRef = collection(db, PRODUCTS_COLLECTION);
+      const q = query(productsRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      const firebaseProducts = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Product[];
+
+      console.log("Firebase products found:", firebaseProducts.length);
+
+      // Update localStorage with latest Firebase data
+      if (firebaseProducts.length > 0) {
+        localStorage.setItem(
+          "s2-wear-products",
+          JSON.stringify(firebaseProducts),
+        );
+        return firebaseProducts;
+      }
+
+      return localProducts;
+    },
+    () => {
+      console.log("Using localStorage products:", localProducts.length);
+      return localProducts;
+    },
+    "Get products"
+  );
 }
 
 // Helper function to get local products
