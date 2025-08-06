@@ -88,73 +88,75 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-6 sm:py-8 lg:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-poppins font-bold text-3xl lg:text-4xl text-foreground mb-8">
+        <h1 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl text-foreground mb-6 sm:mb-8">
           Shopping Cart
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4 max-h-screen overflow-y-auto pr-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          {/* Cart Items - Mobile Optimized */}
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4 max-h-screen overflow-y-auto pr-2">
             {cartItems.map((item) => (
               <Card key={`${item.id}-${item.size}-${item.color}`} className="border-0 bg-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center space-x-3 sm:space-x-4">
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-20 h-20 object-cover rounded-lg bg-accent"
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg bg-accent flex-shrink-0"
                     />
                     
-                    <div className="flex-1 space-y-2">
-                      <h3 className="font-poppins font-semibold text-foreground">
+                    <div className="flex-1 space-y-1 sm:space-y-2 min-w-0">
+                      <h3 className="font-poppins font-semibold text-sm sm:text-base text-foreground truncate">
                         {item.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Size: {item.size} • Color: {item.color}
                       </p>
-                      <p className="font-semibold text-foreground">
+                      <p className="font-semibold text-sm sm:text-base text-foreground">
                         {formatINR(item.price)}
                       </p>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleUpdateQuantity(item.id, item.size, item.color, item.quantity - 1)}
-                        className="h-8 w-8"
-                      >
-                        <Minus className="h-3 w-3" />
-                      </Button>
+                    <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                      <div className="flex items-center space-x-1 sm:space-x-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleUpdateQuantity(item.id, item.size, item.color, item.quantity - 1)}
+                          className="h-7 w-7 sm:h-8 sm:w-8"
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
 
-                      <span className="w-8 text-center font-medium">
-                        {item.quantity}
-                      </span>
+                        <span className="w-6 sm:w-8 text-center font-medium text-sm sm:text-base">
+                          {item.quantity}
+                        </span>
 
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleUpdateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                        className="h-8 w-8"
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
-                    </div>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleUpdateQuantity(item.id, item.size, item.color, item.quantity + 1)}
+                          className="h-7 w-7 sm:h-8 sm:w-8"
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
 
-                    <div className="text-right">
-                      <p className="font-poppins font-semibold text-foreground">
-                        {formatINR(item.price * item.quantity)}
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveItem(item.id, item.size, item.color)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="text-center sm:text-right">
+                        <p className="font-poppins font-semibold text-sm sm:text-base text-foreground">
+                          {formatINR(item.price * item.quantity)}
+                        </p>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveItem(item.id, item.size, item.color)}
+                          className="text-destructive hover:text-destructive mt-1"
+                        >
+                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -162,11 +164,11 @@ export default function Cart() {
             ))}
           </div>
 
-          {/* Order Summary */}
+          {/* Order Summary - Mobile Optimized */}
           <div className="lg:col-span-1">
-            <Card className="border-0 bg-card sticky top-24">
-              <CardContent className="p-6 space-y-6">
-                <h2 className="font-poppins font-semibold text-xl text-foreground">
+            <Card className="border-0 bg-card sticky top-20 sm:top-24">
+              <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <h2 className="font-poppins font-semibold text-lg sm:text-xl text-foreground">
                   Order Summary
                 </h2>
 
@@ -196,16 +198,16 @@ export default function Cart() {
                 </div>
 
                 <div className="space-y-3">
-                  <Button 
-                    className="w-full shadow-soft-lg"
+                  <Button
+                    className="w-full shadow-soft-lg text-sm sm:text-base py-3 sm:py-4"
                     size="lg"
                     onClick={handleWhatsAppCheckout}
                   >
-                    <MessageCircle className="mr-2 h-5 w-5" />
+                    <MessageCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Checkout via WhatsApp
                   </Button>
-                  
-                  <p className="text-xs text-muted-foreground text-center">
+
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
                     Complete your order through WhatsApp for personalized service
                   </p>
                 </div>
