@@ -32,6 +32,7 @@ const App = () => (
             <Toaster />
             <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               {/* Public routes with layout */}
               <Route path="/" element={<Layout><Home /></Layout>} />
