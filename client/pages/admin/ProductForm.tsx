@@ -548,6 +548,66 @@ function ProductFormContent() {
                 </div>
               </div>
 
+              {/* Image URL Input */}
+              <div className="space-y-4">
+                <div className="border-t border-border pt-4">
+                  <Label htmlFor="imageUrl">Or Add Image URL</Label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Paste a direct link to an image (JPG, PNG, WEBP). This is perfect for images already hosted online.
+                  </p>
+                  <div className="flex space-x-2">
+                    <div className="flex-1">
+                      <Input
+                        id="imageUrl"
+                        type="url"
+                        placeholder="https://example.com/image.jpg"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImageUrl())}
+                        disabled={validatingUrl}
+                        className="pr-10"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      disabled={!imageUrl.trim() || validatingUrl}
+                      className="px-6"
+                    >
+                      {validatingUrl ? (
+                        <>
+                          <Upload className="h-4 w-4 mr-2 animate-spin" />
+                          Validating...
+                        </>
+                      ) : (
+                        <>
+                          <LinkIcon className="h-4 w-4 mr-2" />
+                          Add URL
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center space-x-1">
+                      <span className="text-green-600">✓</span>
+                      <span>Direct image links (JPG, PNG, WEBP)</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-green-600">✓</span>
+                      <span>URLs from image hosting services</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-green-600">✓</span>
+                      <span>Product images from suppliers</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-green-600">✓</span>
+                      <span>URLs are validated before adding</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {formData.images.length > 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
