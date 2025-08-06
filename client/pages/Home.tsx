@@ -47,7 +47,8 @@ const promotionalBanners = [
     bgColor: "bg-gradient-to-r from-red-500 to-pink-600",
     textColor: "text-white",
     badge: "HOT DEAL",
-    image: "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800"
+    image:
+      "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     id: 2,
@@ -57,7 +58,8 @@ const promotionalBanners = [
     bgColor: "bg-gradient-to-r from-blue-500 to-purple-600",
     textColor: "text-white",
     badge: "NEW",
-    image: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800"
+    image:
+      "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     id: 3,
@@ -67,7 +69,8 @@ const promotionalBanners = [
     bgColor: "bg-gradient-to-r from-orange-500 to-yellow-500",
     textColor: "text-white",
     badge: "FLASH",
-    image: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&w=800"
+    image:
+      "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     id: 4,
@@ -77,8 +80,9 @@ const promotionalBanners = [
     bgColor: "bg-gradient-to-r from-green-500 to-teal-600",
     textColor: "text-white",
     badge: "FREE",
-    image: "https://images.pexels.com/photos/6069112/pexels-photo-6069112.jpeg?auto=compress&cs=tinysrgb&w=800"
-  }
+    image:
+      "https://images.pexels.com/photos/6069112/pexels-photo-6069112.jpeg?auto=compress&cs=tinysrgb&w=800",
+  },
 ];
 
 export default function Home() {
@@ -94,7 +98,7 @@ export default function Home() {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'auto'
+      behavior: "auto",
     });
 
     loadFeaturedProducts();
@@ -239,11 +243,16 @@ export default function Home() {
               <div
                 key={banner.id}
                 className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-                  index === currentBanner ? "translate-x-0" :
-                  index < currentBanner ? "-translate-x-full" : "translate-x-full"
+                  index === currentBanner
+                    ? "translate-x-0"
+                    : index < currentBanner
+                      ? "-translate-x-full"
+                      : "translate-x-full"
                 }`}
               >
-                <div className={`w-full h-full ${banner.bgColor} relative overflow-hidden`}>
+                <div
+                  className={`w-full h-full ${banner.bgColor} relative overflow-hidden`}
+                >
                   {/* Background Image */}
                   <div
                     className="absolute inset-0 opacity-20"
@@ -265,17 +274,23 @@ export default function Home() {
                           </div>
 
                           {/* Title */}
-                          <h2 className={`font-poppins font-bold text-2xl lg:text-4xl ${banner.textColor} leading-tight`}>
+                          <h2
+                            className={`font-poppins font-bold text-2xl lg:text-4xl ${banner.textColor} leading-tight`}
+                          >
                             {banner.title}
                           </h2>
 
                           {/* Subtitle */}
-                          <p className={`text-lg lg:text-xl ${banner.textColor}/90 font-medium`}>
+                          <p
+                            className={`text-lg lg:text-xl ${banner.textColor}/90 font-medium`}
+                          >
                             {banner.subtitle}
                           </p>
 
                           {/* Description */}
-                          <p className={`text-sm lg:text-base ${banner.textColor}/80`}>
+                          <p
+                            className={`text-sm lg:text-base ${banner.textColor}/80`}
+                          >
                             {banner.description}
                           </p>
 
@@ -319,7 +334,6 @@ export default function Home() {
                 />
               ))}
             </div>
-
           </div>
         </div>
       </section>

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export function ScrollToTop() {
   const { pathname } = useLocation();
@@ -9,7 +9,7 @@ export function ScrollToTop() {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'auto' // Use 'auto' for instant scroll, 'smooth' for animated
+      behavior: "auto", // Use 'auto' for instant scroll, 'smooth' for animated
     });
   }, [pathname]);
 
@@ -17,7 +17,9 @@ export function ScrollToTop() {
 }
 
 // Higher-order component wrapper for pages that need scroll restoration
-export function withScrollToTop<T extends {}>(Component: React.ComponentType<T>) {
+export function withScrollToTop<T extends {}>(
+  Component: React.ComponentType<T>,
+) {
   return function ScrollToTopWrapper(props: T) {
     const { pathname } = useLocation();
 
@@ -25,7 +27,7 @@ export function withScrollToTop<T extends {}>(Component: React.ComponentType<T>)
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: 'auto'
+        behavior: "auto",
       });
     }, [pathname]);
 
