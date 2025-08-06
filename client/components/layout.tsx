@@ -20,6 +20,30 @@ export function Layout({ children }: LayoutProps) {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  // Check connection status
+  useEffect(() => {
+    const checkConnection = () => {
+      const firebaseStatus = checkFirebaseConnection();
+      const networkStatus = navigator.onLine;
+      setIsOnline(firebaseStatus && networkStatus);
+    };
+
+    checkConnection();
+
+    // Listen for network changes
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('offline', checkConnection);
+
+    // Check periodically
+    const interval = setInterval(checkConnection, 30000); // Check every 30 seconds
+
+    return () => {
+      window.removeEventListener('online', checkConnection);
+      window.removeEventListener('offline', checkConnection);
+      clearInterval(interval);
+    };
+  }, []);
+
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
