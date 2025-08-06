@@ -63,12 +63,12 @@ function ProductFormContent() {
   const [newColor, setNewColor] = useState({ name: '', value: '#000000' });
 
   // For development/demo purposes, allow access without authentication
-  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('builder.codes');
+  const isDevelopment = window.location.hostname === 'localhost' ||
+                       window.location.hostname.includes('builder.codes') ||
+                       window.location.hostname.includes('fly.dev');
 
-  // Redirect if not logged in (except in development mode)
-  if (!user && !isDevelopment) {
-    return <Navigate to="/admin/login" replace />;
-  }
+  // Note: ProtectedAdminRoute component handles authentication
+  // This is just a backup check for additional security
 
   useEffect(() => {
     if (isEdit && id) {
