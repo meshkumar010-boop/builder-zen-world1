@@ -132,20 +132,6 @@ export default function Products() {
                           {product.category}
                         </span>
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            handleAddToCart(product)
-                          }}
-                          className="shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 hover-glow"
-                        >
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Quick Add
-                        </Button>
-                      </div>
                     </div>
 
                     <div className="p-4 space-y-3">
