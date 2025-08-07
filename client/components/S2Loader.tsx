@@ -144,3 +144,7 @@ export const S2ProductCardSkeleton = () => (
     </div>
   </div>
 );
+
+// Export both named and default
+export { S2Loader };
+export default S2Loader;
