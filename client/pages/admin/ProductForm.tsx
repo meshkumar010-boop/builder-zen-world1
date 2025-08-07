@@ -273,6 +273,77 @@ function ProductFormContent() {
     }
   };
 
+  const handleCloudUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    setCloudUploading(true);
+    setError('');
+
+    try {
+      const newImages: string[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Validate file
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`File ${file.name} is too large. Maximum size is 10MB for cloud upload.`);
+        }
+
+        if (!file.type.startsWith('image/')) {
+          throw new Error(`File ${file.name} is not a valid image file.`);
+        }
+
+        // Try cloud upload
+        const result = await uploadToCloudService(file);
+        if (result.success && result.url) {
+          newImages.push(result.url);
+          console.log(`File ${file.name} uploaded to cloud:`, result.url);
+        } else {
+          throw new Error(result.error || 'Cloud upload failed');
+        }
+      }
+
+      // Update UI with cloud images
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...newImages]
+      }));
+
+      // Clear the file input
+      e.target.value = '';
+    } catch (err: any) {
+      console.error('Cloud upload error:', err);
+      setError(err.message || 'Failed to upload to cloud service. Please try again.');
+    } finally {
+      setCloudUploading(false);
+    }
+  };
+
+  const handleAddImageUrl = () => {
+    if (!imageUrl.trim()) {
+      setError('Please enter a valid image URL');
+      return;
+    }
+
+    if (!isValidImageUrl(imageUrl)) {
+      setError('Please enter a valid image URL (must be http/https and end with image extension or be from a known image host)');
+      return;
+    }
+
+    // Add URL to images
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, imageUrl.trim()]
+    }));
+
+    // Clear input
+    setImageUrl('');
+    setShowUrlInput(false);
+    setError('');
+  };
+
   const removeImage = (index: number) => {
     const imageToRemove = formData.images[index];
 
