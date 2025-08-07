@@ -357,29 +357,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Modern navigation arrows */}
-        <button
-          onClick={() =>
-            setPromotionalSlide(
-              (prev) =>
-                (prev - 1 + promotionalBanners.length) %
-                promotionalBanners.length,
-            )
-          }
-          className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <button
-          onClick={() =>
-            setPromotionalSlide(
-              (prev) => (prev + 1) % promotionalBanners.length,
-            )
-          }
-          className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
-        >
-          <ArrowRight className="h-5 w-5" />
-        </button>
       </section>
 
       {/* Featured Products Carousel */}
