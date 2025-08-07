@@ -104,8 +104,8 @@ export default function AutoSlidingBanner({
   const currentBanner = slides[currentSlide];
 
   return (
-    <div 
-      className={`relative h-64 md:h-80 lg:h-96 overflow-hidden rounded-2xl shadow-2xl ${className}`}
+    <div
+      className={`relative h-48 sm:h-56 md:h-72 lg:h-80 xl:h-96 overflow-hidden rounded-xl md:rounded-2xl shadow-2xl ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -127,12 +127,12 @@ export default function AutoSlidingBanner({
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-2xl">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 w-full">
+          <div className="max-w-full sm:max-w-2xl">
             {/* Subtitle */}
-            <div className="mb-3">
-              <span 
-                className="inline-block px-4 py-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full text-sm font-medium animate-bounce-in"
+            <div className="mb-2 sm:mb-3">
+              <span
+                className="inline-block px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full text-xs sm:text-sm font-medium animate-bounce-in"
                 style={{ color: currentBanner.textColor || '#ffffff' }}
               >
                 {currentBanner.subtitle}
@@ -140,16 +140,16 @@ export default function AutoSlidingBanner({
             </div>
 
             {/* Main Title */}
-            <h2 
-              className="font-poppins font-bold text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 animate-slide-up"
+            <h2
+              className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight mb-2 sm:mb-3 md:mb-4 animate-slide-up"
               style={{ color: currentBanner.textColor || '#ffffff' }}
             >
               {currentBanner.title}
             </h2>
 
             {/* Description */}
-            <p 
-              className="text-lg md:text-xl leading-relaxed mb-6 max-w-lg animate-fade-in opacity-90"
+            <p
+              className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed mb-3 sm:mb-4 md:mb-6 max-w-full sm:max-w-lg animate-fade-in opacity-90"
               style={{ color: currentBanner.textColor || '#ffffff' }}
             >
               {currentBanner.description}
@@ -160,12 +160,12 @@ export default function AutoSlidingBanner({
               <div className="animate-scale-in">
                 {currentBanner.ctaLink ? (
                   <a href={currentBanner.ctaLink}>
-                    <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 animate-pulse-glow">
+                    <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-md sm:rounded-lg font-semibold text-sm sm:text-base md:text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 animate-pulse-glow">
                       {currentBanner.ctaText}
                     </button>
                   </a>
                 ) : (
-                  <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 animate-pulse-glow">
+                  <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-md sm:rounded-lg font-semibold text-sm sm:text-base md:text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 animate-pulse-glow">
                     {currentBanner.ctaText}
                   </button>
                 )}
@@ -176,12 +176,12 @@ export default function AutoSlidingBanner({
       </div>
 
       {/* Navigation Dots */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1.5 sm:space-x-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
               index === currentSlide
                 ? 'bg-white scale-125 shadow-lg'
                 : 'bg-white/50 hover:bg-white/75'
@@ -220,7 +220,7 @@ export default function AutoSlidingBanner({
       </button>
 
       {/* Slide Counter */}
-      <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm z-20">
+      <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 bg-black/30 backdrop-blur-sm text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm z-20">
         {currentSlide + 1} / {slides.length}
       </div>
     </div>
