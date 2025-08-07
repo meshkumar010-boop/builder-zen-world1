@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { S2LoaderSmall } from '@/components/S2Loader';
 
 export default function AdminLogin() {
   const { user, signIn } = useAuth();
@@ -114,13 +115,13 @@ export default function AdminLogin() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={loading}
                 size="lg"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? <S2LoaderSmall text="Signing in..." /> : 'Sign In'}
               </Button>
             </form>
 
