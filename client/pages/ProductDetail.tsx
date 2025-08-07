@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { S2LoaderFullscreen } from "@/components/S2Loader";
 import {
   Star,
   ShoppingCart,
