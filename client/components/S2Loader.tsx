@@ -26,9 +26,9 @@ const sizeClasses = {
   }
 };
 
-export default function S2Loader({ 
-  size = 'md', 
-  className = '', 
+function S2Loader({
+  size = 'md',
+  className = '',
   text,
   variant = 'default'
 }: S2LoaderProps) {
