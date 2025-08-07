@@ -17,6 +17,8 @@ import {
   getDiscountPercentage,
   type Product,
 } from "@/services/products";
+import AutoSlidingBanner from "@/components/AutoSlidingBanner";
+import { bannerSlides } from "@/data/bannerSlides";
 
 const features = [
   {
