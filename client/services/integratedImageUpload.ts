@@ -341,6 +341,52 @@ export function getUploadServiceStatus() {
   };
 }
 
+// Popular free image hosting services info
+export const FREE_IMAGE_HOSTS = [
+  {
+    name: 'ImgBB',
+    url: 'https://imgbb.com',
+    description: 'Free image hosting with API support',
+    limits: '32MB per image, no account needed'
+  },
+  {
+    name: 'Imgur',
+    url: 'https://imgur.com',
+    description: 'Popular image hosting platform',
+    limits: 'Free with registration'
+  },
+  {
+    name: 'Cloudinary',
+    url: 'https://cloudinary.com',
+    description: 'Professional image management',
+    limits: '25GB free tier'
+  },
+  {
+    name: 'Unsplash',
+    url: 'https://unsplash.com',
+    description: 'Free stock photos',
+    limits: 'Free high-quality stock images'
+  }
+];
+
+// Validate image URL
+export function isValidImageUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    const hasValidExtension = validExtensions.some(ext =>
+      urlObj.pathname.toLowerCase().includes(ext)
+    );
+
+    return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') &&
+           (hasValidExtension || urlObj.hostname.includes('imgur') ||
+            urlObj.hostname.includes('cloudinary') || urlObj.hostname.includes('pexels') ||
+            urlObj.hostname.includes('unsplash') || urlObj.hostname.includes('imgbb'));
+  } catch {
+    return false;
+  }
+}
+
 // Export configuration helper
 export const UPLOAD_CONFIG_HELP = {
   imgbb: {
