@@ -19,6 +19,7 @@ import {
 } from "@/services/products";
 import AutoSlidingBanner from "@/components/AutoSlidingBanner";
 import { bannerSlides } from "@/data/bannerSlides";
+import { S2Loader, S2ProductCardSkeleton } from "@/components/S2Loader";
 
 const features = [
   {
@@ -209,15 +210,11 @@ export default function Home() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="text-center py-8">
-              <div className="flex justify-center space-x-2">
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-              </div>
-              <p className="text-muted-foreground mt-4 animate-pulse">
-                Loading featured products...
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Show skeleton cards while loading */}
+              {[1, 2, 3, 4].map((i) => (
+                <S2ProductCardSkeleton key={i} />
+              ))}
             </div>
           ) : featuredProducts.length === 0 ? (
             <div className="text-center py-8 animate-fade-in">
