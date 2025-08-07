@@ -15,13 +15,22 @@ import {
   uploadProductImage,
   type Product 
 } from '@/services/products';
-import { 
-  ArrowLeft, 
-  Upload, 
-  X, 
+import {
+  uploadToCloudService,
+  isValidImageUrl,
+  FREE_IMAGE_HOSTS,
+  type CloudUploadResponse
+} from '@/services/imageUpload';
+import {
+  ArrowLeft,
+  Upload,
+  X,
   Plus,
   Save,
-  ImageIcon
+  ImageIcon,
+  Link as LinkIcon,
+  Cloud,
+  Info
 } from 'lucide-react';
 
 const CATEGORIES = ['T-Shirts', 'Hoodies', 'Jackets', 'Sweatshirts', 'Pants', 'Accessories'];
@@ -59,6 +68,9 @@ function ProductFormContent() {
 
   const [newFeature, setNewFeature] = useState('');
   const [newColor, setNewColor] = useState({ name: '', value: '#000000' });
+  const [imageUrl, setImageUrl] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [cloudUploading, setCloudUploading] = useState(false);
 
   // For development/demo purposes, allow access without authentication
   const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('builder.codes');
