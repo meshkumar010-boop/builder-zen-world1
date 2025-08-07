@@ -171,13 +171,13 @@ export default function Home() {
       </section>
 
       {/* Auto-Sliding Banner Section */}
-      <section className="py-12 bg-background relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="font-poppins font-bold text-2xl lg:text-3xl text-foreground mb-3 animate-slide-up">
+      <section className="py-6 sm:py-8 md:py-12 bg-background relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="text-center mb-4 sm:mb-6 md:mb-8">
+            <h2 className="font-poppins font-bold text-xl sm:text-2xl md:text-2xl lg:text-3xl text-foreground mb-2 sm:mb-3 animate-slide-up">
               Special Offers & Collections
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto animate-fade-in">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto animate-fade-in px-4 sm:px-0">
               Don't miss out on our exclusive deals and latest arrivals
             </p>
           </div>
