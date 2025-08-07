@@ -1,0 +1,61 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient Background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff8533;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffaa66;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Text Shadow Filter -->
+    <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative Circles -->
+  <circle cx="1000" cy="100" r="100" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="200" cy="500" r="75" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="300" cy="150" r="40" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="900" cy="450" r="60" fill="rgba(255,255,255,0.08)"/>
+  
+  <!-- Main Content -->
+  <g transform="translate(600, 315)">
+    <!-- S2 Logo -->
+    <text x="0" y="-50" text-anchor="middle" 
+          font-family="Poppins, Arial, sans-serif" 
+          font-size="120" 
+          font-weight="800" 
+          fill="white" 
+          filter="url(#textShadow)">S2</text>
+    
+    <!-- Tagline -->
+    <text x="0" y="20" text-anchor="middle" 
+          font-family="Inter, Arial, sans-serif" 
+          font-size="36" 
+          font-weight="600" 
+          fill="white" 
+          filter="url(#textShadow)">Fashion That Defines You</text>
+    
+    <!-- Description -->
+    <text x="0" y="60" text-anchor="middle" 
+          font-family="Inter, Arial, sans-serif" 
+          font-size="24" 
+          font-weight="400" 
+          fill="white" 
+          opacity="0.95" 
+          filter="url(#textShadow)">Premium Clothing • Modern Style • Quality Guaranteed</text>
+  </g>
+  
+  <!-- Subtle Pattern Overlay -->
+  <rect width="1200" height="630" fill="url(#patternOverlay)" opacity="0.1"/>
+  
+  <defs>
+    <pattern id="patternOverlay" patternUnits="userSpaceOnUse" width="50" height="50">
+      <circle cx="25" cy="25" r="2" fill="white" opacity="0.3"/>
+    </pattern>
+  </defs>
+</svg>
