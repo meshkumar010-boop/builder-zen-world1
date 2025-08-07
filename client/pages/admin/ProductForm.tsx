@@ -537,36 +537,150 @@ function ProductFormContent() {
               <CardTitle>Product Images</CardTitle>
               <p className="text-sm text-muted-foreground">Upload high-quality images that showcase your product from different angles</p>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="images">Upload Product Images (Recommended: 3-5 images)</Label>
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
-                  <input
-                    type="file"
-                    id="images"
-                    multiple
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    disabled={uploadingImages}
-                  />
-                  <label htmlFor="images" className="cursor-pointer">
-                    <div className="space-y-3">
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                        <ImageIcon className="h-8 w-8 text-primary" />
+            <CardContent className="space-y-6">
+
+              {/* Upload Options */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Local/Firebase Upload */}
+                <div className="space-y-2">
+                  <Label>Firebase Upload</Label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                    <input
+                      type="file"
+                      id="images"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploadingImages}
+                    />
+                    <label htmlFor="images" className="cursor-pointer">
+                      <div className="space-y-2">
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto">
+                          <Upload className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            {uploadingImages ? 'Uploading...' : 'Firebase Storage'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            5MB limit, reliable
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-base font-medium text-foreground">
-                          {uploadingImages ? 'Uploading images...' : 'Click to upload product images'}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          PNG, JPG, WEBP up to 5MB each. Images will upload to cloud or save locally. First image will be the main product image.
-                        </p>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Cloud Upload */}
+                <div className="space-y-2">
+                  <Label>Free Cloud Upload</Label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                    <input
+                      type="file"
+                      id="cloud-images"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleCloudUpload}
+                      className="hidden"
+                      disabled={cloudUploading}
+                    />
+                    <label htmlFor="cloud-images" className="cursor-pointer">
+                      <div className="space-y-2">
+                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
+                          <Cloud className="h-6 w-6 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            {cloudUploading ? 'Uploading...' : 'Cloud Service'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            10MB limit, free tier
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </label>
+                    </label>
+                  </div>
+                </div>
+
+                {/* URL Input */}
+                <div className="space-y-2">
+                  <Label>Add Image URL</Label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setShowUrlInput(!showUrlInput)}
+                      className="w-full h-full"
+                    >
+                      <div className="space-y-2">
+                        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mx-auto">
+                          <LinkIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            Image URL
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            From any host
+                          </p>
+                        </div>
+                      </div>
+                    </Button>
+                  </div>
                 </div>
               </div>
+
+              {/* URL Input Section */}
+              {showUrlInput && (
+                <div className="space-y-3 p-4 bg-purple-50 dark:bg-purple-900/10 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <Label htmlFor="imageUrl">Image URL</Label>
+                  <div className="flex space-x-2">
+                    <Input
+                      id="imageUrl"
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      disabled={!imageUrl.trim()}
+                      className="px-6"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add
+                    </Button>
+                  </div>
+
+                  {/* Free Image Hosts Info */}
+                  <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="flex items-start space-x-2">
+                      <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Free Image Hosting Services:</p>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-300">
+                          {FREE_IMAGE_HOSTS.map((host, index) => (
+                            <div key={index}>
+                              <a
+                                href={host.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-medium hover:underline"
+                              >
+                                {host.name}
+                              </a>
+                              <p className="text-blue-600 dark:text-blue-400">{host.limits}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {formData.images.length > 0 && (
                 <div className="space-y-3">
