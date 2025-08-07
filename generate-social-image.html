@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate S2 Wears Social Image</title>
+    <style>
+        .preview-container {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 50%, #ffaa66 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+        }
+        
+        .logo {
+            font-size: 120px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .description {
+            font-size: 24px;
+            opacity: 0.95;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container" id="previewContainer">
+        <div class="content">
+            <div class="logo">S2</div>
+            <div class="tagline">Fashion That Defines You</div>
+            <div class="description">Premium Clothing • Modern Style • Quality Guaranteed</div>
+        </div>
+    </div>
+
+    <script>
+        // This will be used to convert the preview to an image
+        function generateImage() {
+            const container = document.getElementById('previewContainer');
+            
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 630;
+            
+            // Fill gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+            gradient.addColorStop(0, '#ff6b00');
+            gradient.addColorStop(0.5, '#ff8533');
+            gradient.addColorStop(1, '#ffaa66');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1200, 630);
+            
+            // Add text
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 20;
+            
+            // Logo
+            ctx.font = 'bold 120px Arial';
+            ctx.fillText('S2', 600, 280);
+            
+            // Tagline
+            ctx.font = 'bold 36px Arial';
+            ctx.fillText('Fashion That Defines You', 600, 350);
+            
+            // Description
+            ctx.font = '24px Arial';
+            ctx.fillText('Premium Clothing • Modern Style • Quality Guaranteed', 600, 400);
+            
+            return canvas.toDataURL('image/jpeg', 0.9);
+        }
+        
+        console.log('S2 Wears Social Preview Generator Ready');
+        console.log('Call generateImage() to create the preview image');
+    </script>
+</body>
+</html>
