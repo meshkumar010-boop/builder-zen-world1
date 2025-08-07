@@ -389,16 +389,21 @@ export async function uploadProductImage(
 
     console.log("Uploading to Firebase path:", filename);
 
-    // Upload file with timeout
+    // Upload file with longer timeout for larger files
+    const timeoutDuration = Math.max(60000, file.size / 1024 * 10); // At least 60s, or 10ms per KB
     const uploadPromise = uploadBytes(storageRef, file);
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Upload timeout")), 30000),
+      setTimeout(() => reject(new Error("Upload timeout")), timeoutDuration),
     );
+
+    console.log(`Firebase upload timeout set to: ${timeoutDuration}ms for file size: ${file.size} bytes`);
 
     const snapshot = (await Promise.race([
       uploadPromise,
       timeoutPromise,
     ])) as any;
+
+    console.log("Firebase upload bytes completed, getting download URL...");
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     console.log("Firebase upload successful:", downloadURL);

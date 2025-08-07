@@ -141,17 +141,21 @@ async function uploadToImgur(file: File): Promise<UploadResult> {
  */
 async function uploadToFirebase(file: File, productId: string): Promise<UploadResult> {
   try {
+    console.log(`🔥 Attempting Firebase upload for ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
     const url = await uploadProductImage(file, productId);
+    console.log(`✅ Firebase upload successful: ${url}`);
     return {
       success: true,
       url,
       source: 'firebase'
     };
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Firebase upload failed';
+    console.warn(`❌ Firebase upload failed: ${errorMessage}`);
     return {
       success: false,
       source: 'error',
-      error: error instanceof Error ? error.message : 'Firebase upload failed'
+      error: errorMessage
     };
   }
 }
@@ -249,13 +253,22 @@ export async function uploadImageIntegrated(
   }
 
   // Try each service
-  for (const uploadService of uploadServices) {
+  for (let i = 0; i < uploadServices.length; i++) {
+    const uploadService = uploadServices[i];
     try {
-      console.log(`📤 Attempting upload with ${uploadService.name || 'service'}...`);
+      console.log(`📤 Attempting upload ${i + 1}/${uploadServices.length}...`);
+
+      // Dynamic timeout based on file size and service priority
+      const baseTimeout = 30000; // 30 seconds base
+      const sizeBonus = Math.min(file.size / 1024 / 1024 * 10000, 60000); // +10s per MB, max 60s bonus
+      const timeout = baseTimeout + sizeBonus;
+
+      console.log(`⏱️ Upload timeout set to ${timeout}ms for ${(file.size / 1024 / 1024).toFixed(2)}MB file`);
+
       const result = await Promise.race([
         uploadService(),
         new Promise<UploadResult>((_, reject) =>
-          setTimeout(() => reject(new Error('Upload timeout')), 15000)
+          setTimeout(() => reject(new Error(`Upload timeout after ${timeout}ms`)), timeout)
         )
       ]);
 
@@ -266,7 +279,13 @@ export async function uploadImageIntegrated(
         console.warn(`❌ Upload failed via ${result.source}: ${result.error}`);
       }
     } catch (error) {
-      console.warn(`⚠️ Upload error:`, error);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      console.warn(`⚠️ Upload attempt ${i + 1} failed:`, errorMsg);
+
+      // If it's a timeout error and we're trying Firebase, add extra context
+      if (errorMsg.includes('timeout') && i === 0) {
+        console.warn(`🔥 Firebase upload timed out - this may be due to slow network or large file size`);
+      }
     }
   }
 
