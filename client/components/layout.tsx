@@ -176,7 +176,7 @@ export function Layout({ children }: LayoutProps) {
                 Contact
               </h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>s2wersofficial@gmail.com</li>
+                <li>s2wearsofficial@gmail.com</li>
                 <li>+919009500502</li>
                 <li>+919009880838</li>
                 <li className="flex items-center space-x-2">
