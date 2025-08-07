@@ -26,6 +26,7 @@ import {
   type UploadResult,
   type UploadOptions
 } from '@/services/integratedImageUpload';
+import { S2LoaderSmall } from '@/components/S2Loader';
 import {
   ArrowLeft,
   Upload,
@@ -619,9 +620,11 @@ function ProductFormContent() {
                           <Cloud className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-foreground">
-                            {integratedUploading ? 'Uploading...' : 'Auto Upload'}
-                          </p>
+                          {integratedUploading ? (
+                            <S2LoaderSmall text="Uploading..." />
+                          ) : (
+                            <p className="text-sm font-medium text-foreground">Auto Upload</p>
+                          )}
                           <p className="text-xs text-muted-foreground">
                             Tries best service first
                           </p>
@@ -1046,9 +1049,15 @@ function ProductFormContent() {
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" disabled={loading}>
-              <Save className="h-4 w-4 mr-2" />
-              {loading ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
+            <Button type="submit" disabled={loading} className="min-w-[140px]">
+              {loading ? (
+                <S2LoaderSmall />
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isEdit ? 'Update Product' : 'Create Product'}
+                </>
+              )}
             </Button>
           </div>
         </form>
