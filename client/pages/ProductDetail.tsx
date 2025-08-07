@@ -87,13 +87,7 @@ export default function ProductDetail() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen py-12 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground">Loading product...</p>
-        </div>
-      </div>
-    );
+    return <S2LoaderFullscreen text="Loading product details..." />;
   }
 
   if (!product) {
