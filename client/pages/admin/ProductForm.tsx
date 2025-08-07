@@ -17,11 +17,15 @@ import {
   type Product 
 } from '@/services/products';
 import {
-  uploadToCloudService,
+  uploadImageIntegrated,
+  uploadMultipleImages,
+  getUploadServiceStatus,
+  UPLOAD_CONFIG_HELP,
   isValidImageUrl,
   FREE_IMAGE_HOSTS,
-  type CloudUploadResponse
-} from '@/services/imageUpload';
+  type UploadResult,
+  type UploadOptions
+} from '@/services/integratedImageUpload';
 import {
   ArrowLeft,
   Upload,
@@ -72,7 +76,9 @@ function ProductFormContent() {
   const [newColor, setNewColor] = useState({ name: '', value: '#000000' });
   const [imageUrl, setImageUrl] = useState('');
   const [showUrlInput, setShowUrlInput] = useState(false);
-  const [cloudUploading, setCloudUploading] = useState(false);
+  const [integratedUploading, setIntegratedUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{current: number, total: number, file: string}>({current: 0, total: 0, file: ''});
+  const [showServiceStatus, setShowServiceStatus] = useState(false);
 
   // For development/demo purposes, allow access without authentication
   const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('builder.codes');
@@ -275,51 +281,65 @@ function ProductFormContent() {
     }
   };
 
-  const handleCloudUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIntegratedUpload = async (e: React.ChangeEvent<HTMLInputElement>, preferredService: 'firebase' | 'cloud' | 'auto' = 'auto') => {
     const files = e.target.files;
     if (!files) return;
 
-    setCloudUploading(true);
+    setIntegratedUploading(true);
     setError('');
+    setUploadProgress({current: 0, total: files.length, file: ''});
 
     try {
-      const newImages: string[] = [];
+      const fileArray = Array.from(files);
+      const tempId = `${Date.now()}`;
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        // Validate file
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(`File ${file.name} is too large. Maximum size is 10MB for cloud upload.`);
+      const results = await uploadMultipleImages(
+        fileArray,
+        tempId,
+        { preferredService, fallbackToBase64: true },
+        (current, total, fileName) => {
+          setUploadProgress({current, total, file: fileName});
         }
+      );
 
-        if (!file.type.startsWith('image/')) {
-          throw new Error(`File ${file.name} is not a valid image file.`);
-        }
+      const successfulUploads = results.filter(result => result.success);
+      const failedUploads = results.filter(result => !result.success);
 
-        // Try cloud upload
-        const result = await uploadToCloudService(file);
-        if (result.success && result.url) {
-          newImages.push(result.url);
-          console.log(`File ${file.name} uploaded to cloud:`, result.url);
-        } else {
-          throw new Error(result.error || 'Cloud upload failed');
-        }
+      if (successfulUploads.length > 0) {
+        // Update UI with successful uploads
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, ...successfulUploads.map(result => result.url!)]
+        }));
+
+        console.log(`✅ Successfully uploaded ${successfulUploads.length}/${results.length} images`);
+
+        // Show upload summary
+        const sourceCounts = successfulUploads.reduce((acc, result) => {
+          acc[result.source] = (acc[result.source] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+        console.log('Upload sources:', sourceCounts);
       }
 
-      // Update UI with cloud images
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...newImages]
-      }));
+      if (failedUploads.length > 0) {
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map(f => f.error).join(', ')}`;
+        if (successfulUploads.length === 0) {
+          setError(errorMessage);
+        } else {
+          console.warn(errorMessage);
+        }
+      }
 
       // Clear the file input
       e.target.value = '';
     } catch (err: any) {
-      console.error('Cloud upload error:', err);
-      setError(err.message || 'Failed to upload to cloud service. Please try again.');
+      console.error('Integrated upload error:', err);
+      setError(err.message || 'Failed to upload images. Please try again.');
     } finally {
-      setCloudUploading(false);
+      setIntegratedUploading(false);
+      setUploadProgress({current: 0, total: 0, file: ''});
     }
   };
 
@@ -462,7 +482,7 @@ function ProductFormContent() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="originalPrice">Original Price (₹) *</Label>
+                    <Label htmlFor="originalPrice">Original Price (���) *</Label>
                     <Input
                       id="originalPrice"
                       type="number"
@@ -541,32 +561,69 @@ function ProductFormContent() {
             </CardHeader>
             <CardContent className="space-y-6">
 
+              {/* Upload Service Status */}
+              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                      Integrated Cloud Upload System
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowServiceStatus(!showServiceStatus)}
+                    className="text-blue-600 dark:text-blue-400"
+                  >
+                    {showServiceStatus ? 'Hide' : 'Show'} Services
+                  </Button>
+                </div>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                  Automatically tries Firebase, Cloudinary, Imgur, and ImgBB with smart fallbacks
+                </p>
+
+                {showServiceStatus && (
+                  <div className="mt-3 space-y-2">
+                    {Object.entries(getUploadServiceStatus()).map(([key, service]) => (
+                      <div key={key} className="flex items-center justify-between text-xs">
+                        <span className={service.available ? 'text-green-700 dark:text-green-300' : 'text-orange-700 dark:text-orange-300'}>
+                          {service.available ? '✅' : '⚠️'} {service.name}
+                        </span>
+                        <span className="text-blue-600 dark:text-blue-400">{service.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Upload Options */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Local/Firebase Upload */}
+                {/* Smart Auto Upload */}
                 <div className="space-y-2">
-                  <Label>Firebase Upload</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                  <Label>Smart Upload (Recommended)</Label>
+                  <div className="border-2 border-dashed border-primary/30 rounded-lg p-4 text-center hover:border-primary/50 transition-colors bg-primary/5">
                     <input
                       type="file"
-                      id="images"
+                      id="auto-images"
                       multiple
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={handleImageUpload}
+                      onChange={(e) => handleIntegratedUpload(e, 'auto')}
                       className="hidden"
-                      disabled={uploadingImages}
+                      disabled={integratedUploading}
                     />
-                    <label htmlFor="images" className="cursor-pointer">
+                    <label htmlFor="auto-images" className="cursor-pointer">
                       <div className="space-y-2">
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto">
-                          <Upload className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                        <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                          <Cloud className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            {uploadingImages ? 'Uploading...' : 'Firebase Storage'}
+                            {integratedUploading ? 'Uploading...' : 'Auto Upload'}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            5MB limit, reliable
+                            Tries best service first
                           </p>
                         </div>
                       </div>
@@ -574,18 +631,49 @@ function ProductFormContent() {
                   </div>
                 </div>
 
-                {/* Cloud Upload */}
+                {/* Firebase Priority */}
                 <div className="space-y-2">
-                  <Label>Free Cloud Upload</Label>
+                  <Label>Firebase Priority</Label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                    <input
+                      type="file"
+                      id="firebase-images"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => handleIntegratedUpload(e, 'firebase')}
+                      className="hidden"
+                      disabled={integratedUploading}
+                    />
+                    <label htmlFor="firebase-images" className="cursor-pointer">
+                      <div className="space-y-2">
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto">
+                          <Upload className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            Firebase First
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Try Firebase, then cloud
+                          </p>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Cloud Priority */}
+                <div className="space-y-2">
+                  <Label>Cloud Priority</Label>
                   <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
                     <input
                       type="file"
                       id="cloud-images"
                       multiple
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={handleCloudUpload}
+                      onChange={(e) => handleIntegratedUpload(e, 'cloud')}
                       className="hidden"
-                      disabled={cloudUploading}
+                      disabled={integratedUploading}
                     />
                     <label htmlFor="cloud-images" className="cursor-pointer">
                       <div className="space-y-2">
@@ -594,43 +682,54 @@ function ProductFormContent() {
                         </div>
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            {cloudUploading ? 'Uploading...' : 'Cloud Service'}
+                            Cloud First
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            10MB limit, free tier
+                            Try cloud, then Firebase
                           </p>
                         </div>
                       </div>
                     </label>
                   </div>
                 </div>
+              </div>
 
-                {/* URL Input */}
-                <div className="space-y-2">
-                  <Label>Add Image URL</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setShowUrlInput(!showUrlInput)}
-                      className="w-full h-full"
-                    >
-                      <div className="space-y-2">
-                        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mx-auto">
-                          <LinkIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">
-                            Image URL
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            From any host
-                          </p>
-                        </div>
-                      </div>
-                    </Button>
+              {/* Upload Progress */}
+              {integratedUploading && uploadProgress.total > 0 && (
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                      Uploading Images...
+                    </span>
+                    <span className="text-xs text-yellow-700 dark:text-yellow-300">
+                      {uploadProgress.current} / {uploadProgress.total}
+                    </span>
                   </div>
+                  <div className="w-full bg-yellow-200 dark:bg-yellow-800 rounded-full h-2 mb-2">
+                    <div
+                      className="bg-yellow-600 dark:bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                    />
+                  </div>
+                  {uploadProgress.file && (
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                      Current: {uploadProgress.file}
+                    </p>
+                  )}
                 </div>
+              )}
+
+              {/* URL Input Section (kept for manual URL addition) */}
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowUrlInput(!showUrlInput)}
+                  className="w-full"
+                >
+                  <LinkIcon className="h-4 w-4 mr-2" />
+                  {showUrlInput ? 'Hide' : 'Add'} Image URL
+                </Button>
               </div>
 
               {/* URL Input Section */}
@@ -715,7 +814,7 @@ function ProductFormContent() {
                           </div>
                           <div className="absolute top-1 right-1 flex gap-1">
                             {image.startsWith('data:') && (
-                              <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Saved locally (Base64)">
+                              <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Base64 Fallback">
                                 💾
                               </div>
                             )}
@@ -724,14 +823,19 @@ function ProductFormContent() {
                                 🔥
                               </div>
                             )}
-                            {image.includes('demo-cloud-storage') && (
-                              <div className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded" title="Free Cloud Service">
+                            {image.includes('cloudinary') && (
+                              <div className="bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded" title="Cloudinary">
                                 ☁️
                               </div>
                             )}
-                            {(image.includes('imgur') || image.includes('imgbb') || image.includes('cloudinary')) && (
-                              <div className="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded" title="External Image Host">
-                                🌐
+                            {image.includes('imgur') && (
+                              <div className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded" title="Imgur">
+                                📷
+                              </div>
+                            )}
+                            {image.includes('imgbb') && (
+                              <div className="bg-yellow-600 text-white text-xs px-1.5 py-0.5 rounded" title="ImgBB">
+                                🖼️
                               </div>
                             )}
                             {image.includes('pexels') && (
@@ -739,7 +843,7 @@ function ProductFormContent() {
                                 🎭
                               </div>
                             )}
-                            {image.startsWith('https://') && !image.includes('firebase') && !image.includes('demo-cloud-storage') && !image.includes('imgur') && !image.includes('imgbb') && !image.includes('cloudinary') && !image.includes('pexels') && (
+                            {image.startsWith('https://') && !image.includes('firebase') && !image.includes('cloudinary') && !image.includes('imgur') && !image.includes('imgbb') && !image.includes('pexels') && (
                               <div className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded" title="External URL">
                                 🔗
                               </div>
@@ -759,7 +863,7 @@ function ProductFormContent() {
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    💡 Tip: 💾 Local/Base64, 🔥 Firebase, ☁️ Free Cloud, 🌐 Image Host, 🔗 URL, 🎭 Demo. First image is the main product image.
+                    💡 Tip: 🔥 Firebase, ☁️ Cloudinary, 📷 Imgur, 🖼️ ImgBB, 💾 Base64, 🔗 URL, 🎭 Demo. First image is the main product image.
                   </p>
                 </div>
               )}
