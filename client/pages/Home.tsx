@@ -170,6 +170,30 @@ export default function Home() {
         <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
       </section>
 
+      {/* Auto-Sliding Banner Section */}
+      <section className="py-12 bg-background relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="font-poppins font-bold text-2xl lg:text-3xl text-foreground mb-3 animate-slide-up">
+              Special Offers & Collections
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto animate-fade-in">
+              Don't miss out on our exclusive deals and latest arrivals
+            </p>
+          </div>
+
+          <AutoSlidingBanner
+            slides={bannerSlides}
+            autoSlideInterval={4000}
+            className="animate-scale-in"
+          />
+        </div>
+
+        {/* Background decoration */}
+        <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+      </section>
+
       {/* Featured Products Carousel */}
       <section className="py-20 bg-card relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
