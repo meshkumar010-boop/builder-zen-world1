@@ -120,6 +120,10 @@ export async function getProducts(): Promise<Product[]> {
     // Test Firebase connectivity first
     const connectivityTest = async () => {
       try {
+        if (!db) {
+          console.warn('Firebase db instance is null');
+          return false;
+        }
         const testRef = collection(db, 'test');
         // Just attempt to create a reference - don't actually query
         return true;
