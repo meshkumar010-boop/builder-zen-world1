@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -11,27 +11,31 @@ interface State {
 
 class FirebaseErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
   };
 
   public static getDerivedStateFromError(error: Error): State {
     // Check if it's a Firebase-related error
-    const isFirebaseError = error.message?.includes('Firebase') || 
-                           error.message?.includes('Failed to fetch') ||
-                           error.stack?.includes('firebase');
-    
+    const isFirebaseError =
+      error.message?.includes("Firebase") ||
+      error.message?.includes("Failed to fetch") ||
+      error.stack?.includes("firebase");
+
     if (isFirebaseError) {
       // Mark Firebase as blocked in session storage
-      sessionStorage.setItem('firebase-blocked', 'true');
-      console.warn('Firebase error caught by boundary, marking as blocked:', error.message);
+      sessionStorage.setItem("firebase-blocked", "true");
+      console.warn(
+        "Firebase error caught by boundary, marking as blocked:",
+        error.message,
+      );
     }
 
     return { hasError: isFirebaseError, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.warn('Firebase Error Boundary caught an error:', error, errorInfo);
-    
+    console.warn("Firebase Error Boundary caught an error:", error, errorInfo);
+
     // If it's a Firebase error, we'll handle it gracefully
     if (this.state.hasError) {
       // Reset the error state after a short delay to allow the app to continue

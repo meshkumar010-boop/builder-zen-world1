@@ -51,28 +51,31 @@ export default function Home() {
       background: "bg-gradient-to-r from-red-500 to-pink-600",
       badge: { icon: "⚡", text: "LIMITED TIME OFFER" },
       title: "Flash Sale: Extra 25% OFF",
-      description: "Use code FLASH25 at checkout for instant discount on all products. Limited time offer!",
+      description:
+        "Use code FLASH25 at checkout for instant discount on all products. Limited time offer!",
       buttonText: "Shop Now & Save 25%",
-      buttonStyle: "bg-white text-red-600 hover:bg-white/90"
+      buttonStyle: "bg-white text-red-600 hover:bg-white/90",
     },
     {
       type: "coming-soon",
       background: "bg-gradient-to-r from-purple-600 to-blue-600",
       badge: { icon: "🎁", text: "COMING SOON" },
       title: "New Bundle Collection",
-      description: "Get ready for our exclusive winter bundle collection featuring premium hoodies, t-shirts, and accessories. Pre-order now and save up to 40%!",
+      description:
+        "Get ready for our exclusive winter bundle collection featuring premium hoodies, t-shirts, and accessories. Pre-order now and save up to 40%!",
       buttonText: "Notify Me When Available",
-      buttonStyle: "bg-white text-purple-600 hover:bg-white/90"
+      buttonStyle: "bg-white text-purple-600 hover:bg-white/90",
     },
     {
       type: "vip-membership",
       background: "bg-gradient-to-r from-amber-500 to-orange-600",
       badge: { icon: "🎆", text: "VIP EXCLUSIVE" },
       title: "Join S2 VIP Club",
-      description: "Get exclusive access to early sales, special discounts, and limited edition products. Join now and get instant benefits!",
+      description:
+        "Get exclusive access to early sales, special discounts, and limited edition products. Join now and get instant benefits!",
       buttonText: "Join VIP Club FREE",
-      buttonStyle: "bg-white text-orange-600 hover:bg-white/90"
-    }
+      buttonStyle: "bg-white text-orange-600 hover:bg-white/90",
+    },
   ];
 
   // Load featured products
@@ -112,12 +115,11 @@ export default function Home() {
 
   // Prevent auto-scroll when home page loads
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
 
   return (
     <div className="min-h-screen">
-
       {/* Hero Section */}
       <section
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -182,32 +184,45 @@ export default function Home() {
                 <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
                   9.3k
                 </div>
-                <div className="text-xs sm:text-sm text-white/80">Happy Customers</div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  Happy Customers
+                </div>
               </div>
               <div className="text-center group hover:scale-105 transition-transform duration-300">
                 <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white flex items-center justify-center group-hover:text-primary transition-colors duration-300">
                   4.1
                   <Star className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 fill-current text-yellow-400 ml-1 sm:ml-2 animate-pulse" />
                 </div>
-                <div className="text-xs sm:text-sm text-white/80">Customer Rating</div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  Customer Rating
+                </div>
               </div>
               <div className="text-center group hover:scale-105 transition-transform duration-300">
                 <div className="font-poppins font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white group-hover:text-primary transition-colors duration-300">
                   100%
                 </div>
-                <div className="text-xs sm:text-sm text-white/80">Sustainable</div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  Sustainable
+                </div>
               </div>
             </div>
-
-
           </div>
         </div>
 
         {/* Decorative Elements */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '4s'}}></div>
-        <div className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float" style={{animationDelay: '6s'}}></div>
+        <div
+          className="absolute bottom-20 right-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+        <div
+          className="absolute top-1/3 right-10 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "6s" }}
+        ></div>
       </section>
 
       {/* Modern Auto-Sliding Promotional Banners */}
@@ -218,13 +233,15 @@ export default function Home() {
               key={index}
               className={`transition-all duration-700 transform ${
                 index === promotionalSlide
-                  ? 'translate-x-0 opacity-100 relative'
+                  ? "translate-x-0 opacity-100 relative"
                   : index < promotionalSlide
-                  ? '-translate-x-full opacity-0 absolute inset-0'
-                  : 'translate-x-full opacity-0 absolute inset-0'
+                    ? "-translate-x-full opacity-0 absolute inset-0"
+                    : "translate-x-full opacity-0 absolute inset-0"
               }`}
             >
-              <div className={`${banner.background} text-white relative overflow-hidden`}>
+              <div
+                className={`${banner.background} text-white relative overflow-hidden`}
+              >
                 {/* Modern content layout */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="py-6 sm:py-8 lg:py-10">
@@ -233,7 +250,9 @@ export default function Home() {
                       <div className="flex justify-center">
                         <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
                           <span className="text-lg">{banner.badge.icon}</span>
-                          <span className="font-semibold">{banner.badge.text}</span>
+                          <span className="font-semibold">
+                            {banner.badge.text}
+                          </span>
                         </div>
                       </div>
 
@@ -243,9 +262,13 @@ export default function Home() {
                           {banner.title}
                         </h2>
                         <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
-                          {banner.description.includes('FLASH25') ? (
+                          {banner.description.includes("FLASH25") ? (
                             <>
-                              Use code <span className="bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full font-mono font-bold text-sm border border-white/20">FLASH25</span> at checkout
+                              Use code{" "}
+                              <span className="bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full font-mono font-bold text-sm border border-white/20">
+                                FLASH25
+                              </span>{" "}
+                              at checkout
                             </>
                           ) : (
                             banner.description
@@ -275,9 +298,18 @@ export default function Home() {
 
                 {/* Modern floating elements */}
                 <div className="absolute top-8 left-8 w-20 h-20 bg-white/5 rounded-full blur-xl animate-float"></div>
-                <div className="absolute bottom-8 right-8 w-32 h-32 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
-                <div className="absolute top-1/2 left-12 w-16 h-16 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
-                <div className="absolute top-1/4 right-12 w-24 h-24 bg-white/5 rounded-full blur-xl animate-float" style={{animationDelay: '6s'}}></div>
+                <div
+                  className="absolute bottom-8 right-8 w-32 h-32 bg-white/5 rounded-full blur-xl animate-float"
+                  style={{ animationDelay: "2s" }}
+                ></div>
+                <div
+                  className="absolute top-1/2 left-12 w-16 h-16 bg-white/5 rounded-full blur-xl animate-float"
+                  style={{ animationDelay: "4s" }}
+                ></div>
+                <div
+                  className="absolute top-1/4 right-12 w-24 h-24 bg-white/5 rounded-full blur-xl animate-float"
+                  style={{ animationDelay: "6s" }}
+                ></div>
 
                 {/* Gradient overlay for depth */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
@@ -294,8 +326,8 @@ export default function Home() {
               onClick={() => setPromotionalSlide(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 backdrop-blur-sm border ${
                 index === promotionalSlide
-                  ? 'bg-white border-white scale-125 shadow-lg'
-                  : 'bg-white/30 border-white/50 hover:bg-white/50 hover:scale-110'
+                  ? "bg-white border-white scale-125 shadow-lg"
+                  : "bg-white/30 border-white/50 hover:bg-white/50 hover:scale-110"
               }`}
             />
           ))}
@@ -303,13 +335,23 @@ export default function Home() {
 
         {/* Modern navigation arrows */}
         <button
-          onClick={() => setPromotionalSlide((prev) => (prev - 1 + promotionalBanners.length) % promotionalBanners.length)}
+          onClick={() =>
+            setPromotionalSlide(
+              (prev) =>
+                (prev - 1 + promotionalBanners.length) %
+                promotionalBanners.length,
+            )
+          }
           className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
         <button
-          onClick={() => setPromotionalSlide((prev) => (prev + 1) % promotionalBanners.length)}
+          onClick={() =>
+            setPromotionalSlide(
+              (prev) => (prev + 1) % promotionalBanners.length,
+            )
+          }
           className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-all duration-300 z-20 border border-white/20 shadow-lg hover:scale-110"
         >
           <ArrowRight className="h-5 w-5" />
@@ -334,8 +376,14 @@ export default function Home() {
             <div className="text-center py-8">
               <div className="flex justify-center space-x-2">
                 <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                <div
+                  className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                  style={{ animationDelay: "0.1s" }}
+                ></div>
+                <div
+                  className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
               </div>
               <p className="text-muted-foreground mt-4 animate-pulse">
                 Loading featured products...
@@ -347,7 +395,9 @@ export default function Home() {
                 No products available yet.
               </p>
               <Link to="/admin/dashboard">
-                <Button variant="outline" className="hover-lift">Add Products via Admin Panel</Button>
+                <Button variant="outline" className="hover-lift">
+                  Add Products via Admin Panel
+                </Button>
               </Link>
             </div>
           ) : (
@@ -383,7 +433,6 @@ export default function Home() {
                             {product.category}
                           </span>
                         </div>
-
                       </div>
 
                       <div className="p-4 space-y-3">
@@ -434,7 +483,11 @@ export default function Home() {
 
           <div className="text-center mt-12 animate-fade-in">
             <Link to="/products">
-              <Button size="lg" variant="outline" className="group hover-lift animate-pulse-glow">
+              <Button
+                size="lg"
+                variant="outline"
+                className="group hover-lift animate-pulse-glow"
+              >
                 View All Products
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
               </Button>
@@ -451,14 +504,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className={`text-center space-y-4 group hover-lift animate-slide-up stagger-delay-${index + 1}`}>
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110 animate-float" style={{animationDelay: `${index * 2}s`}}>
+              <div
+                key={index}
+                className={`text-center space-y-4 group hover-lift animate-slide-up stagger-delay-${index + 1}`}
+              >
+                <div
+                  className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110 animate-float"
+                  style={{ animationDelay: `${index * 2}s` }}
+                >
                   <feature.icon className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="font-poppins font-semibold text-xl text-foreground group-hover:text-primary transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">{feature.description}</p>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
@@ -466,9 +527,11 @@ export default function Home() {
 
         {/* Background elements */}
         <div className="absolute top-20 right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl animate-float" style={{animationDelay: '3s'}}></div>
+        <div
+          className="absolute bottom-20 left-20 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "3s" }}
+        ></div>
       </section>
-
 
       {/* CTA Section */}
       <section className="py-20 bg-primary relative overflow-hidden">
@@ -481,7 +544,11 @@ export default function Home() {
             Wears. Quality, comfort, and style - all in one place.
           </p>
           <Link to="/products">
-            <Button size="lg" variant="secondary" className="shadow-soft-lg hover-lift animate-bounce-in stagger-delay-2 hover-glow">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="shadow-soft-lg hover-lift animate-bounce-in stagger-delay-2 hover-glow"
+            >
               Start Shopping
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
             </Button>
@@ -491,9 +558,18 @@ export default function Home() {
         {/* Background animations */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
           <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-float"></div>
-          <div className="absolute top-20 right-20 w-32 h-32 bg-white rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-10 left-1/4 w-16 h-16 bg-white rounded-full animate-float" style={{animationDelay: '4s'}}></div>
-          <div className="absolute bottom-20 right-1/4 w-24 h-24 bg-white rounded-full animate-float" style={{animationDelay: '6s'}}></div>
+          <div
+            className="absolute top-20 right-20 w-32 h-32 bg-white rounded-full animate-float"
+            style={{ animationDelay: "2s" }}
+          ></div>
+          <div
+            className="absolute bottom-10 left-1/4 w-16 h-16 bg-white rounded-full animate-float"
+            style={{ animationDelay: "4s" }}
+          ></div>
+          <div
+            className="absolute bottom-20 right-1/4 w-24 h-24 bg-white rounded-full animate-float"
+            style={{ animationDelay: "6s" }}
+          ></div>
         </div>
       </section>
     </div>

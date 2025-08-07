@@ -26,15 +26,16 @@ function isOnline(): boolean {
 function isFirebaseBlocked(): boolean {
   // Check for common signs that Firebase might be blocked
   const userAgent = navigator.userAgent;
-  const isChrome = userAgent.includes('Chrome');
+  const isChrome = userAgent.includes("Chrome");
   const hasExtensions = window.chrome && window.chrome.runtime;
 
   // Check if we're in an iframe (Builder.io context)
   const isInIframe = window.top !== window.self;
 
   // Check for CORS or network restrictions
-  const isBuilderEnv = window.location.hostname.includes('builder') ||
-                       window.location.hostname.includes('fly.dev');
+  const isBuilderEnv =
+    window.location.hostname.includes("builder") ||
+    window.location.hostname.includes("fly.dev");
 
   return hasExtensions || !isOnline() || isInIframe || isBuilderEnv;
 }
@@ -107,9 +108,11 @@ export async function getProducts(): Promise<Product[]> {
   const localProducts = getLocalProducts();
 
   // Skip Firebase if we detect blocking or no internet
-  const sessionBlocked = sessionStorage.getItem('firebase-blocked') === 'true';
+  const sessionBlocked = sessionStorage.getItem("firebase-blocked") === "true";
   if (isFirebaseBlocked() || !isOnline() || sessionBlocked) {
-    console.log("Firebase blocked, offline, or marked as problematic - using localStorage only");
+    console.log(
+      "Firebase blocked, offline, or marked as problematic - using localStorage only",
+    );
     return localProducts;
   }
 
@@ -121,14 +124,14 @@ export async function getProducts(): Promise<Product[]> {
     const connectivityTest = async () => {
       try {
         if (!db) {
-          console.warn('Firebase db instance is null');
+          console.warn("Firebase db instance is null");
           return false;
         }
-        const testRef = collection(db, 'test');
+        const testRef = collection(db, "test");
         // Just attempt to create a reference - don't actually query
         return true;
       } catch (error) {
-        console.warn('Firebase connectivity test failed:', error);
+        console.warn("Firebase connectivity test failed:", error);
         return false;
       }
     };
@@ -136,12 +139,12 @@ export async function getProducts(): Promise<Product[]> {
     const isConnectable = await Promise.race([
       connectivityTest(),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Connectivity test timeout')), 1000)
-      )
+        setTimeout(() => reject(new Error("Connectivity test timeout")), 1000),
+      ),
     ]);
 
     if (!isConnectable) {
-      throw new Error('Firebase connectivity test failed');
+      throw new Error("Firebase connectivity test failed");
     }
 
     console.log("Firebase connectivity confirmed, fetching products...");
@@ -154,12 +157,12 @@ export async function getProducts(): Promise<Product[]> {
     })();
 
     // Race between Firebase call and timeout (shorter timeout)
-    const querySnapshot = await Promise.race([
+    const querySnapshot = (await Promise.race([
       firebasePromise,
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Firebase timeout")), 2000)
+        setTimeout(() => reject(new Error("Firebase timeout")), 2000),
       ),
-    ]) as any;
+    ])) as any;
 
     const firebaseProducts = querySnapshot.docs.map((doc: any) => ({
       id: doc.id,
@@ -184,7 +187,9 @@ export async function getProducts(): Promise<Product[]> {
 
     // Log specific error types for debugging
     if (error?.message?.includes("Failed to fetch")) {
-      console.warn("Network fetch error - likely blocked by extension, CORS, or network restrictions");
+      console.warn(
+        "Network fetch error - likely blocked by extension, CORS, or network restrictions",
+      );
     } else if (error?.message?.includes("timeout")) {
       console.warn("Firebase timeout - slow or blocked connection");
     } else if (error?.code) {
@@ -192,7 +197,7 @@ export async function getProducts(): Promise<Product[]> {
     }
 
     // Mark Firebase as problematic for this session
-    sessionStorage.setItem('firebase-blocked', 'true');
+    sessionStorage.setItem("firebase-blocked", "true");
   }
 
   // Return localStorage data (includes sample products if empty)
@@ -280,7 +285,7 @@ export async function getProduct(id: string): Promise<Product | null> {
   }
 
   // Try Firebase as secondary option (only if available)
-  const sessionBlocked = sessionStorage.getItem('firebase-blocked') === 'true';
+  const sessionBlocked = sessionStorage.getItem("firebase-blocked") === "true";
   if (!sessionBlocked && db) {
     try {
       console.log("Fetching from Firebase for product ID:", id);
@@ -302,7 +307,7 @@ export async function getProduct(id: string): Promise<Product | null> {
         error?.message || "Unknown error",
       );
       // Mark Firebase as problematic for this session
-      sessionStorage.setItem('firebase-blocked', 'true');
+      sessionStorage.setItem("firebase-blocked", "true");
     }
   } else {
     console.log("Skipping Firebase - marked as blocked or unavailable");
