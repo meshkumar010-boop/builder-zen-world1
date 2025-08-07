@@ -26,7 +26,11 @@ const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET |
  */
 async function uploadToImgBB(file: File): Promise<UploadResult> {
   if (!IMGBB_API_KEY) {
-    throw new Error('ImgBB API key not configured');
+    return {
+      success: false,
+      source: 'error',
+      error: 'ImgBB API key not configured - add VITE_IMGBB_API_KEY to .env for enhanced uploading'
+    };
   }
 
   try {
@@ -37,7 +41,12 @@ async function uploadToImgBB(file: File): Promise<UploadResult> {
     const response = await fetch('https://api.imgbb.com/1/upload', {
       method: 'POST',
       body: formData,
+      mode: 'cors',
     });
+
+    if (!response.ok) {
+      throw new Error(`ImgBB responded with status: ${response.status}`);
+    }
 
     const data = await response.json();
 
@@ -51,10 +60,12 @@ async function uploadToImgBB(file: File): Promise<UploadResult> {
       throw new Error(data.error?.message || 'ImgBB upload failed');
     }
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'ImgBB upload failed';
+    console.warn('ImgBB upload error:', errorMsg);
     return {
       success: false,
       source: 'error',
-      error: error instanceof Error ? error.message : 'ImgBB upload failed'
+      error: errorMsg.includes('Failed to fetch') ? 'ImgBB blocked by network/CORS policy' : errorMsg
     };
   }
 }
@@ -64,7 +75,11 @@ async function uploadToImgBB(file: File): Promise<UploadResult> {
  */
 async function uploadToCloudinary(file: File): Promise<UploadResult> {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-    throw new Error('Cloudinary configuration not found');
+    return {
+      success: false,
+      source: 'error',
+      error: 'Cloudinary configuration not found - add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to .env'
+    };
   }
 
   try {
@@ -77,8 +92,13 @@ async function uploadToCloudinary(file: File): Promise<UploadResult> {
       {
         method: 'POST',
         body: formData,
+        mode: 'cors',
       }
     );
+
+    if (!response.ok) {
+      throw new Error(`Cloudinary responded with status: ${response.status}`);
+    }
 
     const data = await response.json();
 
@@ -92,10 +112,12 @@ async function uploadToCloudinary(file: File): Promise<UploadResult> {
       throw new Error(data.error?.message || 'Cloudinary upload failed');
     }
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Cloudinary upload failed';
+    console.warn('Cloudinary upload error:', errorMsg);
     return {
       success: false,
       source: 'error',
-      error: error instanceof Error ? error.message : 'Cloudinary upload failed'
+      error: errorMsg.includes('Failed to fetch') ? 'Cloudinary blocked by network/CORS policy' : errorMsg
     };
   }
 }
@@ -114,7 +136,12 @@ async function uploadToImgur(file: File): Promise<UploadResult> {
         'Authorization': 'Client-ID 546c25a59c58ad7', // Anonymous upload client ID
       },
       body: formData,
+      mode: 'cors',
     });
+
+    if (!response.ok) {
+      throw new Error(`Imgur responded with status: ${response.status}`);
+    }
 
     const data = await response.json();
 
@@ -128,10 +155,22 @@ async function uploadToImgur(file: File): Promise<UploadResult> {
       throw new Error(data.data?.error || 'Imgur upload failed');
     }
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Imgur upload failed';
+    console.warn('Imgur upload error:', errorMsg);
+
+    // Handle specific network/CORS errors
+    if (errorMsg.includes('Failed to fetch')) {
+      return {
+        success: false,
+        source: 'error',
+        error: 'Imgur blocked by network/CORS policy - trying alternative services'
+      };
+    }
+
     return {
       success: false,
       source: 'error',
-      error: error instanceof Error ? error.message : 'Imgur upload failed'
+      error: errorMsg
     };
   }
 }
@@ -239,36 +278,39 @@ export async function uploadImageIntegrated(
     uploadServices = [
       () => uploadToCloudinary(file),
       () => uploadToImgBB(file),
-      () => uploadToImgur(file),
-      () => uploadToFirebase(file, productId)
+      () => uploadToFirebase(file, productId),
+      () => uploadToImgur(file) // Imgur last due to CORS issues
     ];
   } else {
-    // Auto mode - try fastest/most reliable first
+    // Auto mode - prioritize most reliable services
     uploadServices = [
       () => uploadToFirebase(file, productId),
       () => uploadToCloudinary(file),
-      () => uploadToImgur(file),
-      () => uploadToImgBB(file)
+      () => uploadToImgBB(file),
+      () => uploadToImgur(file) // Imgur last due to potential CORS/network issues
     ];
   }
 
   // Try each service
   for (let i = 0; i < uploadServices.length; i++) {
     const uploadService = uploadServices[i];
+    const serviceNames = ['Firebase', 'Cloudinary', 'ImgBB', 'Imgur'];
+    const serviceName = serviceNames[i] || `Service ${i + 1}`;
+
     try {
-      console.log(`📤 Attempting upload ${i + 1}/${uploadServices.length}...`);
+      console.log(`📤 Attempting ${serviceName} upload (${i + 1}/${uploadServices.length})...`);
 
       // Dynamic timeout based on file size and service priority
-      const baseTimeout = 30000; // 30 seconds base
-      const sizeBonus = Math.min(file.size / 1024 / 1024 * 10000, 60000); // +10s per MB, max 60s bonus
+      const baseTimeout = 20000; // 20 seconds base (reduced for faster fallbacks)
+      const sizeBonus = Math.min(file.size / 1024 / 1024 * 8000, 40000); // +8s per MB, max 40s bonus
       const timeout = baseTimeout + sizeBonus;
 
-      console.log(`⏱️ Upload timeout set to ${timeout}ms for ${(file.size / 1024 / 1024).toFixed(2)}MB file`);
+      console.log(`⏱️ ${serviceName} timeout: ${timeout}ms for ${(file.size / 1024 / 1024).toFixed(2)}MB file`);
 
       const result = await Promise.race([
         uploadService(),
         new Promise<UploadResult>((_, reject) =>
-          setTimeout(() => reject(new Error(`Upload timeout after ${timeout}ms`)), timeout)
+          setTimeout(() => reject(new Error(`${serviceName} timeout after ${timeout}ms`)), timeout)
         )
       ]);
 
@@ -276,15 +318,23 @@ export async function uploadImageIntegrated(
         console.log(`✅ Upload successful via ${result.source}: ${result.url}`);
         return result;
       } else {
-        console.warn(`❌ Upload failed via ${result.source}: ${result.error}`);
+        console.warn(`❌ ${serviceName} upload failed: ${result.error}`);
+
+        // Skip remaining cloud services if this was a network/CORS error
+        if (result.error?.includes('blocked by network') || result.error?.includes('CORS')) {
+          console.warn(`🚫 Network restrictions detected, skipping remaining external services`);
+          // Continue to Firebase or Base64 fallback
+        }
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      console.warn(`⚠️ Upload attempt ${i + 1} failed:`, errorMsg);
+      console.warn(`⚠️ ${serviceName} upload failed:`, errorMsg);
 
-      // If it's a timeout error and we're trying Firebase, add extra context
-      if (errorMsg.includes('timeout') && i === 0) {
-        console.warn(`🔥 Firebase upload timed out - this may be due to slow network or large file size`);
+      // Provide helpful context for common errors
+      if (errorMsg.includes('Failed to fetch')) {
+        console.warn(`🚫 ${serviceName} blocked by network/CORS policy - trying next service`);
+      } else if (errorMsg.includes('timeout')) {
+        console.warn(`⏰ ${serviceName} upload timed out - trying next service`);
       }
     }
   }
