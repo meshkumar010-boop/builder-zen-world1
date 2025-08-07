@@ -105,7 +105,7 @@ export default function AdminSignup() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="s2wersofficial@gmail.com"
+                  placeholder="s2wearsofficial@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
