@@ -138,7 +138,10 @@ export default function Home() {
     }
     if (isRightSwipe) {
       // Swipe right - previous slide
-      setPromotionalSlide((prev) => (prev - 1 + promotionalBanners.length) % promotionalBanners.length);
+      setPromotionalSlide(
+        (prev) =>
+          (prev - 1 + promotionalBanners.length) % promotionalBanners.length,
+      );
     }
   };
 
@@ -356,7 +359,6 @@ export default function Home() {
             />
           ))}
         </div>
-
       </section>
 
       {/* Featured Products Carousel */}
