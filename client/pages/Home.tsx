@@ -115,6 +115,33 @@ export default function Home() {
     return () => clearInterval(promotionalTimer);
   }, [promotionalBanners.length]);
 
+  // Touch event handlers for swipe functionality
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0); // Reset touchEnd
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      // Swipe left - next slide
+      setPromotionalSlide((prev) => (prev + 1) % promotionalBanners.length);
+    }
+    if (isRightSwipe) {
+      // Swipe right - previous slide
+      setPromotionalSlide((prev) => (prev - 1 + promotionalBanners.length) % promotionalBanners.length);
+    }
+  };
+
   // Prevent auto-scroll when home page loads
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
