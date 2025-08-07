@@ -279,27 +279,33 @@ export async function getProduct(id: string): Promise<Product | null> {
     console.warn("Error reading from localStorage:", error);
   }
 
-  // Try Firebase as secondary option
-  try {
-    console.log("Fetching from Firebase for product ID:", id);
-    const docRef = doc(db, PRODUCTS_COLLECTION, id);
-    const docSnap = await getDoc(docRef);
+  // Try Firebase as secondary option (only if available)
+  const sessionBlocked = sessionStorage.getItem('firebase-blocked') === 'true';
+  if (!sessionBlocked && db) {
+    try {
+      console.log("Fetching from Firebase for product ID:", id);
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const rawProduct = {
-        id: docSnap.id,
-        ...docSnap.data(),
-      };
-      const product = sanitizeProduct(rawProduct);
-      console.log("Product found in Firebase:", product.name);
-      return product;
+      if (docSnap.exists()) {
+        const rawProduct = {
+          id: docSnap.id,
+          ...docSnap.data(),
+        };
+        const product = sanitizeProduct(rawProduct);
+        console.log("Product found in Firebase:", product.name);
+        return product;
+      }
+    } catch (error) {
+      console.warn(
+        "Firebase fetch failed (network/extension issue):",
+        error?.message || "Unknown error",
+      );
+      // Mark Firebase as problematic for this session
+      sessionStorage.setItem('firebase-blocked', 'true');
     }
-  } catch (error) {
-    console.warn(
-      "Firebase fetch failed (network/extension issue):",
-      error.message,
-    );
-    // This is common with Chrome extensions or network issues
+  } else {
+    console.log("Skipping Firebase - marked as blocked or unavailable");
   }
 
   // Final fallback - load all products and find the one we need
