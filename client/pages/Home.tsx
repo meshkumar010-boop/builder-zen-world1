@@ -42,6 +42,7 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [promotionalSlide, setPromotionalSlide] = useState(0);
+  const [countdown, setCountdown] = useState({ hours: 23, minutes: 45, seconds: 12 });
   const { addItem } = useCart();
 
   // Promotional banners for sliding section
@@ -62,11 +63,6 @@ export default function Home() {
       badge: { icon: "🎁", text: "COMING SOON" },
       title: "New Bundle Collection",
       description: "Get ready for our exclusive winter bundle collection featuring premium hoodies, t-shirts, and accessories. Pre-order now and save up to 40%!",
-      features: [
-        { icon: "👕", title: "Winter Essentials", subtitle: "Hoodies & Sweatshirts" },
-        { icon: "🎒", title: "Accessories Pack", subtitle: "Bags & Caps" },
-        { icon: "💫", title: "Special Edition", subtitle: "Limited Designs" }
-      ],
       buttonText: "Notify Me When Available",
       buttonStyle: "bg-white text-purple-600 hover:bg-white/90"
     },
@@ -75,12 +71,7 @@ export default function Home() {
       background: "bg-gradient-to-r from-amber-500 to-orange-600",
       badge: { icon: "🎆", text: "VIP EXCLUSIVE" },
       title: "Join S2 VIP Club",
-      description: "Get exclusive access to early sales, special discounts, and limited edition products.",
-      features: [
-        { icon: "⭐", title: "Early Access", subtitle: "To New Releases" },
-        { icon: "🎡", title: "Special Discounts", subtitle: "VIP Only Deals" },
-        { icon: "🎁", title: "Birthday Gifts", subtitle: "Free Surprises" }
-      ],
+      description: "Get exclusive access to early sales, special discounts, and limited edition products. Join now and get instant benefits!",
       buttonText: "Join VIP Club FREE",
       buttonStyle: "bg-white text-orange-600 hover:bg-white/90"
     }
@@ -112,6 +103,35 @@ export default function Home() {
       return () => clearInterval(timer);
     }
   }, [featuredProducts.length]);
+
+  // Real countdown timer for flash sale
+  useEffect(() => {
+    const countdownTimer = setInterval(() => {
+      setCountdown(prev => {
+        let { hours, minutes, seconds } = prev;
+
+        if (seconds > 0) {
+          seconds -= 1;
+        } else if (minutes > 0) {
+          minutes -= 1;
+          seconds = 59;
+        } else if (hours > 0) {
+          hours -= 1;
+          minutes = 59;
+          seconds = 59;
+        } else {
+          // Reset timer when it reaches 0
+          hours = 23;
+          minutes = 59;
+          seconds = 59;
+        }
+
+        return { hours, minutes, seconds };
+      });
+    }, 1000);
+
+    return () => clearInterval(countdownTimer);
+  }, []);
 
   // Auto-rotate promotional banners every 3 seconds
   useEffect(() => {
