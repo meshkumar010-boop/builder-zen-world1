@@ -12,3 +12,11 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin/
+
+# S2 Wears - Premium Fashion Store
+# Sitemap location
+Sitemap: https://s2wears-store.netlify.app/sitemap.xml
+
+# Crawl-delay for better performance
+Crawl-delay: 1
