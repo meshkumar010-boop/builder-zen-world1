@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2 } from 'lucide-react';
+import { S2LoaderFullscreen } from '@/components/S2Loader';
 
 interface ProtectedAdminRouteProps {
   children: React.ReactNode;
@@ -11,14 +11,7 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
 
   // Show loading spinner while checking authentication
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Checking authorization...</p>
-        </div>
-      </div>
-    );
+    return <S2LoaderFullscreen text="Verifying admin access..." />;
   }
 
   // Redirect to admin login if not authenticated or not an admin
