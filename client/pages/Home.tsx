@@ -284,38 +284,27 @@ export default function Home() {
                         </p>
                       </div>
 
-                      {/* Timer Section */}
+                      {/* Timer Section - Real Countdown for Flash Sale */}
                       {banner.timer && (
                         <div className="py-3">
                           <div className="flex justify-center items-center space-x-3 sm:space-x-4">
-                            {Object.entries(banner.timer).map(([unit, value]) => (
-                              <div key={unit} className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
-                                <div className="font-bold text-xl sm:text-2xl text-white">{value}</div>
-                                <div className="text-xs sm:text-sm text-white/80 font-medium capitalize">{unit}</div>
-                              </div>
-                            ))}
+                            <div className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
+                              <div className="font-bold text-xl sm:text-2xl text-white">{countdown.hours.toString().padStart(2, '0')}</div>
+                              <div className="text-xs sm:text-sm text-white/80 font-medium">Hours</div>
+                            </div>
+                            <div className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
+                              <div className="font-bold text-xl sm:text-2xl text-white">{countdown.minutes.toString().padStart(2, '0')}</div>
+                              <div className="text-xs sm:text-sm text-white/80 font-medium">Minutes</div>
+                            </div>
+                            <div className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
+                              <div className="font-bold text-xl sm:text-2xl text-white">{countdown.seconds.toString().padStart(2, '0')}</div>
+                              <div className="text-xs sm:text-sm text-white/80 font-medium">Seconds</div>
+                            </div>
                           </div>
                         </div>
                       )}
 
-                      {/* Features Grid */}
-                      {banner.features && (
-                        <div className="py-3">
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
-                            {banner.features.map((feature, featureIndex) => (
-                              <div
-                                key={featureIndex}
-                                className="bg-white/15 backdrop-blur-md rounded-lg p-3 sm:p-4 text-center border border-white/20 shadow-lg hover:bg-white/20 hover:scale-105 transition-all duration-300"
-                                style={{animationDelay: `${featureIndex * 0.1}s`}}
-                              >
-                                <div className="text-xl sm:text-2xl mb-2">{feature.icon}</div>
-                                <div className="font-semibold text-xs sm:text-sm text-white mb-1">{feature.title}</div>
-                                <div className="text-xs text-white/80">{feature.subtitle}</div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      {/* Features section removed to keep all banners same size as flash sale banner */}
 
                       {/* CTA Button */}
                       <div className="pt-2">
