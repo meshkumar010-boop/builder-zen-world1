@@ -107,8 +107,9 @@ export async function getProducts(): Promise<Product[]> {
   const localProducts = getLocalProducts();
 
   // Skip Firebase if we detect blocking or no internet
-  if (isFirebaseBlocked() || !isOnline()) {
-    console.log("Firebase blocked or offline, using localStorage only");
+  const sessionBlocked = sessionStorage.getItem('firebase-blocked') === 'true';
+  if (isFirebaseBlocked() || !isOnline() || sessionBlocked) {
+    console.log("Firebase blocked, offline, or marked as problematic - using localStorage only");
     return localProducts;
   }
 
