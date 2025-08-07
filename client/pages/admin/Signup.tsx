@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { S2LoaderSmall } from '@/components/S2Loader';
 
 export default function AdminSignup() {
   const { user, signUp } = useAuth();
@@ -155,13 +156,13 @@ export default function AdminSignup() {
                 />
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={loading}
                 size="lg"
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? <S2LoaderSmall text="Creating Account..." /> : 'Create Account'}
               </Button>
             </form>
 
