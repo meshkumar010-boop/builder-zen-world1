@@ -42,6 +42,8 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [promotionalSlide, setPromotionalSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState<number>(0);
+  const [touchEnd, setTouchEnd] = useState<number>(0);
   const { addItem } = useCart();
 
   // Promotional banners for sliding section
