@@ -256,7 +256,12 @@ export default function Home() {
 
       {/* Modern Auto-Sliding Promotional Banners */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-900">
-        <div className="relative">
+        <div
+          className="relative"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {promotionalBanners.map((banner, index) => (
             <div
               key={index}
