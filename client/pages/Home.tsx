@@ -262,17 +262,7 @@ export default function Home() {
                           {banner.title}
                         </h2>
                         <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
-                          {banner.description.includes("FLASH25") ? (
-                            <>
-                              Use code{" "}
-                              <span className="bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full font-mono font-bold text-sm border border-white/20">
-                                FLASH25
-                              </span>{" "}
-                              at checkout
-                            </>
-                          ) : (
-                            banner.description
-                          )}
+                          {banner.description}
                         </p>
                       </div>
 
