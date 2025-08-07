@@ -711,20 +711,35 @@ function ProductFormContent() {
                               </div>
                             )}
                           </div>
-                          <div className="absolute top-1 right-1">
+                          <div className="absolute top-1 right-1 flex gap-1">
                             {image.startsWith('data:') && (
-                              <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Saved locally">
+                              <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Saved locally (Base64)">
                                 💾
                               </div>
                             )}
-                            {image.startsWith('https://') && !image.includes('pexels') && (
-                              <div className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded" title="Uploaded to cloud">
+                            {image.includes('firebase') && (
+                              <div className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded" title="Firebase Storage">
+                                🔥
+                              </div>
+                            )}
+                            {image.includes('demo-cloud-storage') && (
+                              <div className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded" title="Free Cloud Service">
                                 ☁️
                               </div>
                             )}
+                            {(image.includes('imgur') || image.includes('imgbb') || image.includes('cloudinary')) && (
+                              <div className="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded" title="External Image Host">
+                                🌐
+                              </div>
+                            )}
                             {image.includes('pexels') && (
-                              <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded" title="Demo image">
+                              <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded" title="Demo/Stock image">
                                 🎭
+                              </div>
+                            )}
+                            {image.startsWith('https://') && !image.includes('firebase') && !image.includes('demo-cloud-storage') && !image.includes('imgur') && !image.includes('imgbb') && !image.includes('cloudinary') && !image.includes('pexels') && (
+                              <div className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded" title="External URL">
+                                🔗
                               </div>
                             )}
                           </div>
