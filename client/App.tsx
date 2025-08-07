@@ -29,26 +29,28 @@ const App = () => (
       <ThemeProvider defaultTheme="light" storageKey="s2-wear-theme">
         <AuthProvider>
           <CartProvider>
-            <Toaster />
-            <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Public routes with layout */}
-              <Route path="/" element={<Layout><Home /></Layout>} />
-              <Route path="/products" element={<Layout><Products /></Layout>} />
-              <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
-              <Route path="/cart" element={<Layout><Cart /></Layout>} />
+            <FirebaseErrorBoundary>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  {/* Public routes with layout */}
+                  <Route path="/" element={<Layout><Home /></Layout>} />
+                  <Route path="/products" element={<Layout><Products /></Layout>} />
+                  <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
+                  <Route path="/cart" element={<Layout><Cart /></Layout>} />
 
-              {/* Admin routes without main layout */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/signup" element={<AdminSignup />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/products/new" element={<ProductForm />} />
-              <Route path="/admin/products/edit/:id" element={<ProductForm />} />
+                  {/* Admin routes without main layout */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin/signup" element={<AdminSignup />} />
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                  <Route path="/admin/products/new" element={<ProductForm />} />
+                  <Route path="/admin/products/edit/:id" element={<ProductForm />} />
 
-              <Route path="*" element={<Layout><NotFound /></Layout>} />
-            </Routes>
-          </BrowserRouter>
+                  <Route path="*" element={<Layout><NotFound /></Layout>} />
+                </Routes>
+              </BrowserRouter>
+            </FirebaseErrorBoundary>
           </CartProvider>
         </AuthProvider>
       </ThemeProvider>
