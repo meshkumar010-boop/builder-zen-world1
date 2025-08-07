@@ -15,15 +15,52 @@ const firebaseConfig = {
   measurementId: "G-B5NPFHVCK2"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase with error handling
+let app: any = null;
+let auth: any = null;
+let db: any = null;
+let storage: any = null;
+let analytics: any = null;
 
-// Initialize Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+try {
+  // Initialize Firebase
+  app = initializeApp(firebaseConfig);
 
-// Initialize Analytics only in browser environment
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+  // Initialize Firebase services with error handling
+  try {
+    auth = getAuth(app);
+  } catch (error) {
+    console.warn('Firebase Auth initialization failed:', error);
+  }
+
+  try {
+    db = getFirestore(app);
+  } catch (error) {
+    console.warn('Firebase Firestore initialization failed:', error);
+  }
+
+  try {
+    storage = getStorage(app);
+  } catch (error) {
+    console.warn('Firebase Storage initialization failed:', error);
+  }
+
+  // Initialize Analytics only in browser environment
+  try {
+    analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+  } catch (error) {
+    console.warn('Firebase Analytics initialization failed:', error);
+  }
+
+  console.log('Firebase initialized successfully');
+} catch (error) {
+  console.error('Firebase initialization failed completely:', error);
+  // Mark Firebase as unavailable
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem('firebase-blocked', 'true');
+  }
+}
+
+export { auth, db, storage, analytics };
 
 export default app;
