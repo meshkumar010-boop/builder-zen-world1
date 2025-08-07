@@ -1,0 +1,359 @@
+// Integrated Image Upload Service
+// Combines Firebase Storage with multiple cloud services for maximum reliability
+
+import { uploadProductImage } from './products';
+
+export interface UploadResult {
+  success: boolean;
+  url?: string;
+  source: 'firebase' | 'imgbb' | 'cloudinary' | 'imgur' | 'base64' | 'error';
+  error?: string;
+}
+
+export interface UploadOptions {
+  preferredService?: 'firebase' | 'cloud' | 'auto';
+  maxRetries?: number;
+  fallbackToBase64?: boolean;
+}
+
+// Environment configuration - users should set these in their .env file
+const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY || null;
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || null;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || null;
+
+/**
+ * Upload to ImgBB (Free tier: 100 images/month)
+ */
+async function uploadToImgBB(file: File): Promise<UploadResult> {
+  if (!IMGBB_API_KEY) {
+    throw new Error('ImgBB API key not configured');
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('key', IMGBB_API_KEY);
+
+    const response = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data?.url) {
+      return {
+        success: true,
+        url: data.data.url,
+        source: 'imgbb'
+      };
+    } else {
+      throw new Error(data.error?.message || 'ImgBB upload failed');
+    }
+  } catch (error) {
+    return {
+      success: false,
+      source: 'error',
+      error: error instanceof Error ? error.message : 'ImgBB upload failed'
+    };
+  }
+}
+
+/**
+ * Upload to Cloudinary (Free tier: 25GB, 25,000 transformations/month)
+ */
+async function uploadToCloudinary(file: File): Promise<UploadResult> {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    throw new Error('Cloudinary configuration not found');
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.secure_url) {
+      return {
+        success: true,
+        url: data.secure_url,
+        source: 'cloudinary'
+      };
+    } else {
+      throw new Error(data.error?.message || 'Cloudinary upload failed');
+    }
+  } catch (error) {
+    return {
+      success: false,
+      source: 'error',
+      error: error instanceof Error ? error.message : 'Cloudinary upload failed'
+    };
+  }
+}
+
+/**
+ * Upload to Imgur (Free with registration)
+ */
+async function uploadToImgur(file: File): Promise<UploadResult> {
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch('https://api.imgur.com/3/upload', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Client-ID 546c25a59c58ad7', // Anonymous upload client ID
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data?.link) {
+      return {
+        success: true,
+        url: data.data.link,
+        source: 'imgur'
+      };
+    } else {
+      throw new Error(data.data?.error || 'Imgur upload failed');
+    }
+  } catch (error) {
+    return {
+      success: false,
+      source: 'error',
+      error: error instanceof Error ? error.message : 'Imgur upload failed'
+    };
+  }
+}
+
+/**
+ * Upload to Firebase Storage
+ */
+async function uploadToFirebase(file: File, productId: string): Promise<UploadResult> {
+  try {
+    const url = await uploadProductImage(file, productId);
+    return {
+      success: true,
+      url,
+      source: 'firebase'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      source: 'error',
+      error: error instanceof Error ? error.message : 'Firebase upload failed'
+    };
+  }
+}
+
+/**
+ * Convert to Base64 as final fallback
+ */
+async function convertToBase64(file: File): Promise<UploadResult> {
+  try {
+    const base64 = await fileToBase64(file);
+    return {
+      success: true,
+      url: base64,
+      source: 'base64'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      source: 'error',
+      error: error instanceof Error ? error.message : 'Base64 conversion failed'
+    };
+  }
+}
+
+/**
+ * Helper function to convert file to base64
+ */
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });
+}
+
+/**
+ * Integrated upload function that tries multiple services
+ */
+export async function uploadImageIntegrated(
+  file: File,
+  productId: string = `product_${Date.now()}`,
+  options: UploadOptions = {}
+): Promise<UploadResult> {
+  const {
+    preferredService = 'auto',
+    maxRetries = 3,
+    fallbackToBase64 = true
+  } = options;
+
+  // Validate file
+  if (!file.type.startsWith('image/')) {
+    return {
+      success: false,
+      source: 'error',
+      error: 'File must be an image'
+    };
+  }
+
+  if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    return {
+      success: false,
+      source: 'error',
+      error: 'File size must be less than 10MB'
+    };
+  }
+
+  console.log(`🚀 Starting integrated upload for: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+
+  let uploadServices: Array<() => Promise<UploadResult>> = [];
+
+  // Determine upload strategy based on preference
+  if (preferredService === 'firebase') {
+    uploadServices = [
+      () => uploadToFirebase(file, productId),
+      () => uploadToCloudinary(file),
+      () => uploadToImgBB(file),
+      () => uploadToImgur(file)
+    ];
+  } else if (preferredService === 'cloud') {
+    uploadServices = [
+      () => uploadToCloudinary(file),
+      () => uploadToImgBB(file),
+      () => uploadToImgur(file),
+      () => uploadToFirebase(file, productId)
+    ];
+  } else {
+    // Auto mode - try fastest/most reliable first
+    uploadServices = [
+      () => uploadToFirebase(file, productId),
+      () => uploadToCloudinary(file),
+      () => uploadToImgur(file),
+      () => uploadToImgBB(file)
+    ];
+  }
+
+  // Try each service
+  for (const uploadService of uploadServices) {
+    try {
+      console.log(`📤 Attempting upload with ${uploadService.name || 'service'}...`);
+      const result = await Promise.race([
+        uploadService(),
+        new Promise<UploadResult>((_, reject) =>
+          setTimeout(() => reject(new Error('Upload timeout')), 15000)
+        )
+      ]);
+
+      if (result.success && result.url) {
+        console.log(`✅ Upload successful via ${result.source}: ${result.url}`);
+        return result;
+      } else {
+        console.warn(`❌ Upload failed via ${result.source}: ${result.error}`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ Upload error:`, error);
+    }
+  }
+
+  // Final fallback to base64 if enabled
+  if (fallbackToBase64) {
+    console.log('📝 Falling back to Base64 encoding...');
+    const base64Result = await convertToBase64(file);
+    if (base64Result.success) {
+      console.log('✅ Base64 fallback successful');
+      return base64Result;
+    }
+  }
+
+  return {
+    success: false,
+    source: 'error',
+    error: 'All upload methods failed'
+  };
+}
+
+/**
+ * Upload multiple files with progress tracking
+ */
+export async function uploadMultipleImages(
+  files: File[],
+  productId: string = `product_${Date.now()}`,
+  options: UploadOptions = {},
+  onProgress?: (completed: number, total: number, currentFile: string) => void
+): Promise<UploadResult[]> {
+  const results: UploadResult[] = [];
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    onProgress?.(i, files.length, file.name);
+    
+    const result = await uploadImageIntegrated(file, `${productId}_${i}`, options);
+    results.push(result);
+  }
+  
+  onProgress?.(files.length, files.length, 'Complete');
+  return results;
+}
+
+/**
+ * Get upload service status and configuration
+ */
+export function getUploadServiceStatus() {
+  return {
+    firebase: {
+      available: true,
+      name: 'Firebase Storage',
+      description: 'Primary storage service'
+    },
+    imgbb: {
+      available: !!IMGBB_API_KEY,
+      name: 'ImgBB',
+      description: 'Free tier: 100 images/month',
+      requiresConfig: !IMGBB_API_KEY
+    },
+    cloudinary: {
+      available: !!(CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET),
+      name: 'Cloudinary',
+      description: 'Free tier: 25GB storage',
+      requiresConfig: !(CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET)
+    },
+    imgur: {
+      available: true,
+      name: 'Imgur',
+      description: 'Anonymous uploads supported',
+      requiresConfig: false
+    }
+  };
+}
+
+// Export configuration helper
+export const UPLOAD_CONFIG_HELP = {
+  imgbb: {
+    envVar: 'VITE_IMGBB_API_KEY',
+    instructions: 'Get API key from https://api.imgbb.com/',
+    example: 'VITE_IMGBB_API_KEY=your_api_key_here'
+  },
+  cloudinary: {
+    envVars: ['VITE_CLOUDINARY_CLOUD_NAME', 'VITE_CLOUDINARY_UPLOAD_PRESET'],
+    instructions: 'Create account at https://cloudinary.com/ and get cloud name + upload preset',
+    examples: [
+      'VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name',
+      'VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset'
+    ]
+  }
+};
