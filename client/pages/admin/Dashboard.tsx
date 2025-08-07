@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
+import { S2Loader } from '@/components/S2Loader';
 import { getProducts, deleteProduct, formatINR, type Product } from '@/services/products';
 import { addAllSampleProducts } from '@/utils/sampleProducts';
 import {
@@ -238,8 +239,8 @@ function AdminDashboardContent() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Loading products...</p>
+              <div className="text-center py-12">
+                <S2Loader size="lg" variant="glow" text="Loading your products..." />
               </div>
             ) : error ? (
               <div className="text-center py-8">
