@@ -42,7 +42,6 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [promotionalSlide, setPromotionalSlide] = useState(0);
-  const [countdown, setCountdown] = useState({ hours: 23, minutes: 45, seconds: 12 });
   const { addItem } = useCart();
 
   // Promotional banners for sliding section
@@ -102,35 +101,6 @@ export default function Home() {
       return () => clearInterval(timer);
     }
   }, [featuredProducts.length]);
-
-  // Real countdown timer for flash sale
-  useEffect(() => {
-    const countdownTimer = setInterval(() => {
-      setCountdown(prev => {
-        let { hours, minutes, seconds } = prev;
-
-        if (seconds > 0) {
-          seconds -= 1;
-        } else if (minutes > 0) {
-          minutes -= 1;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours -= 1;
-          minutes = 59;
-          seconds = 59;
-        } else {
-          // Reset timer when it reaches 0
-          hours = 23;
-          minutes = 59;
-          seconds = 59;
-        }
-
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-
-    return () => clearInterval(countdownTimer);
-  }, []);
 
   // Auto-rotate promotional banners every 3 seconds
   useEffect(() => {
