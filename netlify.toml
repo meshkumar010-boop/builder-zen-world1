@@ -32,6 +32,20 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Social media preview images - ensure they're accessible to crawlers
+[[headers]]
+  for = "/s2wears-social-preview.*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Access-Control-Allow-Origin = "*"
+    X-Robots-Tag = "index, follow"
+
+# Special headers for social media crawlers
+[[headers]]
+  for = "/"
+  [headers.values]
+    X-Robots-Tag = "index, follow, max-image-preview:large"
+
 # API redirects (if using serverless functions)
 [[redirects]]
   force = true
