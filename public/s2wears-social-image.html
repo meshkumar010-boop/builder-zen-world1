@@ -1,250 +1,304 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, height=630">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1200, height=630" />
     <title>S2 Wears Social Preview</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-        
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 1200px;
-            height: 630px;
-            overflow: hidden;
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap");
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        font-family:
+          "Poppins",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+      }
+
+      .preview-container {
+        width: 1200px;
+        height: 630px;
+        background: linear-gradient(
+          135deg,
+          #ff6b00 0%,
+          #ff8533 50%,
+          #ffaa66 100%
+        );
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .background-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          radial-gradient(
+            circle at 25px 25px,
+            rgba(255, 255, 255, 0.1) 2px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 75px 75px,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          );
+        background-size:
+          50px 50px,
+          100px 100px;
+        animation: float 20s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
         }
-        
-        .preview-container {
-            width: 1200px;
-            height: 630px;
-            background: linear-gradient(135deg, #FF6B00 0%, #FF8533 50%, #FFAA66 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        50% {
+          transform: translateY(-10px) rotate(1deg);
         }
-        
-        .background-pattern {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 25px 25px, rgba(255,255,255,0.1) 2px, transparent 2px),
-                radial-gradient(circle at 75px 75px, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 50px 50px, 100px 100px;
-            animation: float 20s ease-in-out infinite;
+      }
+
+      .decorative-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .circle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.15;
         }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.25;
         }
-        
-        .decorative-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+      }
+
+      .circle1 {
+        width: 200px;
+        height: 200px;
+        top: 50px;
+        right: 100px;
+        animation-delay: 0s;
+      }
+      .circle2 {
+        width: 150px;
+        height: 150px;
+        bottom: 130px;
+        left: 50px;
+        animation-delay: 1s;
+      }
+      .circle3 {
+        width: 80px;
+        height: 80px;
+        top: 100px;
+        left: 250px;
+        animation-delay: 2s;
+      }
+      .circle4 {
+        width: 120px;
+        height: 120px;
+        bottom: 200px;
+        right: 200px;
+        animation-delay: 3s;
+      }
+
+      .content {
+        z-index: 10;
+        position: relative;
+        text-align: center;
+        color: white;
+        max-width: 800px;
+        padding: 0 40px;
+      }
+
+      .logo-container {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 140px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -5px;
+        text-shadow:
+          0 4px 20px rgba(0, 0, 0, 0.4),
+          0 8px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        display: inline-block;
+        background: linear-gradient(45deg, #ffffff, #f0f0f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .logo::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 2px;
+      }
+
+      .tagline {
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        line-height: 1.2;
+        letter-spacing: -1px;
+      }
+
+      .description {
+        font-size: 26px;
+        font-weight: 400;
+        opacity: 0.95;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+        line-height: 1.4;
+        margin-bottom: 25px;
+      }
+
+      .website-url {
+        font-size: 20px;
+        font-weight: 600;
+        opacity: 0.9;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 20px;
+        border-radius: 25px;
+        display: inline-block;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .floating-element {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.1);
+        font-size: 16px;
+        animation: float-text 15s linear infinite;
+      }
+
+      @keyframes float-text {
+        0% {
+          transform: translateX(-100px) translateY(0);
+          opacity: 0;
         }
-        
-        .circle {
-            position: absolute;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            animation: pulse 4s ease-in-out infinite;
+        10% {
+          opacity: 1;
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.15; }
-            50% { transform: scale(1.1); opacity: 0.25; }
+        90% {
+          opacity: 1;
         }
-        
-        .circle1 { 
-            width: 200px; 
-            height: 200px; 
-            top: 50px; 
-            right: 100px;
-            animation-delay: 0s;
+        100% {
+          transform: translateX(1300px) translateY(-50px);
+          opacity: 0;
         }
-        .circle2 { 
-            width: 150px; 
-            height: 150px; 
-            bottom: 130px; 
-            left: 50px;
-            animation-delay: 1s;
-        }
-        .circle3 { 
-            width: 80px; 
-            height: 80px; 
-            top: 100px; 
-            left: 250px;
-            animation-delay: 2s;
-        }
-        .circle4 { 
-            width: 120px; 
-            height: 120px; 
-            bottom: 200px; 
-            right: 200px;
-            animation-delay: 3s;
-        }
-        
-        .content {
-            z-index: 10;
-            position: relative;
-            text-align: center;
-            color: white;
-            max-width: 800px;
-            padding: 0 40px;
-        }
-        
-        .logo-container {
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .logo {
-            font-size: 140px;
-            font-weight: 800;
-            line-height: 1;
-            letter-spacing: -5px;
-            text-shadow: 
-                0 4px 20px rgba(0,0,0,0.4),
-                0 8px 40px rgba(0,0,0,0.2);
-            position: relative;
-            display: inline-block;
-            background: linear-gradient(45deg, #ffffff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .logo::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 2px;
-        }
-        
-        .tagline {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
-            line-height: 1.2;
-            letter-spacing: -1px;
-        }
-        
-        .description {
-            font-size: 26px;
-            font-weight: 400;
-            opacity: 0.95;
-            text-shadow: 0 1px 10px rgba(0,0,0,0.3);
-            line-height: 1.4;
-            margin-bottom: 25px;
-        }
-        
-        .website-url {
-            font-size: 20px;
-            font-weight: 600;
-            opacity: 0.9;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 20px;
-            border-radius: 25px;
-            display: inline-block;
-            border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        .floating-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        
-        .floating-element {
-            position: absolute;
-            color: rgba(255,255,255,0.1);
-            font-size: 16px;
-            animation: float-text 15s linear infinite;
-        }
-        
-        @keyframes float-text {
-            0% { transform: translateX(-100px) translateY(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateX(1300px) translateY(-50px); opacity: 0; }
-        }
-        
-        .floating-element:nth-child(1) { top: 100px; animation-delay: 0s; }
-        .floating-element:nth-child(2) { top: 300px; animation-delay: 5s; }
-        .floating-element:nth-child(3) { top: 500px; animation-delay: 10s; }
+      }
+
+      .floating-element:nth-child(1) {
+        top: 100px;
+        animation-delay: 0s;
+      }
+      .floating-element:nth-child(2) {
+        top: 300px;
+        animation-delay: 5s;
+      }
+      .floating-element:nth-child(3) {
+        top: 500px;
+        animation-delay: 10s;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="preview-container">
-        <div class="background-pattern"></div>
-        
-        <div class="decorative-elements">
-            <div class="circle circle1"></div>
-            <div class="circle circle2"></div>
-            <div class="circle circle3"></div>
-            <div class="circle circle4"></div>
+      <div class="background-pattern"></div>
+
+      <div class="decorative-elements">
+        <div class="circle circle1"></div>
+        <div class="circle circle2"></div>
+        <div class="circle circle3"></div>
+        <div class="circle circle4"></div>
+      </div>
+
+      <div class="floating-elements">
+        <div class="floating-element">✨ Premium Quality</div>
+        <div class="floating-element">🎯 Modern Style</div>
+        <div class="floating-element">🚀 Fast Delivery</div>
+      </div>
+
+      <div class="content">
+        <div class="logo-container">
+          <div class="logo">S2</div>
         </div>
-        
-        <div class="floating-elements">
-            <div class="floating-element">✨ Premium Quality</div>
-            <div class="floating-element">🎯 Modern Style</div>
-            <div class="floating-element">🚀 Fast Delivery</div>
+        <div class="tagline">Fashion That Defines You</div>
+        <div class="description">
+          Premium Clothing • Modern Style • Quality Guaranteed
         </div>
-        
-        <div class="content">
-            <div class="logo-container">
-                <div class="logo">S2</div>
-            </div>
-            <div class="tagline">Fashion That Defines You</div>
-            <div class="description">Premium Clothing • Modern Style • Quality Guaranteed</div>
-            <div class="website-url">s2wears-store.netlify.app</div>
-        </div>
+        <div class="website-url">s2wears-store.netlify.app</div>
+      </div>
     </div>
 
     <script>
-        // Auto-generate and save as PNG
-        function generateImage() {
-            html2canvas(document.body, {
-                width: 1200,
-                height: 630,
-                scale: 1,
-                useCORS: true,
-                backgroundColor: null
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 's2wears-social-preview.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }
+      // Auto-generate and save as PNG
+      function generateImage() {
+        html2canvas(document.body, {
+          width: 1200,
+          height: 630,
+          scale: 1,
+          useCORS: true,
+          backgroundColor: null,
+        }).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "s2wears-social-preview.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        });
+      }
 
-        // Load html2canvas library
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        script.onload = () => {
-            setTimeout(generateImage, 2000); // Wait for animations
-        };
-        document.head.appendChild(script);
+      // Load html2canvas library
+      const script = document.createElement("script");
+      script.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script.onload = () => {
+        setTimeout(generateImage, 2000); // Wait for animations
+      };
+      document.head.appendChild(script);
     </script>
-</body>
+  </body>
 </html>
