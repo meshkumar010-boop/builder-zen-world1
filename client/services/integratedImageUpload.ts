@@ -301,7 +301,7 @@ export async function uploadImageIntegrated(
       () => uploadToCloudinary(file),
       () => uploadToImgBB(file),
       () => uploadToFirebase(file, productId),
-      () => uploadToImgur(file), // Imgur last due to CORS issues
+      // Skip Imgur due to frequent CORS issues
     ];
   } else {
     // Auto mode - prioritize most reliable services
