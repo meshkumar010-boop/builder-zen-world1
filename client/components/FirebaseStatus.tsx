@@ -199,6 +199,23 @@ export function FirebaseStatus() {
             </div>
           </div>
         )}
+
+        {testResults && (
+          <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border">
+            <h4 className="font-medium text-sm mb-2">Firebase Test Results:</h4>
+            <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono">
+              {testResults}
+            </pre>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setTestResults('')}
+              className="mt-2 h-6 text-xs"
+            >
+              Clear
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
