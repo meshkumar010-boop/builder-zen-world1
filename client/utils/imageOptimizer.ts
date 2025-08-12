@@ -334,6 +334,7 @@ function generateOptimizedFilename(
 
 /**
  * Check storage capacity and warn user
+ * @deprecated Use getStorageInfo from storageManager.ts instead
  */
 export function checkStorageCapacity(): {
   available: boolean;
@@ -341,22 +342,30 @@ export function checkStorageCapacity(): {
   message?: string;
 } {
   try {
-    const testKey = "storage_test";
-    const testData = "x".repeat(1024); // 1KB test
-
-    localStorage.setItem(testKey, testData);
-    localStorage.removeItem(testKey);
-
     // Estimate current usage
     const currentData = localStorage.getItem("s2-wear-products") || "[]";
     const usageKB = new Blob([currentData]).size / 1024;
 
     if (usageKB > 4000) {
-      // Approaching 5MB limit
+      // Approaching 5MB limit - trigger auto cleanup
+      try {
+        const { autoCleanup } = require('./storageManager');
+        const cleanupResult = autoCleanup();
+        if (cleanupResult.success && cleanupResult.freedKB > 500) {
+          return {
+            available: true,
+            usageKB: usageKB - cleanupResult.freedKB,
+            message: `Auto cleanup freed ${cleanupResult.freedKB.toFixed(1)}KB`
+          };
+        }
+      } catch (cleanupError) {
+        console.warn('Auto cleanup failed:', cleanupError);
+      }
+
       return {
         available: false,
         usageKB,
-        message: `Storage almost full (${Math.round(usageKB)}KB/~5MB). Please delete some products or use smaller images.`,
+        message: `Storage almost full (${Math.round(usageKB)}KB/~5MB). Use the Storage Cleanup tool in the admin panel.`,
       };
     }
 
@@ -365,8 +374,7 @@ export function checkStorageCapacity(): {
     return {
       available: false,
       usageKB: 0,
-      message:
-        "Storage quota exceeded. Please delete some products to continue.",
+      message: "Storage quota exceeded. Use the Storage Cleanup tool in the admin panel.",
     };
   }
 }
