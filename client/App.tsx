@@ -23,7 +23,7 @@ import ProductForm from "./pages/admin/ProductForm";
 import NotFound from "./pages/NotFound";
 
 // Initialize Firebase development helper
-setupFirebaseDevHelper();
+const firebaseCleanup = setupFirebaseDevHelper();
 
 const queryClient = new QueryClient();
 
