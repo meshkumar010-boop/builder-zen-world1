@@ -300,7 +300,7 @@ export async function uploadImageIntegrated(
       () => uploadToFirebase(file, productId),
       () => uploadToCloudinary(file),
       () => uploadToImgBB(file),
-      () => uploadToImgur(file), // Imgur last due to potential CORS/network issues
+      // Skip Imgur due to frequent CORS issues
     ];
   }
 
@@ -316,8 +316,8 @@ export async function uploadImageIntegrated(
       );
 
       // Dynamic timeout based on file size and service priority (optimized for speed)
-      const baseTimeout = 8000; // 8 seconds base for faster fallbacks
-      const sizeBonus = Math.min((file.size / 1024 / 1024) * 3000, 15000); // +3s per MB, max 15s bonus
+      const baseTimeout = 12000; // 12 seconds base for more reliable uploads
+      const sizeBonus = Math.min((file.size / 1024 / 1024) * 4000, 20000); // +4s per MB, max 20s bonus
       const timeout = baseTimeout + sizeBonus;
 
       console.log(
@@ -344,7 +344,8 @@ export async function uploadImageIntegrated(
         // Skip remaining cloud services if this was a network/CORS error
         if (
           result.error?.includes("blocked by network") ||
-          result.error?.includes("CORS")
+          result.error?.includes("CORS") ||
+          result.error?.includes("Failed to fetch")
         ) {
           console.warn(
             `🚫 Network restrictions detected, skipping remaining external services`,
@@ -359,8 +360,9 @@ export async function uploadImageIntegrated(
       // Provide helpful context for common errors
       if (errorMsg.includes("Failed to fetch")) {
         console.warn(
-          `🚫 ${serviceName} blocked by network/CORS policy - trying next service`,
+          `🚫 ${serviceName} blocked by network/CORS policy - skipping external services`,
         );
+        break; // Skip to base64 fallback
       } else if (errorMsg.includes("timeout")) {
         console.warn(
           `⏰ ${serviceName} upload timed out - trying next service`,
