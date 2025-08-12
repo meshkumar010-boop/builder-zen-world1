@@ -384,7 +384,10 @@ export async function addProduct(
 
   // Test Firebase connection before attempting to add
   const isFirebaseAvailable = await testFirebaseConnection();
-  console.log("📡 Firebase connectivity test:", isFirebaseAvailable ? "✅ Connected" : "❌ Unavailable");
+  console.log(
+    "📡 Firebase connectivity test:",
+    isFirebaseAvailable ? "✅ Connected" : "❌ Unavailable",
+  );
 
   // Try Firebase first if available
   if (isFirebaseAvailable && !isFirebaseBlocked() && isOnline()) {
@@ -403,19 +406,18 @@ export async function addProduct(
           console.warn("🔄 Firebase add failed, generating local ID");
           return `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         },
-        "addProduct"
+        "addProduct",
       );
 
       productId = result;
 
       // Check if this is a real Firebase ID (not our fallback)
-      if (!productId.startsWith('local_')) {
+      if (!productId.startsWith("local_")) {
         firebaseSuccess = true;
         console.log("✅ Product added to Firebase with ID:", productId);
       } else {
         console.log("⚠️ Using local fallback ID:", productId);
       }
-
     } catch (error: any) {
       console.error("❌ Firebase add operation failed:", error.message);
       productId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -459,8 +461,9 @@ export async function addProduct(
     console.log("💾 Product saved to localStorage:");
     console.log(`  - Product ID: ${productId}`);
     console.log(`  - Total products: ${updatedProducts.length}`);
-    console.log(`  - Firebase status: ${firebaseSuccess ? '✅ Synced' : '⚠️ Local only'}`);
-
+    console.log(
+      `  - Firebase status: ${firebaseSuccess ? "✅ Synced" : "⚠️ Local only"}`,
+    );
   } catch (localError) {
     console.error("❌ localStorage save failed:", localError);
     throw new Error("Failed to save product locally. Please try again.");
@@ -468,9 +471,13 @@ export async function addProduct(
 
   // Return success message with context
   if (firebaseSuccess) {
-    console.log("🎉 Product successfully added to both Firebase and localStorage");
+    console.log(
+      "🎉 Product successfully added to both Firebase and localStorage",
+    );
   } else {
-    console.log("📱 Product saved locally (will sync to Firebase when connection is restored)");
+    console.log(
+      "📱 Product saved locally (will sync to Firebase when connection is restored)",
+    );
   }
 
   return productId;

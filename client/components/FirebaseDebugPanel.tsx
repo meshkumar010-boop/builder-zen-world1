@@ -9,7 +9,14 @@ import {
   getConnectionState,
 } from "@/lib/firebase";
 import { addProduct, getProducts } from "@/services/products";
-import { Bug, Wifi, WifiOff, Database, TestTube, RefreshCw } from "lucide-react";
+import {
+  Bug,
+  Wifi,
+  WifiOff,
+  Database,
+  TestTube,
+  RefreshCw,
+} from "lucide-react";
 
 export default function FirebaseDebugPanel() {
   const [testing, setTesting] = useState(false);
@@ -17,7 +24,10 @@ export default function FirebaseDebugPanel() {
   const [connectionStatus, setConnectionStatus] = useState<any>(null);
 
   const addResult = (message: string) => {
-    setResults((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    setResults((prev) => [
+      ...prev,
+      `${new Date().toLocaleTimeString()}: ${message}`,
+    ]);
     console.log("🐛 Debug:", message);
   };
 
@@ -29,12 +39,16 @@ export default function FirebaseDebugPanel() {
     try {
       // Test basic connection
       const isConnected = await checkFirebaseConnection();
-      addResult(`Firebase connection test: ${isConnected ? "✅ SUCCESS" : "❌ FAILED"}`);
+      addResult(
+        `Firebase connection test: ${isConnected ? "✅ SUCCESS" : "❌ FAILED"}`,
+      );
 
       // Get connection state
       const state = getConnectionState();
       setConnectionStatus(state);
-      addResult(`Connection state: initialized=${state.initialized}, connected=${state.connected}`);
+      addResult(
+        `Connection state: initialized=${state.initialized}, connected=${state.connected}`,
+      );
 
       if (state.lastError) {
         addResult(`Last error: ${state.lastError.message}`);
@@ -44,7 +58,9 @@ export default function FirebaseDebugPanel() {
       try {
         addResult("Testing Firestore read operation...");
         const products = await getProducts();
-        addResult(`✅ Firestore read successful: ${products.length} products found`);
+        addResult(
+          `✅ Firestore read successful: ${products.length} products found`,
+        );
       } catch (error: any) {
         addResult(`❌ Firestore read failed: ${error.message}`);
       }
@@ -65,11 +81,12 @@ export default function FirebaseDebugPanel() {
         };
 
         const productId = await addProduct(testProduct);
-        addResult(`✅ Firestore write successful: Product created with ID ${productId}`);
+        addResult(
+          `✅ Firestore write successful: Product created with ID ${productId}`,
+        );
       } catch (error: any) {
         addResult(`❌ Firestore write failed: ${error.message}`);
       }
-
     } catch (error: any) {
       addResult(`❌ Test failed: ${error.message}`);
     } finally {
@@ -84,7 +101,7 @@ export default function FirebaseDebugPanel() {
     try {
       const success = await reconnectFirebase();
       addResult(`Reconnection ${success ? "✅ SUCCESS" : "❌ FAILED"}`);
-      
+
       if (success) {
         const state = getConnectionState();
         setConnectionStatus(state);
@@ -128,7 +145,9 @@ export default function FirebaseDebugPanel() {
                 )}
                 <Badge variant="outline">
                   <Database className="h-3 w-3 mr-1" />
-                  {connectionStatus.initialized ? "Initialized" : "Not Initialized"}
+                  {connectionStatus.initialized
+                    ? "Initialized"
+                    : "Not Initialized"}
                 </Badge>
               </div>
               {connectionStatus.lastError && (
@@ -151,7 +170,7 @@ export default function FirebaseDebugPanel() {
             <TestTube className="h-4 w-4 mr-2" />
             {testing ? "Testing..." : "Run Full Test"}
           </Button>
-          
+
           <Button
             onClick={attemptReconnection}
             disabled={testing}
@@ -161,22 +180,28 @@ export default function FirebaseDebugPanel() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Reconnect
           </Button>
-          
-          <Button
-            onClick={clearResults}
-            size="sm"
-            variant="ghost"
-          >
+
+          <Button onClick={clearResults} size="sm" variant="ghost">
             Clear Log
           </Button>
         </div>
 
         {/* Environment Info */}
         <div className="text-xs space-y-1 p-3 bg-gray-50 dark:bg-gray-800 rounded">
-          <p><strong>Environment:</strong> {import.meta.env.DEV ? "Development" : "Production"}</p>
-          <p><strong>Host:</strong> {window.location.hostname}</p>
-          <p><strong>Online:</strong> {navigator.onLine ? "Yes" : "No"}</p>
-          <p><strong>User Agent:</strong> {navigator.userAgent.includes("Chrome") ? "Chrome" : "Other"}</p>
+          <p>
+            <strong>Environment:</strong>{" "}
+            {import.meta.env.DEV ? "Development" : "Production"}
+          </p>
+          <p>
+            <strong>Host:</strong> {window.location.hostname}
+          </p>
+          <p>
+            <strong>Online:</strong> {navigator.onLine ? "Yes" : "No"}
+          </p>
+          <p>
+            <strong>User Agent:</strong>{" "}
+            {navigator.userAgent.includes("Chrome") ? "Chrome" : "Other"}
+          </p>
         </div>
 
         {/* Results Log */}

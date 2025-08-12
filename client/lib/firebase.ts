@@ -73,7 +73,7 @@ async function testFirebaseConnection() {
     });
 
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Connection test timeout")), 2000)
+      setTimeout(() => reject(new Error("Connection test timeout")), 2000),
     );
 
     await Promise.race([testPromise, timeoutPromise]);

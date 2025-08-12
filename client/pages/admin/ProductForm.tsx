@@ -159,7 +159,7 @@ function ProductFormContent() {
       sizes: formData.sizes,
       colors: formData.colors.length,
       images: formData.images.length,
-      features: formData.features.length
+      features: formData.features.length,
     });
 
     setLoading(true);
@@ -251,13 +251,17 @@ function ProductFormContent() {
       let errorMessage = err.message || "Failed to save product.";
 
       if (err.message?.includes("Failed to fetch")) {
-        errorMessage += "\n💡 Tip: This might be due to a browser extension blocking Firebase. Try disabling ad blockers.";
+        errorMessage +=
+          "\n💡 Tip: This might be due to a browser extension blocking Firebase. Try disabling ad blockers.";
       } else if (err.message?.includes("permission-denied")) {
-        errorMessage += "\n💡 Tip: Firebase permissions issue. Check Firestore security rules.";
+        errorMessage +=
+          "\n💡 Tip: Firebase permissions issue. Check Firestore security rules.";
       } else if (err.message?.includes("unavailable")) {
-        errorMessage += "\n💡 Tip: Firebase service temporarily unavailable. The product was saved locally and will sync when connection is restored.";
+        errorMessage +=
+          "\n💡 Tip: Firebase service temporarily unavailable. The product was saved locally and will sync when connection is restored.";
       } else if (err.message?.includes("INTERNAL ASSERTION FAILED")) {
-        errorMessage += "\n💡 Tip: Firebase internal error. The product was saved locally for safety.";
+        errorMessage +=
+          "\n💡 Tip: Firebase internal error. The product was saved locally for safety.";
       }
 
       setError(errorMessage);
@@ -267,7 +271,10 @@ function ProductFormContent() {
       console.log("  - Browser:", navigator.userAgent);
       console.log("  - Online:", navigator.onLine);
       console.log("  - URL:", window.location.href);
-      console.log("  - Form valid:", !(!formData.name || formData.sizes.length === 0));
+      console.log(
+        "  - Form valid:",
+        !(!formData.name || formData.sizes.length === 0),
+      );
     } finally {
       setLoading(false);
     }
