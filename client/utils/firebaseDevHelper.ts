@@ -11,10 +11,14 @@ export function setupFirebaseDevHelper() {
 
   console.log("🔧 Setting up Firebase development helper...");
 
-  // Clean up on page unload
+  // Clean up on page unload (only in production to avoid termination errors)
   const handleBeforeUnload = () => {
     try {
-      cleanupFirebase();
+      if (import.meta.env.PROD) {
+        cleanupFirebase();
+      } else {
+        console.log("🔥 Skipping Firebase cleanup during development");
+      }
     } catch (error) {
       console.warn("⚠️ Firebase cleanup warning:", error);
     }
@@ -22,11 +26,12 @@ export function setupFirebaseDevHelper() {
 
   window.addEventListener("beforeunload", handleBeforeUnload);
 
-  // Handle hot module replacement (HMR)
+  // Handle hot module replacement (HMR) - DON'T cleanup to prevent "client terminated" errors
   if (import.meta.hot) {
     import.meta.hot.dispose(() => {
-      console.log("���� HMR: Cleaning up Firebase connections...");
-      cleanupFirebase();
+      console.log("🔥 HMR: Skipping Firebase cleanup to prevent termination errors");
+      // Don't cleanup during HMR - it causes "client terminated" errors
+      // cleanupFirebase();
     });
   }
 
@@ -53,6 +58,12 @@ export function setupFirebaseDevHelper() {
       }
     }
 
+    // Handle termination errors
+    if (message.includes("terminated")) {
+      console.warn("🔥 Firebase client terminated - this is expected during development HMR");
+      return; // Don't show termination errors in console during development
+    }
+
     originalConsoleError.apply(console, args);
   };
 
@@ -63,6 +74,12 @@ export function setupFirebaseDevHelper() {
       console.warn(
         "🔧 Firebase internal error in connection state, suggesting cleanup...",
       );
+    }
+    if (state.lastError?.message?.includes("terminated")) {
+      console.log("🔥 Firebase client terminated detected in health check - resetting state");
+      // Don't cleanup, just reset connection state
+      state.connected = false;
+      state.initialized = false;
     }
   }, 30000); // Check every 30 seconds
 
@@ -81,7 +98,10 @@ export async function resetFirebaseState() {
   console.log("🔄 Manually resetting Firebase state...");
 
   try {
-    await cleanupFirebase();
+    // Only cleanup in production
+    if (import.meta.env.PROD) {
+      await cleanupFirebase();
+    }
 
     // Clear any cached Firebase data
     if (typeof window !== "undefined") {
@@ -130,6 +150,11 @@ export function checkFirebaseHealth(): {
     if (state.lastError.message.includes("Unexpected state")) {
       issues.push("Firebase unexpected state error");
       suggestions.push("Close other tabs with this app and refresh");
+    }
+
+    if (state.lastError.message.includes("terminated")) {
+      issues.push("Firebase client terminated (common during development)");
+      suggestions.push("This usually resolves automatically during development");
     }
   }
 
