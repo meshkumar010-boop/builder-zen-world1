@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { runFirebaseTests, getFirebaseProjectInfo } from '@/utils/firebaseDebug';
 import { addProduct, getProducts, deleteProduct } from '@/services/products';
+import { checkExpectedErrors, generateSetupInstructions } from '@/utils/firestoreRules';
 import { TestTube, Database, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
 export function FirebaseTestPanel() {
