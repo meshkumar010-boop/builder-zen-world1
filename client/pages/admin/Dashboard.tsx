@@ -1,14 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/hooks/useAuth';
-import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
-import { S2Loader } from '@/components/S2Loader';
-import { FirebaseStatus } from '@/components/FirebaseStatus';
-import { getProducts, deleteProduct, formatINR, type Product } from '@/services/products';
-import { addAllSampleProducts } from '@/utils/sampleProducts';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import { S2Loader } from "@/components/S2Loader";
+import { FirebaseStatus } from "@/components/FirebaseStatus";
+import {
+  getProducts,
+  deleteProduct,
+  formatINR,
+  type Product,
+} from "@/services/products";
+import { addAllSampleProducts } from "@/utils/sampleProducts";
 import {
   Package,
   Plus,
@@ -17,14 +28,14 @@ import {
   LogOut,
   DollarSign,
   ShoppingBag,
-  TrendingUp
-} from 'lucide-react';
+  TrendingUp,
+} from "lucide-react";
 
 function AdminDashboardContent() {
   const { user, logout } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -39,48 +50,55 @@ function AdminDashboardContent() {
       if (productsData.length === 0) {
         const sampleProducts = [
           {
-            id: 'sample-1',
+            id: "sample-1",
             name: "Premium Cotton T-Shirt",
             price: 29.99,
             description: "Made from 100% organic cotton with a classic fit",
             category: "T-Shirts",
             sizes: ["S", "M", "L", "XL"],
-            colors: [{ name: "White", value: "#FFFFFF" }, { name: "Black", value: "#000000" }],
-            images: ["https://images.pexels.com/photos/6786894/pexels-photo-6786894.jpeg?auto=compress&cs=tinysrgb&w=800"],
-            features: ["100% Organic Cotton", "Machine Washable"]
+            colors: [
+              { name: "White", value: "#FFFFFF" },
+              { name: "Black", value: "#000000" },
+            ],
+            images: [
+              "https://images.pexels.com/photos/6786894/pexels-photo-6786894.jpeg?auto=compress&cs=tinysrgb&w=800",
+            ],
+            features: ["100% Organic Cotton", "Machine Washable"],
           },
           {
-            id: 'sample-2',
+            id: "sample-2",
             name: "Cozy Pullover Hoodie",
             price: 59.99,
             description: "Comfortable hoodie perfect for casual wear",
             category: "Hoodies",
             sizes: ["M", "L", "XL"],
             colors: [{ name: "Gray", value: "#6B7280" }],
-            images: ["https://images.pexels.com/photos/3253490/pexels-photo-3253490.jpeg?auto=compress&cs=tinysrgb&w=800"],
-            features: ["Cotton Blend", "Kangaroo Pocket"]
-          }
+            images: [
+              "https://images.pexels.com/photos/3253490/pexels-photo-3253490.jpeg?auto=compress&cs=tinysrgb&w=800",
+            ],
+            features: ["Cotton Blend", "Kangaroo Pocket"],
+          },
         ];
         setProducts(sampleProducts);
       } else {
         setProducts(productsData);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to load products');
+      setError(err.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
       await deleteProduct(id);
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter((p) => p.id !== id));
       console.log(`✅ Product ${id} deleted successfully`);
     } catch (err: any) {
-      setError(err.message || 'Failed to delete product');
+      setError(err.message || "Failed to delete product");
       console.error(`❌ Failed to delete product ${id}:`, err);
     }
   };
@@ -95,7 +113,7 @@ function AdminDashboardContent() {
     try {
       await logout();
     } catch (err: any) {
-      console.error('Failed to logout:', err);
+      console.error("Failed to logout:", err);
     }
   };
 
@@ -112,12 +130,16 @@ function AdminDashboardContent() {
             <div className="flex items-center space-x-4">
               <Link to="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-lg">S2</span>
+                  <span className="text-primary-foreground font-bold text-lg">
+                    S2
+                  </span>
                 </div>
-                <span className="font-poppins font-bold text-xl text-foreground">S2 Wears Admin</span>
+                <span className="font-poppins font-bold text-xl text-foreground">
+                  S2 Wears Admin
+                </span>
               </Link>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <span className="text-sm text-muted-foreground">
                 Welcome, {user?.email}
@@ -125,7 +147,8 @@ function AdminDashboardContent() {
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
-              </Button></div>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -134,8 +157,13 @@ function AdminDashboardContent() {
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="font-poppins font-bold text-3xl text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your S2 Wears products and inventory without touching any code</p>
+            <h1 className="font-poppins font-bold text-3xl text-foreground">
+              Admin Dashboard
+            </h1>
+            <p className="text-muted-foreground">
+              Manage your S2 Wears products and inventory without touching any
+              code
+            </p>
           </div>
 
           <div className="flex gap-3">
@@ -143,14 +171,22 @@ function AdminDashboardContent() {
               variant="outline"
               size="lg"
               onClick={async () => {
-                if (confirm('Add 20 sample products to your store? This will populate your catalog with diverse clothing items across all categories.')) {
+                if (
+                  confirm(
+                    "Add 20 sample products to your store? This will populate your catalog with diverse clothing items across all categories.",
+                  )
+                ) {
                   try {
                     await addAllSampleProducts();
-                    alert('🎉 Successfully added 20 sample products! Your store is now fully stocked. Refreshing page...');
+                    alert(
+                      "🎉 Successfully added 20 sample products! Your store is now fully stocked. Refreshing page...",
+                    );
                     window.location.reload();
                   } catch (error) {
-                    console.error('Error adding sample products:', error);
-                    alert('Some products failed to add. Check console for details and try again.');
+                    console.error("Error adding sample products:", error);
+                    alert(
+                      "Some products failed to add. Check console for details and try again.",
+                    );
                   }
                 }
               }}
@@ -181,15 +217,27 @@ function AdminDashboardContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="space-y-2">
                 <h3 className="font-medium text-foreground">➕ Add Products</h3>
-                <p className="text-muted-foreground">Click "Add New Product" to create products with images, descriptions, sizes, and colors</p>
+                <p className="text-muted-foreground">
+                  Click "Add New Product" to create products with images,
+                  descriptions, sizes, and colors
+                </p>
               </div>
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">✏️ Edit Products</h3>
-                <p className="text-muted-foreground">Click "Edit" on any product to modify details, update images, or change pricing</p>
+                <h3 className="font-medium text-foreground">
+                  ✏️ Edit Products
+                </h3>
+                <p className="text-muted-foreground">
+                  Click "Edit" on any product to modify details, update images,
+                  or change pricing
+                </p>
               </div>
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">🗑️ Remove Products</h3>
-                <p className="text-muted-foreground">Use "Delete" to remove products that are no longer available</p>
+                <h3 className="font-medium text-foreground">
+                  🗑️ Remove Products
+                </h3>
+                <p className="text-muted-foreground">
+                  Use "Delete" to remove products that are no longer available
+                </p>
               </div>
             </div>
           </CardContent>
@@ -204,8 +252,12 @@ function AdminDashboardContent() {
                   <Package className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Products</p>
-                  <p className="font-poppins font-bold text-2xl text-foreground">{totalProducts}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Total Products
+                  </p>
+                  <p className="font-poppins font-bold text-2xl text-foreground">
+                    {totalProducts}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -219,7 +271,9 @@ function AdminDashboardContent() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Average Price</p>
-                  <p className="font-poppins font-bold text-2xl text-foreground">{formatINR(avgPrice)}</p>
+                  <p className="font-poppins font-bold text-2xl text-foreground">
+                    {formatINR(avgPrice)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -233,7 +287,9 @@ function AdminDashboardContent() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Value</p>
-                  <p className="font-poppins font-bold text-2xl text-foreground">{formatINR(totalValue)}</p>
+                  <p className="font-poppins font-bold text-2xl text-foreground">
+                    {formatINR(totalValue)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -254,12 +310,20 @@ function AdminDashboardContent() {
           <CardContent>
             {loading ? (
               <div className="text-center py-12">
-                <S2Loader size="lg" variant="glow" text="Loading your products..." />
+                <S2Loader
+                  size="lg"
+                  variant="glow"
+                  text="Loading your products..."
+                />
               </div>
             ) : error ? (
               <div className="text-center py-8">
                 <p className="text-destructive">{error}</p>
-                <Button variant="outline" onClick={loadProducts} className="mt-4">
+                <Button
+                  variant="outline"
+                  onClick={loadProducts}
+                  className="mt-4"
+                >
                   Try Again
                 </Button>
               </div>
@@ -274,24 +338,37 @@ function AdminDashboardContent() {
             ) : (
               <div className="space-y-4">
                 {products.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div
+                    key={product.id}
+                    className="flex items-center justify-between p-4 border border-border rounded-lg"
+                  >
                     <div className="flex items-center space-x-4">
                       <img
-                        src={product.images[0] || '/placeholder.svg'}
+                        src={product.images[0] || "/placeholder.svg"}
                         alt={product.name}
                         className="w-16 h-16 object-cover rounded-lg bg-accent"
                       />
                       <div>
-                        <h3 className="font-poppins font-semibold text-foreground">{product.name}</h3>
-                        <p className="text-sm text-muted-foreground">{product.category}</p>
+                        <h3 className="font-poppins font-semibold text-foreground">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {product.category}
+                        </p>
                         <div className="flex items-center space-x-2 mt-1">
-                          <span className="font-semibold text-foreground">{formatINR(product.price)}</span>
-                          <Badge variant="secondary">{product.sizes.length} sizes</Badge>
-                          <Badge variant="outline">{product.colors.length} colors</Badge>
+                          <span className="font-semibold text-foreground">
+                            {formatINR(product.price)}
+                          </span>
+                          <Badge variant="secondary">
+                            {product.sizes.length} sizes
+                          </Badge>
+                          <Badge variant="outline">
+                            {product.colors.length} colors
+                          </Badge>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Link to={`/admin/products/edit/${product.id}`}>
                         <Button variant="outline" size="sm">
@@ -299,8 +376,8 @@ function AdminDashboardContent() {
                           Edit
                         </Button>
                       </Link>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => handleDeleteProduct(product.id!)}
                         className="text-destructive hover:text-destructive"

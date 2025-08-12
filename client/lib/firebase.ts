@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator, enableNetwork, disableNetwork } from "firebase/firestore";
+import {
+  getFirestore,
+  connectFirestoreEmulator,
+  enableNetwork,
+  disableNetwork,
+} from "firebase/firestore";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
@@ -12,7 +17,7 @@ const firebaseConfig = {
   storageBucket: "s2-wear-3f5fe.firebasestorage.app",
   messagingSenderId: "252559418573",
   appId: "1:252559418573:web:bbf477a1d788c9355b3584",
-  measurementId: "G-B5NPFHVCK2"
+  measurementId: "G-B5NPFHVCK2",
 };
 
 // Initialize Firebase
@@ -51,10 +56,11 @@ async function testFirebaseConnection() {
 }
 
 // Initialize Analytics only in browser environment
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+export const analytics =
+  typeof window !== "undefined" ? getAnalytics(app) : null;
 
 // Test connection when Firebase is initialized
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   testFirebaseConnection();
 }
 

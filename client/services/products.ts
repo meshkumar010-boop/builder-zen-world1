@@ -15,7 +15,12 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { db, storage, checkFirebaseConnection, reconnectFirebase } from "@/lib/firebase";
+import {
+  db,
+  storage,
+  checkFirebaseConnection,
+  reconnectFirebase,
+} from "@/lib/firebase";
 
 // Helper function to check network connectivity
 function isOnline(): boolean {
@@ -26,7 +31,7 @@ function isOnline(): boolean {
 function isFirebaseBlocked(): boolean {
   // Check for common signs that Firebase might be blocked
   const userAgent = navigator.userAgent;
-  const isChrome = userAgent.includes('Chrome');
+  const isChrome = userAgent.includes("Chrome");
   const hasExtensions = window.chrome && window.chrome.runtime;
 
   return hasExtensions || !isOnline();
@@ -147,12 +152,12 @@ export async function getProducts(): Promise<Product[]> {
     })();
 
     // Race between Firebase call and timeout
-    const querySnapshot = await Promise.race([
+    const querySnapshot = (await Promise.race([
       firebasePromise,
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Firebase timeout")), 5000)
+        setTimeout(() => reject(new Error("Firebase timeout")), 5000),
       ),
-    ]) as any;
+    ])) as any;
 
     const firebaseProducts = querySnapshot.docs.map((doc: any) => ({
       id: doc.id,
@@ -174,11 +179,16 @@ export async function getProducts(): Promise<Product[]> {
       return localProducts;
     }
   } catch (error: any) {
-    console.error("❌ Firebase fetch failed:", error?.message || "Unknown error");
+    console.error(
+      "❌ Firebase fetch failed:",
+      error?.message || "Unknown error",
+    );
 
     // Log specific error types for debugging
     if (error?.message?.includes("Failed to fetch")) {
-      console.warn("🚫 Network fetch error - likely blocked by extension or CORS");
+      console.warn(
+        "🚫 Network fetch error - likely blocked by extension or CORS",
+      );
     } else if (error?.message?.includes("timeout")) {
       console.warn("⏱️ Firebase timeout - slow connection");
     } else if (error?.message?.includes("permission")) {
@@ -415,7 +425,10 @@ export async function deleteProduct(id: string): Promise<void> {
       const products = JSON.parse(existingProducts);
       const updatedProducts = products.filter((p: Product) => p.id !== id);
       localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
-      console.log("Product deleted from localStorage, remaining products:", updatedProducts.length);
+      console.log(
+        "Product deleted from localStorage, remaining products:",
+        updatedProducts.length,
+      );
     }
   } catch (error) {
     console.error("Error updating localStorage after deletion:", error);
@@ -446,13 +459,15 @@ export async function uploadProductImage(
     console.log("Uploading to Firebase path:", filename);
 
     // Upload file with longer timeout for larger files
-    const timeoutDuration = Math.max(60000, file.size / 1024 * 10); // At least 60s, or 10ms per KB
+    const timeoutDuration = Math.max(60000, (file.size / 1024) * 10); // At least 60s, or 10ms per KB
     const uploadPromise = uploadBytes(storageRef, file);
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Upload timeout")), timeoutDuration),
     );
 
-    console.log(`Firebase upload timeout set to: ${timeoutDuration}ms for file size: ${file.size} bytes`);
+    console.log(
+      `Firebase upload timeout set to: ${timeoutDuration}ms for file size: ${file.size} bytes`,
+    );
 
     const snapshot = (await Promise.race([
       uploadPromise,
