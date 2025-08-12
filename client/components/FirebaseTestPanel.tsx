@@ -192,6 +192,20 @@ export function FirebaseTestPanel() {
                   </div>
 
                   <div>
+                    <h5 className="text-sm font-medium mb-2">Network Connectivity:</h5>
+                    <div className="flex flex-wrap">
+                      {getStatusBadge(results.network.firestore, 'Firestore Access')}
+                      {getStatusBadge(results.network.auth, 'Auth Access')}
+                      {getStatusBadge(results.network.storage, 'Storage Access')}
+                    </div>
+                    {results.network.issues.length > 0 && (
+                      <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400">
+                        Network Issues: {results.network.issues.join(', ')}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
                     <h5 className="text-sm font-medium mb-2">Project Info:</h5>
                     <div className="text-xs text-muted-foreground space-y-1">
                       <div>Project ID: <code>{results.projectInfo.projectId}</code></div>
