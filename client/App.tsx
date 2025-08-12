@@ -30,106 +30,106 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider defaultTheme="light" storageKey="s2-wear-theme">
-          <AuthProvider>
-            <CartProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  {/* Public routes with layout */}
-                  <Route
-                    path="/"
-                    element={
-                      <Layout>
-                        <Home />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path="/products"
-                    element={
-                      <Layout>
-                        <Products />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path="/product/:id"
-                    element={
-                      <Layout>
-                        <ProductDetail />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path="/cart"
-                    element={
-                      <Layout>
-                        <Cart />
-                      </Layout>
-                    }
-                  />
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ThemeProvider defaultTheme="light" storageKey="s2-wear-theme">
+            <AuthProvider>
+              <CartProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    {/* Public routes with layout */}
+                    <Route
+                      path="/"
+                      element={
+                        <Layout>
+                          <Home />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="/products"
+                      element={
+                        <Layout>
+                          <Products />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="/product/:id"
+                      element={
+                        <Layout>
+                          <ProductDetail />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="/cart"
+                      element={
+                        <Layout>
+                          <Cart />
+                        </Layout>
+                      }
+                    />
 
-                  {/* Admin routes without main layout */}
-                  <Route
-                    path="/admin/login"
-                    element={
-                      <ErrorBoundary>
-                        <AdminLogin />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/admin/signup"
-                    element={
-                      <ErrorBoundary>
-                        <AdminSignup />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/admin/dashboard"
-                    element={
-                      <ErrorBoundary>
-                        <AdminDashboard />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/admin/products/new"
-                    element={
-                      <ErrorBoundary>
-                        <ProductForm />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/admin/products/edit/:id"
-                    element={
-                      <ErrorBoundary>
-                        <ProductForm />
-                      </ErrorBoundary>
-                    }
-                  />
+                    {/* Admin routes without main layout */}
+                    <Route
+                      path="/admin/login"
+                      element={
+                        <ErrorBoundary>
+                          <AdminLogin />
+                        </ErrorBoundary>
+                      }
+                    />
+                    <Route
+                      path="/admin/signup"
+                      element={
+                        <ErrorBoundary>
+                          <AdminSignup />
+                        </ErrorBoundary>
+                      }
+                    />
+                    <Route
+                      path="/admin/dashboard"
+                      element={
+                        <ErrorBoundary>
+                          <AdminDashboard />
+                        </ErrorBoundary>
+                      }
+                    />
+                    <Route
+                      path="/admin/products/new"
+                      element={
+                        <ErrorBoundary>
+                          <ProductForm />
+                        </ErrorBoundary>
+                      }
+                    />
+                    <Route
+                      path="/admin/products/edit/:id"
+                      element={
+                        <ErrorBoundary>
+                          <ProductForm />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  <Route
-                    path="*"
-                    element={
-                      <Layout>
-                        <NotFound />
-                      </Layout>
-                    }
-                  />
-                </Routes>
-              </BrowserRouter>
-            </CartProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+                    <Route
+                      path="*"
+                      element={
+                        <Layout>
+                          <NotFound />
+                        </Layout>
+                      }
+                    />
+                  </Routes>
+                </BrowserRouter>
+              </CartProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 }
