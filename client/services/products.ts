@@ -37,25 +37,35 @@ function isFirebaseBlocked(): boolean {
   return hasExtensions || !isOnline();
 }
 
-// Enhanced Firebase connection test
+// Enhanced Firebase connection test with better error handling
 async function testFirebaseConnection(): Promise<boolean> {
   try {
     console.log("🧪 Testing Firebase connection...");
 
-    // Try a simple Firestore operation
-    const testQuery = collection(db, "products");
-    const testResult = await getDocs(testQuery);
+    // Use the centralized connection check
+    const isConnected = await checkFirebaseConnection();
+    if (!isConnected) {
+      console.warn("❌ Firebase connection not available");
+      return false;
+    }
 
+    // Try a simple Firestore operation with timeout
+    const testQuery = collection(db, "products");
+    const testPromise = getDocs(testQuery);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Connection test timeout")), 3000)
+    );
+
+    await Promise.race([testPromise, timeoutPromise]);
     console.log("✅ Firebase Firestore is accessible");
     return true;
   } catch (error: any) {
     console.warn("❌ Firebase connection test failed:", error.message);
 
-    // Try to reconnect
-    const reconnected = await reconnectFirebase();
-    if (reconnected) {
-      console.log("✅ Firebase reconnection successful");
-      return true;
+    // Don't immediately try to reconnect to avoid state conflicts
+    if (error.message.includes("INTERNAL ASSERTION FAILED")) {
+      console.warn("🚨 Firebase internal error detected, using fallback mode");
+      return false;
     }
 
     return false;
