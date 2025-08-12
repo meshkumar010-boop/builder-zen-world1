@@ -148,9 +148,15 @@ root.render(<App />);
 // Clean up on hot module replacement
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
+    // Clean up React root
     if (root) {
       root.unmount();
       delete (container as any)._reactRoot;
+    }
+
+    // Clean up Firebase development helper
+    if (firebaseCleanup) {
+      firebaseCleanup();
     }
   });
 }
