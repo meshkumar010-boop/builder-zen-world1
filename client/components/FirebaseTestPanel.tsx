@@ -11,6 +11,7 @@ export function FirebaseTestPanel() {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [error, setError] = useState<string>('');
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const runComprehensiveTest = async () => {
     setTesting(true);
