@@ -497,8 +497,31 @@ export async function addProduct(
       localError.name === "QuotaExceededError" ||
       localError.message.includes("quota")
     ) {
+      // Try auto cleanup first
+      try {
+        const { autoCleanup } = require("@/utils/storageManager");
+        const cleanupResult = autoCleanup();
+
+        if (cleanupResult.success && cleanupResult.freedKB > 500) {
+          // Retry saving after cleanup
+          const updatedProducts = [...existingProducts, productWithId];
+          localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
+          console.log("✅ Product saved after auto cleanup");
+
+          // Return success message with cleanup info
+          if (firebaseSuccess) {
+            console.log("🎉 Product successfully added to both Firebase and localStorage (after cleanup)");
+          } else {
+            console.log("📱 Product saved locally after cleanup (will sync to Firebase when connection is restored)");
+          }
+          return productId;
+        }
+      } catch (cleanupError) {
+        console.warn("Auto cleanup failed:", cleanupError);
+      }
+
       throw new Error(
-        "Storage quota exceeded. Please delete some products or use smaller images to continue.",
+        "Storage quota exceeded. Please use the Storage Cleanup tool in the admin panel to free up space.",
       );
     }
 
