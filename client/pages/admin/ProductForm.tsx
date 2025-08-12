@@ -378,7 +378,7 @@ function ProductFormContent() {
         // Use integrated upload service with fallback to base64
         console.log("📤 Using integrated upload service (with base64 fallback)");
         results = await uploadMultipleImages(
-          fileArray,
+          validFiles,
           `product_${Date.now()}`,
           { fallbackToBase64: true, preferredService: "auto" },
           (completed, total, currentFile) => {
@@ -400,7 +400,7 @@ function ProductFormContent() {
         // Use direct cloud upload
         console.log("☁️ Using direct cloud upload service");
         results = await uploadMultipleImagesToCloud(
-          fileArray,
+          validFiles,
           (progress) => {
             console.log(
               `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
