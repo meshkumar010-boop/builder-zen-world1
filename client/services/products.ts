@@ -360,13 +360,36 @@ export async function updateProduct(
 
 // Delete product
 export async function deleteProduct(id: string): Promise<void> {
-  try {
-    const docRef = doc(db, PRODUCTS_COLLECTION, id);
-    await deleteDoc(docRef);
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    throw error;
+  console.log("Deleting product with ID:", id);
+
+  // Try to delete from Firebase first (if not blocked)
+  if (!isFirebaseBlocked() && isOnline()) {
+    try {
+      console.log("Attempting to delete from Firebase...");
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      await deleteDoc(docRef);
+      console.log("Product deleted from Firebase successfully");
+    } catch (error) {
+      console.warn("Failed to delete from Firebase:", error);
+      // Continue with localStorage deletion even if Firebase fails
+    }
   }
+
+  // Always update localStorage to ensure UI consistency
+  try {
+    const existingProducts = localStorage.getItem("s2-wear-products");
+    if (existingProducts) {
+      const products = JSON.parse(existingProducts);
+      const updatedProducts = products.filter((p: Product) => p.id !== id);
+      localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
+      console.log("Product deleted from localStorage, remaining products:", updatedProducts.length);
+    }
+  } catch (error) {
+    console.error("Error updating localStorage after deletion:", error);
+    throw new Error("Failed to delete product from local storage");
+  }
+
+  console.log("Product deletion completed successfully");
 }
 
 // Upload product image
