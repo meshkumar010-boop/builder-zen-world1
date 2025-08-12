@@ -162,3 +162,5 @@ if (import.meta.hot) {
     }
   });
 }
+
+export default App;
