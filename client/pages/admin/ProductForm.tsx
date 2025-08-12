@@ -22,6 +22,17 @@ import {
   type CloudUploadResult,
   type MultipleUploadProgress,
 } from "@/services/cloudImageUpload";
+import {
+  uploadImageIntegrated,
+  uploadMultipleImages,
+  type UploadResult,
+  type UploadOptions,
+} from "@/services/integratedImageUpload";
+import {
+  needsOptimization,
+  fileToOptimizedBase64,
+  optimizeImage,
+} from "@/utils/imageOptimizer";
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
@@ -73,6 +84,13 @@ function ProductFormContent() {
   const [cloudUploading, setCloudUploading] = useState(false);
   const [uploadProgress, setUploadProgress] =
     useState<MultipleUploadProgress | null>(null);
+  const [detailedProgress, setDetailedProgress] = useState<{
+    stage: string;
+    file: string;
+    percentage: number;
+    error?: string;
+  } | null>(null);
+  const [useIntegratedUpload, setUseIntegratedUpload] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
@@ -287,22 +305,56 @@ function ProductFormContent() {
     if (!files || files.length === 0) return;
 
     const fileArray = Array.from(files);
-    console.log(`🚀 Starting cloud upload for ${fileArray.length} file(s)`);
+    console.log(`🚀 Starting upload for ${fileArray.length} file(s)`);
 
     setCloudUploading(true);
     setError("");
     setUploadProgress(null);
+    setDetailedProgress(null);
 
     try {
-      const results = await uploadMultipleImagesToCloud(
-        fileArray,
-        (progress) => {
-          console.log(
-            `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
-          );
-          setUploadProgress(progress);
-        },
-      );
+      let results: (CloudUploadResult | UploadResult)[];
+
+      if (useIntegratedUpload) {
+        // Use integrated upload service with fallback to base64
+        console.log("📤 Using integrated upload service (with base64 fallback)");
+        results = await uploadMultipleImages(
+          fileArray,
+          `product_${Date.now()}`,
+          { fallbackToBase64: true, preferredService: "auto" },
+          (completed, total, currentFile) => {
+            const percentage = (completed / total) * 100;
+            setUploadProgress({
+              current: completed,
+              total,
+              fileName: currentFile,
+              percentage,
+            });
+            setDetailedProgress({
+              stage: completed === total ? "Complete" : "Processing",
+              file: currentFile,
+              percentage,
+            });
+          },
+        );
+      } else {
+        // Use direct cloud upload
+        console.log("☁️ Using direct cloud upload service");
+        results = await uploadMultipleImagesToCloud(
+          fileArray,
+          (progress) => {
+            console.log(
+              `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
+            );
+            setUploadProgress(progress);
+            setDetailedProgress({
+              stage: "Uploading to cloud",
+              file: progress.fileName,
+              percentage: progress.percentage,
+            });
+          },
+        );
+      }
 
       // Filter successful uploads
       const successfulUploads = results.filter((result) => result.success);
@@ -319,14 +371,37 @@ function ProductFormContent() {
         console.log(
           `✅ ${successfulUploads.length} image(s) uploaded successfully`,
         );
+
+        // Show detailed success info
+        const uploadSources = successfulUploads.map((result) => {
+          if ('source' in result) {
+            return result.source;
+          }
+          return 'cloud';
+        });
+        const sourcesSummary = [
+          ...new Set(uploadSources),
+        ].join(", ");
+
+        setDetailedProgress({
+          stage: `Complete (via ${sourcesSummary})`,
+          file: "All files processed",
+          percentage: 100,
+        });
       }
 
       if (failedUploads.length > 0) {
-        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => `${f.fileName} (${f.error})`).join(", ")}`;
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => `${f.fileName || 'unknown'} (${f.error})`).join(", ")}`;
         console.error("❌ Some uploads failed:", errorMessage);
 
         if (successfulUploads.length === 0) {
           setError(errorMessage);
+          setDetailedProgress({
+            stage: "Failed",
+            file: "Upload error",
+            percentage: 0,
+            error: errorMessage,
+          });
         } else {
           // Show partial success message
           setError(
@@ -338,14 +413,24 @@ function ProductFormContent() {
       // Clear the file input
       e.target.value = "";
     } catch (err: any) {
-      console.error("❌ Cloud upload error:", err);
+      console.error("❌ Upload error:", err);
       const errorMessage =
         err.message ||
         "Upload failed. Please check your connection and try again.";
       setError(errorMessage);
+      setDetailedProgress({
+        stage: "Error",
+        file: "Upload failed",
+        percentage: 0,
+        error: errorMessage,
+      });
     } finally {
       setCloudUploading(false);
-      setUploadProgress(null);
+      // Keep progress visible for a moment to show completion
+      setTimeout(() => {
+        setUploadProgress(null);
+        setDetailedProgress(null);
+      }, 2000);
       console.log("🏁 Upload process completed");
     }
   };
@@ -717,9 +802,32 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 );
               })()}
 
-              {/* Multiple Upload Option */}
+              {/* Upload Mode Selector */}
               <div className="space-y-4">
-                <Label>Upload Product Images (Max 10MB each)</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Upload Product Images (Max 10MB each)</Label>
+                  <div className="flex items-center space-x-2">
+                    <Label className="text-xs">Upload Mode:</Label>
+                    <Button
+                      type="button"
+                      variant={useIntegratedUpload ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setUseIntegratedUpload(!useIntegratedUpload)}
+                      className="text-xs px-2 py-1 h-7"
+                    >
+                      {useIntegratedUpload ? "Smart (with fallback)" : "Cloud only"}
+                    </Button>
+                  </div>
+                </div>
+
+                {useIntegratedUpload && (
+                  <div className="text-xs p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                    <p className="text-blue-800 dark:text-blue-200">
+                      💡 Smart upload tries cloud services first, then falls back to optimized base64 if needed
+                    </p>
+                  </div>
+                )}
+
                 <div className="border-2 border-dashed border-primary/30 rounded-lg p-6 text-center hover:border-primary/50 transition-colors bg-primary/5">
                   <input
                     type="file"
@@ -738,11 +846,16 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       <div>
                         {cloudUploading ? (
                           <div className="space-y-2">
-                            <S2LoaderSmall text="Uploading to cloud..." />
+                            <S2LoaderSmall text={detailedProgress?.stage || "Uploading..."} />
                             {uploadProgress && (
                               <p className="text-xs text-muted-foreground">
                                 {uploadProgress.fileName} (
                                 {uploadProgress.current}/{uploadProgress.total})
+                              </p>
+                            )}
+                            {detailedProgress?.error && (
+                              <p className="text-xs text-red-600">
+                                Error: {detailedProgress.error}
                               </p>
                             )}
                           </div>
@@ -752,11 +865,13 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                               Click to Upload Images
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              Select multiple files • JPEG, PNG, or WebP • Max
-                              10MB each
+                              Select multiple files • JPEG, PNG, or WebP • Max 10MB each
                             </p>
                             <p className="text-xs text-primary mt-1">
-                              Powered by Cloudinary CDN
+                              {useIntegratedUpload
+                                ? "Smart upload with automatic fallback"
+                                : "Direct cloud upload via Cloudinary CDN"
+                              }
                             </p>
                           </>
                         )}
@@ -765,9 +880,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                   </label>
                 </div>
 
-                {/* Upload Progress Bar */}
+                {/* Enhanced Upload Progress Bar */}
                 {cloudUploading && uploadProgress && (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium text-foreground">
                         Upload Progress
@@ -776,15 +891,44 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                         {uploadProgress.current} of {uploadProgress.total} files
                       </span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+
+                    {/* Main Progress Bar */}
+                    <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                       <div
-                        className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
+                        className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-500 ease-out relative"
                         style={{ width: `${uploadProgress.percentage}%` }}
-                      />
+                      >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Current: {uploadProgress.fileName}
-                    </p>
+
+                    {/* Detailed Progress Info */}
+                    {detailedProgress && (
+                      <div className="bg-accent/50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-foreground">
+                            {detailedProgress.stage}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {Math.round(detailedProgress.percentage)}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {detailedProgress.file}
+                        </p>
+                        {detailedProgress.error && (
+                          <p className="text-xs text-red-600 mt-1">
+                            ❌ {detailedProgress.error}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Current File Info */}
+                    <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                      <span>Processing: {uploadProgress.fileName}</span>
+                    </div>
                   </div>
                 )}
               </div>
