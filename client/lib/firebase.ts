@@ -116,12 +116,28 @@ if (typeof window !== "undefined") {
 // Export helper function to check connection status
 export async function checkFirebaseConnection(): Promise<boolean> {
   try {
+    // Check if client has been terminated
+    if (error?.message?.includes('terminated')) {
+      console.log("🔄 Firebase client terminated, reinitializing...");
+      connectionState.connected = false;
+      connectionState.initialized = false;
+      return await testFirebaseConnection();
+    }
+
     // Use a simple operation that doesn't trigger complex state changes
     if (!connectionState.connected) {
       return await testFirebaseConnection();
     }
     return true;
-  } catch (error) {
+  } catch (error: any) {
+    // Handle termination errors specifically
+    if (error?.message?.includes('terminated')) {
+      console.log("🔄 Firebase client terminated during check, marking as disconnected");
+      connectionState.connected = false;
+      connectionState.initialized = false;
+      return false;
+    }
+
     console.warn("Firebase connection check failed:", error);
     connectionState.connected = false;
     return false;
