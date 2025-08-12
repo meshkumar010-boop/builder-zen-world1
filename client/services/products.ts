@@ -184,34 +184,28 @@ export async function getProducts(): Promise<Product[]> {
     return localProducts;
   }
 
-  // Try Firebase with enhanced error handling
+  // Try Firebase with safe operation wrapper
   try {
     console.log("☁️ Fetching products from Firebase...");
 
-    // Add timeout wrapper for Firebase calls
-    const firebasePromise = (async () => {
-      const productsRef = collection(db, PRODUCTS_COLLECTION);
-      const q = query(productsRef, orderBy("createdAt", "desc"));
-      return await getDocs(q);
-    })();
-
-    // Race between Firebase call and timeout
-    const querySnapshot = (await Promise.race([
-      firebasePromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Firebase timeout")), 5000),
-      ),
-    ])) as any;
-
-    const firebaseProducts = querySnapshot.docs.map((doc: any) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Product[];
+    const firebaseProducts = await safeFirebaseOperation(
+      async () => {
+        const productsRef = collection(db, PRODUCTS_COLLECTION);
+        const q = query(productsRef, orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Product[];
+      },
+      () => localProducts,
+      "getProducts"
+    );
 
     console.log("✅ Firebase products loaded:", firebaseProducts.length);
 
-    // Update localStorage with latest Firebase data
-    if (firebaseProducts.length > 0) {
+    // Update localStorage with latest Firebase data (only if we got Firebase data)
+    if (firebaseProducts !== localProducts && firebaseProducts.length > 0) {
       localStorage.setItem(
         "s2-wear-products",
         JSON.stringify(firebaseProducts),
@@ -219,7 +213,7 @@ export async function getProducts(): Promise<Product[]> {
       console.log("💾 Updated localStorage with Firebase data");
       return firebaseProducts;
     } else {
-      console.log("ℹ️ No products in Firebase, using local data");
+      console.log("ℹ️ Using local data");
       return localProducts;
     }
   } catch (error: any) {
