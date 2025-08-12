@@ -296,208 +296,37 @@ function ProductFormContent() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  const handleCloudUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    console.log("Starting image upload for", files.length, "files");
-
-    // Check storage capacity first
-    const storageCheck = checkStorageCapacity();
-    if (!storageCheck.available) {
-      setError(storageCheck.message || "Storage quota exceeded");
-      e.target.value = ""; // Clear input
-      return;
-    }
-
-    setUploadingImages(true);
+    console.log("Starting cloud upload for:", file.name);
+    setCloudUploading(true);
     setError("");
 
     try {
-      const newImages: string[] = [];
+      const result = await uploadImageToCloud(file);
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        console.log(
-          `Processing file ${i + 1}:`,
-          file.name,
-          "Size:",
-          Math.round(file.size / 1024) + "KB",
-        );
-
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-          throw new Error(`File ${file.name} is not a valid image file.`);
-        }
-
-        // Optimize image if needed
-        let processedFile = file;
-        if (needsOptimization(file)) {
-          console.log(`🔄 Optimizing ${file.name}...`);
-          const optimized = await optimizeImage(file, { maxSizeKB: 300 });
-
-          if (optimized.success && optimized.file) {
-            processedFile = optimized.file;
-            console.log(
-              `✅ ${file.name} optimized: ${Math.round(file.size / 1024)}KB → ${Math.round(optimized.file.size / 1024)}KB`,
-            );
-          } else {
-            console.warn(
-              `⚠️ Failed to optimize ${file.name}: ${optimized.error}`,
-            );
-            // Continue with original file but warn user
-          }
-        }
-
-        try {
-          // First try Firebase upload with optimized file
-          const tempId = `${Date.now()}-${i}`;
-          const firebaseUrl = await uploadProductImage(processedFile, tempId);
-          console.log(`✅ ${file.name} uploaded to Firebase:`, firebaseUrl);
-          newImages.push(firebaseUrl);
-        } catch (firebaseError: any) {
-          console.warn(
-            "🚨 Firebase upload failed, using base64 fallback:",
-            firebaseError.message,
-          );
-
-          try {
-            // Fallback: Convert to optimized base64
-            const base64Url = await fileToBase64(processedFile);
-            console.log(
-              `💾 ${file.name} converted to base64 (${Math.round((base64Url.length * 0.75) / 1024)}KB)`,
-            );
-            newImages.push(base64Url);
-          } catch (base64Error: any) {
-            console.error(
-              `❌ Base64 conversion failed for ${file.name}:`,
-              base64Error,
-            );
-            throw new Error(
-              `Failed to process ${file.name}: ${base64Error.message}. Try using a smaller image.`,
-            );
-          }
-        }
-      }
-
-      // Update UI with all processed images
-      setFormData((prev) => ({
-        ...prev,
-        images: [...prev.images, ...newImages],
-      }));
-
-      console.log(
-        "Image processing completed, added",
-        newImages.length,
-        "images",
-      );
-
-      // Clear the file input
-      e.target.value = "";
-    } catch (err: any) {
-      console.error("Image upload error:", err);
-      setError(err.message || "Failed to upload images. Please try again.");
-    } finally {
-      setUploadingImages(false);
-    }
-  };
-
-  const handleIntegratedUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    preferredService: "firebase" | "cloud" | "auto" = "auto",
-  ) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    setIntegratedUploading(true);
-    setError("");
-    setUploadProgress({ current: 0, total: files.length, file: "" });
-
-    try {
-      const fileArray = Array.from(files);
-      const tempId = `${Date.now()}`;
-
-      const results = await uploadMultipleImages(
-        fileArray,
-        tempId,
-        { preferredService, fallbackToBase64: true },
-        (current, total, fileName) => {
-          setUploadProgress({ current, total, file: fileName });
-        },
-      );
-
-      const successfulUploads = results.filter((result) => result.success);
-      const failedUploads = results.filter((result) => !result.success);
-
-      if (successfulUploads.length > 0) {
-        // Update UI with successful uploads
+      if (result.success && result.url) {
+        // Replace any existing image (single image only)
         setFormData((prev) => ({
           ...prev,
-          images: [
-            ...prev.images,
-            ...successfulUploads.map((result) => result.url!),
-          ],
+          images: [result.url!],
         }));
 
-        console.log(
-          `✅ Successfully uploaded ${successfulUploads.length}/${results.length} images`,
-        );
-
-        // Show upload summary
-        const sourceCounts = successfulUploads.reduce(
-          (acc, result) => {
-            acc[result.source] = (acc[result.source] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
-
-        console.log("Upload sources:", sourceCounts);
-      }
-
-      if (failedUploads.length > 0) {
-        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => f.error).join(", ")}`;
-        if (successfulUploads.length === 0) {
-          setError(errorMessage);
-        } else {
-          console.warn(errorMessage);
-        }
+        console.log("✅ Image uploaded successfully:", result.url);
+      } else {
+        setError(result.error || "Upload failed. Please try again.");
       }
 
       // Clear the file input
       e.target.value = "";
     } catch (err: any) {
-      console.error("Integrated upload error:", err);
-      setError(err.message || "Failed to upload images. Please try again.");
+      console.error("Cloud upload error:", err);
+      setError("Upload failed. Please try again.");
     } finally {
-      setIntegratedUploading(false);
-      setUploadProgress({ current: 0, total: 0, file: "" });
+      setCloudUploading(false);
     }
-  };
-
-  const handleAddImageUrl = () => {
-    if (!imageUrl.trim()) {
-      setError("Please enter a valid image URL");
-      return;
-    }
-
-    if (!isValidImageUrl(imageUrl)) {
-      setError(
-        "Please enter a valid image URL (must be http/https and end with image extension or be from a known image host)",
-      );
-      return;
-    }
-
-    // Add URL to images
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, imageUrl.trim()],
-    }));
-
-    // Clear input
-    setImageUrl("");
-    setShowUrlInput(false);
-    setError("");
   };
 
   const removeImage = (index: number) => {
