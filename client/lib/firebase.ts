@@ -36,27 +36,52 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
+// Global connection state tracking
+let connectionState = {
+  initialized: false,
+  connected: false,
+  lastError: null as Error | null,
+};
+
 // Test Firebase connectivity on initialization
 async function testFirebaseConnection() {
+  if (connectionState.initialized) {
+    return connectionState.connected;
+  }
+
   try {
     console.log("🔗 Testing Firebase connectivity...");
 
-    // Test Firestore connection
-    await enableNetwork(db);
+    // Clear any existing connection issues
+    try {
+      await disableNetwork(db);
+      await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
+      await enableNetwork(db);
+    } catch (networkError) {
+      console.warn("⚠️ Network reset failed, continuing...", networkError);
+    }
+
     console.log("✅ Firestore connection successful");
+    connectionState.connected = true;
+    connectionState.lastError = null;
 
-    // Test Auth connection
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        console.log("✅ Firebase Auth connected - User:", user.email);
-      } else {
-        console.log("ℹ️ Firebase Auth connected - No user signed in");
-      }
-    });
+    // Set up auth state listener once
+    if (!connectionState.initialized) {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          console.log("✅ Firebase Auth connected - User:", user.email);
+        } else {
+          console.log("ℹ️ Firebase Auth connected - No user signed in");
+        }
+      });
+    }
 
+    connectionState.initialized = true;
     return true;
   } catch (error: any) {
     console.error("❌ Firebase connection failed:", error.message);
+    connectionState.connected = false;
+    connectionState.lastError = error;
     console.log("🔄 Falling back to offline mode");
     return false;
   }
