@@ -581,41 +581,46 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
           {/* Debug Panel (Development only) */}
           {import.meta.env.DEV && (
-            <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                  🐛 Debug Panel (Development Mode)
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDebugTest}
-                    className="text-yellow-600 dark:text-yellow-400"
-                  >
-                    <Bug className="h-4 w-4 mr-1" />
-                    Test Product Addition
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowDebug(!showDebug)}
-                    className="text-yellow-600 dark:text-yellow-400"
-                  >
-                    {showDebug ? "Hide" : "Show"} Debug
-                  </Button>
+            <div className="space-y-4">
+              <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                    🐛 Debug Panel (Development Mode)
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDebugTest}
+                      className="text-yellow-600 dark:text-yellow-400"
+                    >
+                      <Bug className="h-4 w-4 mr-1" />
+                      Test Product Addition
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowDebug(!showDebug)}
+                      className="text-yellow-600 dark:text-yellow-400"
+                    >
+                      {showDebug ? "Hide" : "Show"} Debug
+                    </Button>
+                  </div>
                 </div>
+
+                {showDebug && debugInfo && (
+                  <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded border">
+                    <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      {debugInfo}
+                    </pre>
+                  </div>
+                )}
               </div>
 
-              {showDebug && debugInfo && (
-                <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded border">
-                  <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                    {debugInfo}
-                  </pre>
-                </div>
-              )}
+              {/* Firebase Debug Panel */}
+              <FirebaseDebugPanel />
             </div>
           )}
         </div>
