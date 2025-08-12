@@ -19,7 +19,7 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
   if (!file.type.startsWith('image/')) {
     return {
       success: false,
-      error: 'File must be an image'
+      error: 'File must be an image (JPEG, PNG, or WebP)'
     };
   }
 
@@ -37,9 +37,10 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
 
   // Check Cloudinary configuration
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    console.error('❌ Cloudinary not configured');
     return {
       success: false,
-      error: 'Cloudinary not configured. Please add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to your environment variables.'
+      error: 'Cloudinary not configured. Please restart the dev server after setting environment variables.'
     };
   }
 
@@ -47,17 +48,19 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 's2wears'); // Organize uploads in a folder
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+    const response = await fetch(uploadUrl, {
+      method: 'POST',
+      body: formData,
+    });
 
     if (!response.ok) {
-      throw new Error(`Cloudinary responded with status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ Cloudinary error response:', errorText);
+      throw new Error(`Cloudinary server error (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();
@@ -69,15 +72,26 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
         url: data.secure_url
       };
     } else {
-      throw new Error(data.error?.message || 'Upload failed');
+      console.error('❌ No secure_url in response:', data);
+      throw new Error(data.error?.message || 'No URL returned from Cloudinary');
     }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Upload failed';
+    const errorMsg = error instanceof Error ? error.message : 'Unknown upload error';
     console.error('❌ Cloudinary upload error:', errorMsg);
-    
+
+    // Provide more helpful error messages
+    let userFriendlyError = errorMsg;
+    if (errorMsg.includes('Failed to fetch')) {
+      userFriendlyError = 'Network error: Check your internet connection';
+    } else if (errorMsg.includes('401') || errorMsg.includes('403')) {
+      userFriendlyError = 'Cloudinary authentication error: Check configuration';
+    } else if (errorMsg.includes('413')) {
+      userFriendlyError = 'File too large for upload';
+    }
+
     return {
       success: false,
-      error: `Upload failed: ${errorMsg}`
+      error: userFriendlyError
     };
   }
 }
