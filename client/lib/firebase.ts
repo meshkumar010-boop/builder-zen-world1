@@ -156,12 +156,26 @@ export async function reconnectFirebase(): Promise<boolean> {
 export async function cleanupFirebase(): Promise<void> {
   try {
     console.log("🧹 Cleaning up Firebase connections...");
-    await disableNetwork(db);
-    await terminate(db);
+
+    // Only cleanup if connected and not already terminated
+    if (connectionState.connected) {
+      await disableNetwork(db);
+      // Don't terminate in development - just disable network
+      if (process.env.NODE_ENV === 'production') {
+        await terminate(db);
+      }
+    }
+
     connectionState.initialized = false;
     connectionState.connected = false;
   } catch (error) {
-    console.warn("⚠️ Firebase cleanup warning:", error);
+    // Ignore termination errors during cleanup
+    if (!error.message?.includes('terminated')) {
+      console.warn("⚠️ Firebase cleanup warning:", error);
+    }
+    // Reset state regardless of cleanup success
+    connectionState.initialized = false;
+    connectionState.connected = false;
   }
 }
 
