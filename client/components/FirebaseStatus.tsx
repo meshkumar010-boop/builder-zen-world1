@@ -153,8 +153,25 @@ export function FirebaseStatus() {
             <Button
               variant="outline"
               size="sm"
+              onClick={runTests}
+              disabled={testing || loading}
+              className="h-8 mr-2"
+            >
+              {testing ? (
+                <RefreshCw className="h-3 w-3 animate-spin" />
+              ) : (
+                <>
+                  <TestTube className="h-3 w-3 mr-1" />
+                  Test
+                </>
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={connectionStatus === 'disconnected' ? handleReconnect : checkConnection}
-              disabled={loading}
+              disabled={loading || testing}
               className="h-8"
             >
               {loading ? (
