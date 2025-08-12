@@ -48,6 +48,14 @@ export default function Home() {
   // Load featured products
   useEffect(() => {
     loadFeaturedProducts();
+
+    // Fallback timeout to ensure loading never gets stuck
+    const fallbackTimer = setTimeout(() => {
+      console.warn("⚠️ Fallback timeout triggered - forcing loading to false");
+      setLoading(false);
+    }, 10000); // 10 second absolute maximum
+
+    return () => clearTimeout(fallbackTimer);
   }, []);
 
   const loadFeaturedProducts = async () => {
