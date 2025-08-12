@@ -14,6 +14,7 @@ import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import { S2Loader } from "@/components/S2Loader";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { FirebaseTestPanel } from "@/components/FirebaseTestPanel";
+import StorageCleanup from "@/components/StorageCleanup";
 import {
   getProducts,
   deleteProduct,
