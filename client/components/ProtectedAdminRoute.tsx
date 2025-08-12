@@ -1,12 +1,14 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { S2LoaderFullscreen } from '@/components/S2Loader';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { S2LoaderFullscreen } from "@/components/S2Loader";
 
 interface ProtectedAdminRouteProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
+export default function ProtectedAdminRoute({
+  children,
+}: ProtectedAdminRouteProps) {
   const { user, isAdmin, loading } = useAuth();
 
   // Show loading spinner while checking authentication
