@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import { S2Loader } from "@/components/S2Loader";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
+import { FirebaseTestPanel } from "@/components/FirebaseTestPanel";
 import {
   getProducts,
   deleteProduct,
