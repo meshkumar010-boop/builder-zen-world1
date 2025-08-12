@@ -146,14 +146,32 @@ export async function reconnectFirebase(): Promise<boolean> {
     connectionState.lastError = null;
 
     // Try graceful reconnection
-    await disableNetwork(db);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for cleanup
-    await enableNetwork(db);
+    try {
+      await disableNetwork(db);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for cleanup
+      await enableNetwork(db);
+    } catch (networkError: any) {
+      // If client is terminated, just mark as reconnected and test
+      if (networkError?.message?.includes('terminated')) {
+        console.log("🔄 Client was terminated, attempting fresh connection test...");
+        connectionState.initialized = false;
+        return await testFirebaseConnection();
+      }
+      throw networkError;
+    }
 
     connectionState.connected = true;
     console.log("✅ Firebase reconnected successfully");
     return true;
   } catch (error: any) {
+    // Handle termination errors specifically
+    if (error?.message?.includes('terminated')) {
+      console.log("🔄 Firebase client terminated, attempting fresh initialization...");
+      connectionState.initialized = false;
+      connectionState.connected = false;
+      return await testFirebaseConnection();
+    }
+
     console.error("❌ Firebase reconnection failed:", error);
     connectionState.lastError = error;
     return false;
