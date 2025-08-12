@@ -8,6 +8,7 @@ import {
   runFirebaseTests,
   getFirebaseProjectInfo,
 } from "@/utils/firebaseDebug";
+import { checkFirebaseHealth, resetFirebaseState } from "@/utils/firebaseDevHelper";
 import {
   Wifi,
   WifiOff,
