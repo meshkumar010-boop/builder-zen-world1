@@ -17,8 +17,10 @@ import {
 } from "@/services/products";
 import {
   uploadImageToCloud,
+  uploadMultipleImagesToCloud,
   getCloudServiceStatus,
   type CloudUploadResult,
+  type MultipleUploadProgress,
 } from "@/services/cloudImageUpload";
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
