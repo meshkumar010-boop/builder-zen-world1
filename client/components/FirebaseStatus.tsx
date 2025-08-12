@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { checkFirebaseConnection, reconnectFirebase } from '@/lib/firebase';
 import { getProducts } from '@/services/products';
-import { Wifi, WifiOff, RefreshCw, Database, AlertCircle } from 'lucide-react';
+import { runFirebaseTests, getFirebaseProjectInfo } from '@/utils/firebaseDebug';
+import { Wifi, WifiOff, RefreshCw, Database, AlertCircle, TestTube } from 'lucide-react';
 
 export function FirebaseStatus() {
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
