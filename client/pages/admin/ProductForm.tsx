@@ -774,44 +774,60 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
 
               {formData.images.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Product image uploaded
-                  </p>
-                  <div className="flex justify-center">
-                    <div className="relative group max-w-sm">
-                      <div className="relative overflow-hidden rounded-lg border border-border bg-accent">
-                        <img
-                          src={formData.images[0]}
-                          alt="Product image"
-                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                          onError={(e) => {
-                            console.warn("Image failed to load:", formData.images[0]);
-                            (e.target as HTMLImageElement).src = "/placeholder.svg";
-                          }}
-                          onLoad={() => {
-                            console.log("Image loaded successfully:", formData.images[0]);
-                          }}
-                        />
-                        <div className="absolute top-2 right-2">
-                          <div className="bg-green-500 text-white text-xs px-2 py-1 rounded">
-                            ☁️ Cloud Hosted
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-muted-foreground">
+                      {formData.images.length} image{formData.images.length > 1 ? 's' : ''} uploaded
+                    </p>
+                    <p className="text-xs text-primary">
+                      ☁️ Cloud Hosted on Cloudinary CDN
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {formData.images.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <div className="relative overflow-hidden rounded-lg border border-border bg-accent aspect-square">
+                          <img
+                            src={image}
+                            alt={`Product image ${index + 1}`}
+                            className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                            onError={(e) => {
+                              console.warn("Image failed to load:", image);
+                              (e.target as HTMLImageElement).src = "/placeholder.svg";
+                            }}
+                            onLoad={() => {
+                              console.log("Image loaded successfully:", image);
+                            }}
+                          />
+                          <div className="absolute top-2 left-2">
+                            {index === 0 && (
+                              <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                                Main
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute top-2 right-2">
+                            <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded">
+                              ☁️
+                            </div>
                           </div>
                         </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => removeImage(index)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
                       </div>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => removeImage(0)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
+                    ))}
                   </div>
-                  <p className="text-xs text-muted-foreground text-center">
-                    💡 Hosted on Cloudinary CDN for fast global delivery
+
+                  <p className="text-xs text-muted-foreground">
+                    💡 Tip: The first image will be used as the main product image. Drag to reorder if needed.
                   </p>
                 </div>
               )}
