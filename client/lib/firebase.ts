@@ -24,7 +24,10 @@ const firebaseConfig = {
 // Prevent multiple Firebase app initialization
 let app;
 if (getApps().length === 0) {
-  console.log("🔥 Initializing Firebase with project:", firebaseConfig.projectId);
+  console.log(
+    "🔥 Initializing Firebase with project:",
+    firebaseConfig.projectId,
+  );
   app = initializeApp(firebaseConfig);
 } else {
   console.log("🔥 Using existing Firebase app instance");
@@ -55,7 +58,7 @@ async function testFirebaseConnection() {
     // Clear any existing connection issues
     try {
       await disableNetwork(db);
-      await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
+      await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay
       await enableNetwork(db);
     } catch (networkError) {
       console.warn("⚠️ Network reset failed, continuing...", networkError);
@@ -122,7 +125,7 @@ export async function reconnectFirebase(): Promise<boolean> {
 
     // Try graceful reconnection
     await disableNetwork(db);
-    await new Promise(resolve => setTimeout(resolve, 500)); // Wait for cleanup
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for cleanup
     await enableNetwork(db);
 
     connectionState.connected = true;

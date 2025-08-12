@@ -53,7 +53,7 @@ async function testFirebaseConnection(): Promise<boolean> {
     const testQuery = collection(db, "products");
     const testPromise = getDocs(testQuery);
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Connection test timeout")), 3000)
+      setTimeout(() => reject(new Error("Connection test timeout")), 3000),
     );
 
     await Promise.race([testPromise, timeoutPromise]);
@@ -138,28 +138,30 @@ const PRODUCTS_COLLECTION = "products";
 async function safeFirebaseOperation<T>(
   operation: () => Promise<T>,
   fallback: () => T,
-  operationName: string
+  operationName: string,
 ): Promise<T> {
   try {
     const result = await Promise.race([
       operation(),
       new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Operation timeout")), 5000)
-      )
+        setTimeout(() => reject(new Error("Operation timeout")), 5000),
+      ),
     ]);
     return result;
   } catch (error: any) {
     console.warn(`🚨 Firebase ${operationName} failed:`, error.message);
 
     // Handle specific Firebase internal errors
-    if (error.message.includes("INTERNAL ASSERTION FAILED") ||
-        error.message.includes("Unexpected state")) {
+    if (
+      error.message.includes("INTERNAL ASSERTION FAILED") ||
+      error.message.includes("Unexpected state")
+    ) {
       console.warn("🔄 Using fallback due to Firebase internal error");
       return fallback();
     }
 
     // Handle other Firebase errors
-    if (error.code === 'unavailable' || error.code === 'permission-denied') {
+    if (error.code === "unavailable" || error.code === "permission-denied") {
       console.warn("🔄 Using fallback due to Firebase service error");
       return fallback();
     }
@@ -199,7 +201,7 @@ export async function getProducts(): Promise<Product[]> {
         })) as Product[];
       },
       () => localProducts,
-      "getProducts"
+      "getProducts",
     );
 
     console.log("✅ Firebase products loaded:", firebaseProducts.length);
@@ -231,8 +233,10 @@ export async function getProducts(): Promise<Product[]> {
       console.warn("⏱️ Firebase timeout - slow connection");
     } else if (error?.message?.includes("permission")) {
       console.warn("🔒 Firebase permission denied - check Firestore rules");
-    } else if (error?.message?.includes("INTERNAL ASSERTION FAILED") ||
-               error?.message?.includes("Unexpected state")) {
+    } else if (
+      error?.message?.includes("INTERNAL ASSERTION FAILED") ||
+      error?.message?.includes("Unexpected state")
+    ) {
       console.warn("🚨 Firebase internal error detected - using offline mode");
     }
 
@@ -458,16 +462,20 @@ export async function deleteProduct(id: string): Promise<void> {
           return true;
         },
         () => {
-          console.warn("Firebase delete failed, continuing with localStorage cleanup");
+          console.warn(
+            "Firebase delete failed, continuing with localStorage cleanup",
+          );
           return false;
         },
-        "deleteProduct"
+        "deleteProduct",
       );
 
       console.log("Product deleted from Firebase successfully");
     } catch (error: any) {
       if (error?.message?.includes("INTERNAL ASSERTION FAILED")) {
-        console.warn("🚨 Firebase internal error during delete, continuing with localStorage");
+        console.warn(
+          "🚨 Firebase internal error during delete, continuing with localStorage",
+        );
       } else {
         console.warn("Failed to delete from Firebase:", error);
       }
