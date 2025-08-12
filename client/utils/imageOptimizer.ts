@@ -349,17 +349,17 @@ export function checkStorageCapacity(): {
     if (usageKB > 4000) {
       // Approaching 5MB limit - trigger auto cleanup
       try {
-        const { autoCleanup } = require('./storageManager');
+        const { autoCleanup } = require("./storageManager");
         const cleanupResult = autoCleanup();
         if (cleanupResult.success && cleanupResult.freedKB > 500) {
           return {
             available: true,
             usageKB: usageKB - cleanupResult.freedKB,
-            message: `Auto cleanup freed ${cleanupResult.freedKB.toFixed(1)}KB`
+            message: `Auto cleanup freed ${cleanupResult.freedKB.toFixed(1)}KB`,
           };
         }
       } catch (cleanupError) {
-        console.warn('Auto cleanup failed:', cleanupError);
+        console.warn("Auto cleanup failed:", cleanupError);
       }
 
       return {
@@ -374,7 +374,8 @@ export function checkStorageCapacity(): {
     return {
       available: false,
       usageKB: 0,
-      message: "Storage quota exceeded. Use the Storage Cleanup tool in the admin panel.",
+      message:
+        "Storage quota exceeded. Use the Storage Cleanup tool in the admin panel.",
     };
   }
 }

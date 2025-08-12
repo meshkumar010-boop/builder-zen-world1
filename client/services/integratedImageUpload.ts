@@ -138,11 +138,14 @@ async function uploadToCloudinary(file: File): Promise<UploadResult> {
 async function uploadToImgur(file: File): Promise<UploadResult> {
   try {
     // Quick check to avoid CORS issues
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    if (
+      typeof window !== "undefined" &&
+      window.location.hostname !== "localhost"
+    ) {
       return {
         success: false,
         source: "error",
-        error: "Imgur upload disabled due to CORS restrictions in production"
+        error: "Imgur upload disabled due to CORS restrictions in production",
       };
     }
 
@@ -179,7 +182,11 @@ async function uploadToImgur(file: File): Promise<UploadResult> {
     console.warn("Imgur upload error:", errorMsg);
 
     // Handle specific network/CORS errors
-    if (errorMsg.includes("Failed to fetch") || errorMsg.includes("CORS") || errorMsg.includes("NetworkError")) {
+    if (
+      errorMsg.includes("Failed to fetch") ||
+      errorMsg.includes("CORS") ||
+      errorMsg.includes("NetworkError")
+    ) {
       return {
         success: false,
         source: "error",

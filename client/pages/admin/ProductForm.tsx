@@ -25,15 +25,7 @@ import {
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
-import {
-  ArrowLeft,
-  X,
-  Plus,
-  Save,
-  Cloud,
-  Info,
-  Bug,
-} from "lucide-react";
+import { ArrowLeft, X, Plus, Save, Cloud, Info, Bug } from "lucide-react";
 
 const CATEGORIES = [
   "T-Shirts",
@@ -79,7 +71,8 @@ function ProductFormContent() {
   const [newFeature, setNewFeature] = useState("");
   const [newColor, setNewColor] = useState({ name: "", value: "#000000" });
   const [cloudUploading, setCloudUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<MultipleUploadProgress | null>(null);
+  const [uploadProgress, setUploadProgress] =
+    useState<MultipleUploadProgress | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
@@ -304,35 +297,41 @@ function ProductFormContent() {
       const results = await uploadMultipleImagesToCloud(
         fileArray,
         (progress) => {
-          console.log(`📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`);
+          console.log(
+            `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
+          );
           setUploadProgress(progress);
-        }
+        },
       );
 
       // Filter successful uploads
-      const successfulUploads = results.filter(result => result.success);
-      const failedUploads = results.filter(result => !result.success);
+      const successfulUploads = results.filter((result) => result.success);
+      const failedUploads = results.filter((result) => !result.success);
 
       if (successfulUploads.length > 0) {
         // Add new images to existing ones
-        const newImageUrls = successfulUploads.map(result => result.url!);
+        const newImageUrls = successfulUploads.map((result) => result.url!);
         setFormData((prev) => ({
           ...prev,
           images: [...prev.images, ...newImageUrls],
         }));
 
-        console.log(`✅ ${successfulUploads.length} image(s) uploaded successfully`);
+        console.log(
+          `✅ ${successfulUploads.length} image(s) uploaded successfully`,
+        );
       }
 
       if (failedUploads.length > 0) {
-        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map(f => `${f.fileName} (${f.error})`).join(', ')}`;
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => `${f.fileName} (${f.error})`).join(", ")}`;
         console.error("❌ Some uploads failed:", errorMessage);
 
         if (successfulUploads.length === 0) {
           setError(errorMessage);
         } else {
           // Show partial success message
-          setError(`${successfulUploads.length} uploaded successfully, ${failedUploads.length} failed`);
+          setError(
+            `${successfulUploads.length} uploaded successfully, ${failedUploads.length} failed`,
+          );
         }
       }
 
@@ -340,7 +339,9 @@ function ProductFormContent() {
       e.target.value = "";
     } catch (err: any) {
       console.error("❌ Cloud upload error:", err);
-      const errorMessage = err.message || "Upload failed. Please check your connection and try again.";
+      const errorMessage =
+        err.message ||
+        "Upload failed. Please check your connection and try again.";
       setError(errorMessage);
     } finally {
       setCloudUploading(false);
@@ -476,7 +477,6 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
               reliability)
             </p>
           </div>
-
 
           {/* Debug Panel (Development only) */}
           {import.meta.env.DEV && (
@@ -661,7 +661,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
             <CardHeader>
               <CardTitle>Product Images</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Upload multiple high-quality images that showcase your product from different angles
+                Upload multiple high-quality images that showcase your product
+                from different angles
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -675,26 +676,40 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
                         {cloudStatus.serviceName} Cloud Upload
                       </span>
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        cloudStatus.configured
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                          : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200'
-                      }`}>
-                        {cloudStatus.configured ? 'Configured' : 'Setup Required'}
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${
+                          cloudStatus.configured
+                            ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                            : "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200"
+                        }`}
+                      >
+                        {cloudStatus.configured
+                          ? "Configured"
+                          : "Setup Required"}
                       </span>
                     </div>
                     <div className="mt-2 space-y-1">
                       {cloudStatus.features.map((feature, index) => (
-                        <p key={index} className="text-xs text-blue-700 dark:text-blue-300">
+                        <p
+                          key={index}
+                          className="text-xs text-blue-700 dark:text-blue-300"
+                        >
                           • {feature}
                         </p>
                       ))}
                     </div>
                     {!cloudStatus.configured && (
                       <div className="mt-2 p-2 bg-orange-50 dark:bg-orange-900/10 rounded text-xs">
-                        <p className="font-medium text-orange-800 dark:text-orange-200 mb-1">Setup Required:</p>
+                        <p className="font-medium text-orange-800 dark:text-orange-200 mb-1">
+                          Setup Required:
+                        </p>
                         {cloudStatus.configHelp.steps.map((step, index) => (
-                          <p key={index} className="text-orange-700 dark:text-orange-300">{step}</p>
+                          <p
+                            key={index}
+                            className="text-orange-700 dark:text-orange-300"
+                          >
+                            {step}
+                          </p>
                         ))}
                       </div>
                     )}
@@ -726,7 +741,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                             <S2LoaderSmall text="Uploading to cloud..." />
                             {uploadProgress && (
                               <p className="text-xs text-muted-foreground">
-                                {uploadProgress.fileName} ({uploadProgress.current}/{uploadProgress.total})
+                                {uploadProgress.fileName} (
+                                {uploadProgress.current}/{uploadProgress.total})
                               </p>
                             )}
                           </div>
@@ -736,7 +752,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                               Click to Upload Images
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              Select multiple files • JPEG, PNG, or WebP • Max 10MB each
+                              Select multiple files • JPEG, PNG, or WebP • Max
+                              10MB each
                             </p>
                             <p className="text-xs text-primary mt-1">
                               Powered by Cloudinary CDN
@@ -772,12 +789,12 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 )}
               </div>
 
-
               {formData.images.length > 0 && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      {formData.images.length} image{formData.images.length > 1 ? 's' : ''} uploaded
+                      {formData.images.length} image
+                      {formData.images.length > 1 ? "s" : ""} uploaded
                     </p>
                     <p className="text-xs text-primary">
                       ☁️ Cloud Hosted on Cloudinary CDN
@@ -794,7 +811,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                             className="w-full h-full object-cover transition-transform group-hover:scale-105"
                             onError={(e) => {
                               console.warn("Image failed to load:", image);
-                              (e.target as HTMLImageElement).src = "/placeholder.svg";
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder.svg";
                             }}
                             onLoad={() => {
                               console.log("Image loaded successfully:", image);
@@ -827,7 +845,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                   </div>
 
                   <p className="text-xs text-muted-foreground">
-                    💡 Tip: The first image will be used as the main product image. Drag to reorder if needed.
+                    💡 Tip: The first image will be used as the main product
+                    image. Drag to reorder if needed.
                   </p>
                 </div>
               )}

@@ -123,8 +123,10 @@ export async function checkFirebaseConnection(): Promise<boolean> {
     return true;
   } catch (error: any) {
     // Handle termination errors specifically
-    if (error?.message?.includes('terminated')) {
-      console.log("🔄 Firebase client terminated during check, marking as disconnected");
+    if (error?.message?.includes("terminated")) {
+      console.log(
+        "🔄 Firebase client terminated during check, marking as disconnected",
+      );
       connectionState.connected = false;
       connectionState.initialized = false;
       return false;
@@ -152,8 +154,10 @@ export async function reconnectFirebase(): Promise<boolean> {
       await enableNetwork(db);
     } catch (networkError: any) {
       // If client is terminated, just mark as reconnected and test
-      if (networkError?.message?.includes('terminated')) {
-        console.log("🔄 Client was terminated, attempting fresh connection test...");
+      if (networkError?.message?.includes("terminated")) {
+        console.log(
+          "🔄 Client was terminated, attempting fresh connection test...",
+        );
         connectionState.initialized = false;
         return await testFirebaseConnection();
       }
@@ -165,8 +169,10 @@ export async function reconnectFirebase(): Promise<boolean> {
     return true;
   } catch (error: any) {
     // Handle termination errors specifically
-    if (error?.message?.includes('terminated')) {
-      console.log("🔄 Firebase client terminated, attempting fresh initialization...");
+    if (error?.message?.includes("terminated")) {
+      console.log(
+        "🔄 Firebase client terminated, attempting fresh initialization...",
+      );
       connectionState.initialized = false;
       connectionState.connected = false;
       return await testFirebaseConnection();
@@ -187,7 +193,7 @@ export async function cleanupFirebase(): Promise<void> {
     if (connectionState.connected) {
       await disableNetwork(db);
       // Don't terminate in development - just disable network
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === "production") {
         await terminate(db);
       }
     }
@@ -196,7 +202,7 @@ export async function cleanupFirebase(): Promise<void> {
     connectionState.connected = false;
   } catch (error) {
     // Ignore termination errors during cleanup
-    if (!error.message?.includes('terminated')) {
+    if (!error.message?.includes("terminated")) {
       console.warn("⚠️ Firebase cleanup warning:", error);
     }
     // Reset state regardless of cleanup success

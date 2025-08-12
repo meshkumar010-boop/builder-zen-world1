@@ -152,7 +152,7 @@ async function safeFirebaseOperation<T>(
     console.warn(`🚨 Firebase ${operationName} failed:`, error.message);
 
     // Handle terminated client specifically
-    if (error.message?.includes('terminated')) {
+    if (error.message?.includes("terminated")) {
       console.warn("🔄 Firebase client terminated, using fallback");
       return fallback();
     }
@@ -511,14 +511,21 @@ export async function addProduct(
         if (cleanupResult.success && cleanupResult.freedKB > 500) {
           // Retry saving after cleanup
           const updatedProducts = [...existingProducts, productWithId];
-          localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
+          localStorage.setItem(
+            "s2-wear-products",
+            JSON.stringify(updatedProducts),
+          );
           console.log("✅ Product saved after auto cleanup");
 
           // Return success message with cleanup info
           if (firebaseSuccess) {
-            console.log("🎉 Product successfully added to both Firebase and localStorage (after cleanup)");
+            console.log(
+              "🎉 Product successfully added to both Firebase and localStorage (after cleanup)",
+            );
           } else {
-            console.log("📱 Product saved locally after cleanup (will sync to Firebase when connection is restored)");
+            console.log(
+              "📱 Product saved locally after cleanup (will sync to Firebase when connection is restored)",
+            );
           }
           return productId;
         }

@@ -29,7 +29,9 @@ export function setupFirebaseDevHelper() {
   // Handle hot module replacement (HMR) - DON'T cleanup to prevent "client terminated" errors
   if (import.meta.hot) {
     import.meta.hot.dispose(() => {
-      console.log("🔥 HMR: Skipping Firebase cleanup to prevent termination errors");
+      console.log(
+        "🔥 HMR: Skipping Firebase cleanup to prevent termination errors",
+      );
       // Don't cleanup during HMR - it causes "client terminated" errors
       // cleanupFirebase();
     });
@@ -60,7 +62,9 @@ export function setupFirebaseDevHelper() {
 
     // Handle termination errors
     if (message.includes("terminated")) {
-      console.warn("🔥 Firebase client terminated - this is expected during development HMR");
+      console.warn(
+        "🔥 Firebase client terminated - this is expected during development HMR",
+      );
       return; // Don't show termination errors in console during development
     }
 
@@ -76,7 +80,9 @@ export function setupFirebaseDevHelper() {
       );
     }
     if (state.lastError?.message?.includes("terminated")) {
-      console.log("🔥 Firebase client terminated detected in health check - resetting state");
+      console.log(
+        "🔥 Firebase client terminated detected in health check - resetting state",
+      );
       // Don't cleanup, just reset connection state
       state.connected = false;
       state.initialized = false;
@@ -154,7 +160,9 @@ export function checkFirebaseHealth(): {
 
     if (state.lastError.message.includes("terminated")) {
       issues.push("Firebase client terminated (common during development)");
-      suggestions.push("This usually resolves automatically during development");
+      suggestions.push(
+        "This usually resolves automatically during development",
+      );
     }
   }
 

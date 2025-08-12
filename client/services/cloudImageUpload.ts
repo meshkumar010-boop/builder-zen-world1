@@ -16,18 +16,22 @@ export interface MultipleUploadProgress {
 }
 
 // Environment configuration
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || null;
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || null;
+const CLOUDINARY_CLOUD_NAME =
+  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || null;
+const CLOUDINARY_UPLOAD_PRESET =
+  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || null;
 
 /**
  * Upload single image to Cloudinary (best cloud service with 10MB+ support)
  */
-export async function uploadImageToCloud(file: File): Promise<CloudUploadResult> {
+export async function uploadImageToCloud(
+  file: File,
+): Promise<CloudUploadResult> {
   // Validate file
-  if (!file.type.startsWith('image/')) {
+  if (!file.type.startsWith("image/")) {
     return {
       success: false,
-      error: 'File must be an image (JPEG, PNG, or WebP)'
+      error: "File must be an image (JPEG, PNG, or WebP)",
     };
   }
 
@@ -37,31 +41,34 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
   if (file.size > maxSizeBytes) {
     return {
       success: false,
-      error: `File size must be ${maxSizeMB}MB or less. Current size: ${(file.size / 1024 / 1024).toFixed(1)}MB`
+      error: `File size must be ${maxSizeMB}MB or less. Current size: ${(file.size / 1024 / 1024).toFixed(1)}MB`,
     };
   }
 
-  console.log(`🚀 Uploading ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB) to Cloudinary...`);
+  console.log(
+    `🚀 Uploading ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB) to Cloudinary...`,
+  );
 
   // Check Cloudinary configuration
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-    console.error('❌ Cloudinary not configured');
+    console.error("❌ Cloudinary not configured");
     return {
       success: false,
-      error: 'Cloudinary not configured. Please restart the dev server after setting environment variables.'
+      error:
+        "Cloudinary not configured. Please restart the dev server after setting environment variables.",
     };
   }
 
   try {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    formData.append('folder', 's2wears'); // Organize uploads in a folder
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("folder", "s2wears"); // Organize uploads in a folder
 
     const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
     const response = await fetch(uploadUrl, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     });
 
@@ -69,8 +76,10 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
     const responseText = await response.text();
 
     if (!response.ok) {
-      console.error('❌ Cloudinary error response:', responseText);
-      throw new Error(`Cloudinary server error (${response.status}): ${responseText}`);
+      console.error("❌ Cloudinary error response:", responseText);
+      throw new Error(
+        `Cloudinary server error (${response.status}): ${responseText}`,
+      );
     }
 
     // Parse the successful response
@@ -80,29 +89,31 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
       console.log(`✅ Upload successful: ${data.secure_url}`);
       return {
         success: true,
-        url: data.secure_url
+        url: data.secure_url,
       };
     } else {
-      console.error('❌ No secure_url in response:', data);
-      throw new Error(data.error?.message || 'No URL returned from Cloudinary');
+      console.error("❌ No secure_url in response:", data);
+      throw new Error(data.error?.message || "No URL returned from Cloudinary");
     }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown upload error';
-    console.error('❌ Cloudinary upload error:', errorMsg);
+    const errorMsg =
+      error instanceof Error ? error.message : "Unknown upload error";
+    console.error("❌ Cloudinary upload error:", errorMsg);
 
     // Provide more helpful error messages
     let userFriendlyError = errorMsg;
-    if (errorMsg.includes('Failed to fetch')) {
-      userFriendlyError = 'Network error: Check your internet connection';
-    } else if (errorMsg.includes('401') || errorMsg.includes('403')) {
-      userFriendlyError = 'Cloudinary authentication error: Check configuration';
-    } else if (errorMsg.includes('413')) {
-      userFriendlyError = 'File too large for upload';
+    if (errorMsg.includes("Failed to fetch")) {
+      userFriendlyError = "Network error: Check your internet connection";
+    } else if (errorMsg.includes("401") || errorMsg.includes("403")) {
+      userFriendlyError =
+        "Cloudinary authentication error: Check configuration";
+    } else if (errorMsg.includes("413")) {
+      userFriendlyError = "File too large for upload";
     }
 
     return {
       success: false,
-      error: userFriendlyError
+      error: userFriendlyError,
     };
   }
 }
@@ -112,7 +123,7 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
  */
 export async function uploadMultipleImagesToCloud(
   files: File[],
-  onProgress?: (progress: MultipleUploadProgress) => void
+  onProgress?: (progress: MultipleUploadProgress) => void,
 ): Promise<CloudUploadResult[]> {
   const results: CloudUploadResult[] = [];
 
@@ -126,20 +137,20 @@ export async function uploadMultipleImagesToCloud(
       current,
       total: files.length,
       fileName: file.name,
-      percentage
+      percentage,
     });
 
     try {
       const result = await uploadImageToCloud(file);
       results.push({
         ...result,
-        fileName: file.name
+        fileName: file.name,
       });
     } catch (error) {
       results.push({
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed',
-        fileName: file.name
+        error: error instanceof Error ? error.message : "Upload failed",
+        fileName: file.name,
       });
     }
   }
@@ -148,8 +159,8 @@ export async function uploadMultipleImagesToCloud(
   onProgress?.({
     current: files.length,
     total: files.length,
-    fileName: 'Complete',
-    percentage: 100
+    fileName: "Complete",
+    percentage: 100,
   });
 
   return results;
@@ -161,23 +172,23 @@ export async function uploadMultipleImagesToCloud(
 export function getCloudServiceStatus() {
   return {
     configured: !!(CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET),
-    serviceName: 'Cloudinary',
+    serviceName: "Cloudinary",
     maxSizeMB: 10,
     features: [
-      '10MB per file size limit',
-      'Multiple image upload support',
-      'Professional image optimization',
-      'Global CDN delivery',
-      'Automatic format conversion'
+      "10MB per file size limit",
+      "Multiple image upload support",
+      "Professional image optimization",
+      "Global CDN delivery",
+      "Automatic format conversion",
     ],
     configHelp: {
       steps: [
-        '1. Create account at https://cloudinary.com/',
-        '2. Get your Cloud Name from dashboard',
-        '3. Create an upload preset (unsigned)',
-        '4. Add to .env: VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name',
-        '5. Add to .env: VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset'
-      ]
-    }
+        "1. Create account at https://cloudinary.com/",
+        "2. Get your Cloud Name from dashboard",
+        "3. Create an upload preset (unsigned)",
+        "4. Add to .env: VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name",
+        "5. Add to .env: VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset",
+      ],
+    },
   };
 }
