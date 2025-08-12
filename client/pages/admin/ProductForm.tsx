@@ -447,24 +447,6 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
             </p>
           </div>
 
-          {/* Storage capacity warning */}
-          {(() => {
-            const storageCheck = checkStorageCapacity();
-            if (storageCheck.usageKB > 3000) {
-              // Warn at 3MB
-              return (
-                <div className="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    ⚠️ <strong>Storage Warning:</strong> Using{" "}
-                    {Math.round(storageCheck.usageKB)}KB of ~5MB storage limit.
-                    Consider using smaller images or deleting unused products to
-                    avoid quota issues.
-                  </p>
-                </div>
-              );
-            }
-            return null;
-          })()}
 
           {/* Debug Panel (Development only) */}
           {import.meta.env.DEV && (
