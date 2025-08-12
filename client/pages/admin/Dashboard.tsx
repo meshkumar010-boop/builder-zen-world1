@@ -74,13 +74,21 @@ function AdminDashboardContent() {
 
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
-    
+
     try {
       await deleteProduct(id);
       setProducts(products.filter(p => p.id !== id));
+      console.log(`✅ Product ${id} deleted successfully`);
     } catch (err: any) {
       setError(err.message || 'Failed to delete product');
+      console.error(`❌ Failed to delete product ${id}:`, err);
     }
+  };
+
+  // Add refresh function that can be called by Firebase status
+  const handleRefreshProducts = async () => {
+    console.log("🔄 Refreshing products from Firebase...");
+    await loadProducts();
   };
 
   const handleLogout = async () => {
