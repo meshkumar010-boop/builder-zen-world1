@@ -15,7 +15,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db, storage, checkFirebaseConnection, reconnectFirebase } from "@/lib/firebase";
 
 // Helper function to check network connectivity
 function isOnline(): boolean {
@@ -30,6 +30,31 @@ function isFirebaseBlocked(): boolean {
   const hasExtensions = window.chrome && window.chrome.runtime;
 
   return hasExtensions || !isOnline();
+}
+
+// Enhanced Firebase connection test
+async function testFirebaseConnection(): Promise<boolean> {
+  try {
+    console.log("🧪 Testing Firebase connection...");
+
+    // Try a simple Firestore operation
+    const testQuery = collection(db, "products");
+    const testResult = await getDocs(testQuery);
+
+    console.log("✅ Firebase Firestore is accessible");
+    return true;
+  } catch (error: any) {
+    console.warn("❌ Firebase connection test failed:", error.message);
+
+    // Try to reconnect
+    const reconnected = await reconnectFirebase();
+    if (reconnected) {
+      console.log("✅ Firebase reconnection successful");
+      return true;
+    }
+
+    return false;
+  }
 }
 
 export interface Product {
