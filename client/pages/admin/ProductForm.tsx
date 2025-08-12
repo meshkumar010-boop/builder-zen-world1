@@ -17,15 +17,10 @@ import {
   type Product,
 } from "@/services/products";
 import {
-  uploadImageIntegrated,
-  uploadMultipleImages,
-  getUploadServiceStatus,
-  UPLOAD_CONFIG_HELP,
-  isValidImageUrl,
-  FREE_IMAGE_HOSTS,
-  type UploadResult,
-  type UploadOptions,
-} from "@/services/integratedImageUpload";
+  uploadImageToCloud,
+  getCloudServiceStatus,
+  type CloudUploadResult,
+} from "@/services/cloudImageUpload";
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
@@ -91,15 +86,7 @@ function ProductFormContent() {
 
   const [newFeature, setNewFeature] = useState("");
   const [newColor, setNewColor] = useState({ name: "", value: "#000000" });
-  const [imageUrl, setImageUrl] = useState("");
-  const [showUrlInput, setShowUrlInput] = useState(false);
-  const [integratedUploading, setIntegratedUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{
-    current: number;
-    total: number;
-    file: string;
-  }>({ current: 0, total: 0, file: "" });
-  const [showServiceStatus, setShowServiceStatus] = useState(false);
+  const [cloudUploading, setCloudUploading] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
@@ -848,154 +835,79 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Upload Service Status */}
-              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                      Integrated Cloud Upload System
-                    </span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowServiceStatus(!showServiceStatus)}
-                    className="text-blue-600 dark:text-blue-400"
-                  >
-                    {showServiceStatus ? "Hide" : "Show"} Services
-                  </Button>
-                </div>
-                <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                  Automatically tries Firebase, Cloudinary, Imgur, and ImgBB
-                  with smart fallbacks
-                </p>
-
-                {showServiceStatus && (
-                  <div className="mt-3 space-y-2">
-                    {Object.entries(getUploadServiceStatus()).map(
-                      ([key, service]) => (
-                        <div
-                          key={key}
-                          className="flex items-center justify-between text-xs"
-                        >
-                          <span
-                            className={
-                              service.available
-                                ? "text-green-700 dark:text-green-300"
-                                : "text-orange-700 dark:text-orange-300"
-                            }
-                          >
-                            {service.available ? "✅" : "⚠️"} {service.name}
-                          </span>
-                          <span className="text-blue-600 dark:text-blue-400">
-                            {service.description}
-                          </span>
-                        </div>
-                      ),
+              {/* Cloud Service Status */}
+              {(() => {
+                const cloudStatus = getCloudServiceStatus();
+                return (
+                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center space-x-2">
+                      <Cloud className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                        {cloudStatus.serviceName} Cloud Upload
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        cloudStatus.configured
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                          : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200'
+                      }`}>
+                        {cloudStatus.configured ? 'Configured' : 'Setup Required'}
+                      </span>
+                    </div>
+                    <div className="mt-2 space-y-1">
+                      {cloudStatus.features.map((feature, index) => (
+                        <p key={index} className="text-xs text-blue-700 dark:text-blue-300">
+                          • {feature}
+                        </p>
+                      ))}
+                    </div>
+                    {!cloudStatus.configured && (
+                      <div className="mt-2 p-2 bg-orange-50 dark:bg-orange-900/10 rounded text-xs">
+                        <p className="font-medium text-orange-800 dark:text-orange-200 mb-1">Setup Required:</p>
+                        {cloudStatus.configHelp.steps.map((step, index) => (
+                          <p key={index} className="text-orange-700 dark:text-orange-300">{step}</p>
+                        ))}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
+                );
+              })()}
 
-              {/* Upload Options */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Smart Auto Upload */}
-                <div className="space-y-2">
-                  <Label>Smart Upload (Recommended)</Label>
-                  <div className="border-2 border-dashed border-primary/30 rounded-lg p-4 text-center hover:border-primary/50 transition-colors bg-primary/5">
-                    <input
-                      type="file"
-                      id="auto-images"
-                      multiple
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, "auto")}
-                      className="hidden"
-                      disabled={integratedUploading}
-                    />
-                    <label htmlFor="auto-images" className="cursor-pointer">
-                      <div className="space-y-2">
-                        <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
-                          <Cloud className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          {integratedUploading ? (
-                            <S2LoaderSmall text="Uploading..." />
-                          ) : (
-                            <p className="text-sm font-medium text-foreground">
-                              Auto Upload
+              {/* Single Upload Option */}
+              <div className="space-y-2">
+                <Label>Upload Product Image (Max 10MB)</Label>
+                <div className="border-2 border-dashed border-primary/30 rounded-lg p-6 text-center hover:border-primary/50 transition-colors bg-primary/5">
+                  <input
+                    type="file"
+                    id="cloud-image"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleCloudUpload}
+                    className="hidden"
+                    disabled={cloudUploading}
+                  />
+                  <label htmlFor="cloud-image" className="cursor-pointer">
+                    <div className="space-y-3">
+                      <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                        <Cloud className="h-8 w-8 text-primary" />
+                      </div>
+                      <div>
+                        {cloudUploading ? (
+                          <S2LoaderSmall text="Uploading to cloud..." />
+                        ) : (
+                          <>
+                            <p className="text-base font-medium text-foreground">
+                              Click to Upload Image
                             </p>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            Tries best service first
-                          </p>
-                        </div>
+                            <p className="text-sm text-muted-foreground">
+                              JPEG, PNG, or WebP • Max 10MB
+                            </p>
+                            <p className="text-xs text-primary mt-1">
+                              Powered by Cloudinary CDN
+                            </p>
+                          </>
+                        )}
                       </div>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Firebase Priority */}
-                <div className="space-y-2">
-                  <Label>Firebase Priority</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
-                    <input
-                      type="file"
-                      id="firebase-images"
-                      multiple
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, "firebase")}
-                      className="hidden"
-                      disabled={integratedUploading}
-                    />
-                    <label htmlFor="firebase-images" className="cursor-pointer">
-                      <div className="space-y-2">
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto">
-                          <Upload className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">
-                            Firebase First
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Try Firebase, then cloud
-                          </p>
-                        </div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Cloud Priority */}
-                <div className="space-y-2">
-                  <Label>Cloud Priority</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
-                    <input
-                      type="file"
-                      id="cloud-images"
-                      multiple
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, "cloud")}
-                      className="hidden"
-                      disabled={integratedUploading}
-                    />
-                    <label htmlFor="cloud-images" className="cursor-pointer">
-                      <div className="space-y-2">
-                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
-                          <Cloud className="h-6 w-6 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">
-                            Cloud First
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Try cloud, then Firebase
-                          </p>
-                        </div>
-                      </div>
-                    </label>
-                  </div>
+                    </div>
+                  </label>
                 </div>
               </div>
 
