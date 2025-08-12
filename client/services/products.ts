@@ -121,18 +121,23 @@ const PRODUCTS_COLLECTION = "products";
 
 // Get all products
 export async function getProducts(): Promise<Product[]> {
+  console.log("📦 Loading products...");
+
   // First try localStorage (faster and more reliable)
   const localProducts = getLocalProducts();
+  console.log("📱 Local products found:", localProducts.length);
 
-  // Skip Firebase if we detect blocking or no internet
-  if (isFirebaseBlocked() || !isOnline()) {
-    console.log("Firebase blocked or offline, using localStorage only");
+  // Test Firebase connection first
+  const firebaseConnected = await testFirebaseConnection();
+
+  if (!firebaseConnected || isFirebaseBlocked() || !isOnline()) {
+    console.log("⚠️ Firebase unavailable, using localStorage only");
     return localProducts;
   }
 
-  // Try Firebase with timeout and enhanced error handling
+  // Try Firebase with enhanced error handling
   try {
-    console.log("Fetching products from Firebase...");
+    console.log("☁️ Fetching products from Firebase...");
 
     // Add timeout wrapper for Firebase calls
     const firebasePromise = (async () => {
@@ -141,11 +146,11 @@ export async function getProducts(): Promise<Product[]> {
       return await getDocs(q);
     })();
 
-    // Race between Firebase call and timeout (shorter timeout)
+    // Race between Firebase call and timeout
     const querySnapshot = await Promise.race([
       firebasePromise,
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Firebase timeout")), 3000)
+        setTimeout(() => reject(new Error("Firebase timeout")), 5000)
       ),
     ]) as any;
 
@@ -154,7 +159,7 @@ export async function getProducts(): Promise<Product[]> {
       ...doc.data(),
     })) as Product[];
 
-    console.log("Firebase products found:", firebaseProducts.length);
+    console.log("✅ Firebase products loaded:", firebaseProducts.length);
 
     // Update localStorage with latest Firebase data
     if (firebaseProducts.length > 0) {
@@ -162,25 +167,28 @@ export async function getProducts(): Promise<Product[]> {
         "s2-wear-products",
         JSON.stringify(firebaseProducts),
       );
+      console.log("💾 Updated localStorage with Firebase data");
       return firebaseProducts;
+    } else {
+      console.log("ℹ️ No products in Firebase, using local data");
+      return localProducts;
     }
   } catch (error: any) {
-    console.warn(
-      "Firebase connection failed (using localStorage):",
-      error?.message || "Unknown error",
-    );
+    console.error("❌ Firebase fetch failed:", error?.message || "Unknown error");
 
     // Log specific error types for debugging
     if (error?.message?.includes("Failed to fetch")) {
-      console.warn("Network fetch error - likely blocked by extension or CORS");
+      console.warn("🚫 Network fetch error - likely blocked by extension or CORS");
     } else if (error?.message?.includes("timeout")) {
-      console.warn("Firebase timeout - slow connection");
+      console.warn("⏱️ Firebase timeout - slow connection");
+    } else if (error?.message?.includes("permission")) {
+      console.warn("🔒 Firebase permission denied - check Firestore rules");
     }
-  }
 
-  // Return localStorage data (includes sample products if empty)
-  console.log("Using localStorage products:", localProducts.length);
-  return localProducts;
+    // Return localStorage data as fallback
+    console.log("🔄 Using localStorage fallback");
+    return localProducts;
+  }
 }
 
 // Helper function to get local products
