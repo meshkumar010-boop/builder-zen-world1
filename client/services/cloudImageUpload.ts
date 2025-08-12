@@ -57,13 +57,16 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
       body: formData,
     });
 
+    // Read response body once and handle both success and error cases
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Cloudinary error response:', errorText);
-      throw new Error(`Cloudinary server error (${response.status}): ${errorText}`);
+      console.error('❌ Cloudinary error response:', responseText);
+      throw new Error(`Cloudinary server error (${response.status}): ${responseText}`);
     }
 
-    const data = await response.json();
+    // Parse the successful response
+    const data = JSON.parse(responseText);
 
     if (data.secure_url) {
       console.log(`✅ Upload successful: ${data.secure_url}`);
