@@ -11,6 +11,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import { Layout } from "./components/layout";
 import { setupFirebaseDevHelper } from "./utils/firebaseDevHelper";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
