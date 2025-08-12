@@ -27,6 +27,7 @@ import {
   type UploadOptions
 } from '@/services/integratedImageUpload';
 import { S2LoaderSmall } from '@/components/S2Loader';
+import { testProductAddition, debugProductForm } from '@/utils/debugProduct';
 import {
   ArrowLeft,
   Upload,
@@ -36,7 +37,8 @@ import {
   ImageIcon,
   Link as LinkIcon,
   Cloud,
-  Info
+  Info,
+  Bug
 } from 'lucide-react';
 
 const CATEGORIES = ['T-Shirts', 'Hoodies', 'Jackets', 'Sweatshirts', 'Pants', 'Accessories'];
