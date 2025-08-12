@@ -149,8 +149,17 @@ function ProductFormContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submission started");
-    console.log("Form data:", formData);
+    console.log("🚀 Form submission started");
+    console.log("📋 Form data:", {
+      name: formData.name,
+      price: formData.price,
+      originalPrice: formData.originalPrice,
+      category: formData.category,
+      sizes: formData.sizes,
+      colors: formData.colors.length,
+      images: formData.images.length,
+      features: formData.features.length
+    });
 
     setLoading(true);
     setError("");
@@ -189,23 +198,27 @@ function ProductFormContent() {
     }
 
     try {
-      console.log("Attempting to save product...");
+      console.log("💾 Attempting to save product...");
+      let resultId: string;
+
       if (isEdit && id) {
-        console.log("Updating product with ID:", id);
+        console.log("✏️ Updating product with ID:", id);
         await updateProduct(id, formData);
-        console.log("Product updated successfully");
+        resultId = id;
+        console.log("✅ Product updated successfully");
       } else {
-        console.log("Adding new product");
-        const newId = await addProduct(formData);
-        console.log("Product added successfully with ID:", newId);
+        console.log("➕ Adding new product");
+        resultId = await addProduct(formData);
+        console.log("✅ Product added successfully with ID:", resultId);
       }
 
-      // Show success message and refresh
-      alert(
-        isEdit
-          ? "Product updated successfully!"
-          : "Product added successfully!",
-      );
+      // Show detailed success message
+      const successMessage = isEdit
+        ? `Product "${formData.name}" updated successfully!`
+        : `Product "${formData.name}" added successfully!\nProduct ID: ${resultId}`;
+
+      console.log("🎉 Success:", successMessage);
+      alert(successMessage);
 
       // Force a page refresh to ensure data sync
       if (!isEdit) {
@@ -222,18 +235,38 @@ function ProductFormContent() {
           features: ["100% Cotton", "Machine Washable"],
         });
 
+        console.log("🔄 Form cleared for next product");
         // Stay on form for adding more products
         // navigate('/admin/dashboard');
       } else {
         // For edits, go back to dashboard
+        console.log("📍 Navigating back to dashboard");
         navigate("/admin/dashboard");
       }
     } catch (err: any) {
-      console.error("Error saving product:", err);
-      setError(
-        err.message ||
-          "Failed to save product. Please check your Firebase configuration.",
-      );
+      console.error("❌ Error saving product:", err);
+
+      // Enhanced error messaging with troubleshooting tips
+      let errorMessage = err.message || "Failed to save product.";
+
+      if (err.message?.includes("Failed to fetch")) {
+        errorMessage += "\n💡 Tip: This might be due to a browser extension blocking Firebase. Try disabling ad blockers.";
+      } else if (err.message?.includes("permission-denied")) {
+        errorMessage += "\n💡 Tip: Firebase permissions issue. Check Firestore security rules.";
+      } else if (err.message?.includes("unavailable")) {
+        errorMessage += "\n💡 Tip: Firebase service temporarily unavailable. The product was saved locally and will sync when connection is restored.";
+      } else if (err.message?.includes("INTERNAL ASSERTION FAILED")) {
+        errorMessage += "\n💡 Tip: Firebase internal error. The product was saved locally for safety.";
+      }
+
+      setError(errorMessage);
+
+      // Log additional debugging info
+      console.log("🔍 Debug info:");
+      console.log("  - Browser:", navigator.userAgent);
+      console.log("  - Online:", navigator.onLine);
+      console.log("  - URL:", window.location.href);
+      console.log("  - Form valid:", !(!formData.name || formData.sizes.length === 0));
     } finally {
       setLoading(false);
     }
