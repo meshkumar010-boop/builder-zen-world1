@@ -57,7 +57,7 @@ export function setupFirebaseDevHelper() {
   };
 
   // Periodic connection health check
-  setInterval(() => {
+  const healthCheckInterval = setInterval(() => {
     const state = getConnectionState();
     if (state.lastError?.message?.includes("INTERNAL ASSERTION FAILED")) {
       console.warn(
@@ -67,6 +67,13 @@ export function setupFirebaseDevHelper() {
   }, 30000); // Check every 30 seconds
 
   console.log("✅ Firebase development helper initialized");
+
+  // Return cleanup function
+  return () => {
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+    clearInterval(healthCheckInterval);
+    console.log("🧹 Firebase development helper cleaned up");
+  };
 }
 
 // Reset Firebase state manually (for debugging)
