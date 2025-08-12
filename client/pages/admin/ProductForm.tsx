@@ -90,7 +90,7 @@ function ProductFormContent() {
     percentage: number;
     error?: string;
   } | null>(null);
-  const [useIntegratedUpload, setUseIntegratedUpload] = useState(false);
+  const [useIntegratedUpload, setUseIntegratedUpload] = useState(true); // Default to integrated upload for better reliability
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
