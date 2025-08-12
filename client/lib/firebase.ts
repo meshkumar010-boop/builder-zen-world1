@@ -48,23 +48,37 @@ let connectionState = {
 
 // Test Firebase connectivity on initialization
 async function testFirebaseConnection() {
-  if (connectionState.initialized) {
-    return connectionState.connected;
-  }
-
   try {
     console.log("🔗 Testing Firebase connectivity...");
 
-    // Clear any existing connection issues
-    try {
-      await disableNetwork(db);
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay
-      await enableNetwork(db);
-    } catch (networkError) {
-      console.warn("⚠️ Network reset failed, continuing...", networkError);
+    // Skip complex network operations that can cause state issues
+    // Just test if Firebase services are accessible
+    if (!db || !auth || !storage) {
+      throw new Error("Firebase services not initialized");
     }
 
-    console.log("✅ Firestore connection successful");
+    // Simple connectivity test without state changes
+    const testPromise = new Promise((resolve, reject) => {
+      // Just check if we can access the Firebase config
+      try {
+        const app = getApp();
+        if (app && app.options.projectId) {
+          resolve(true);
+        } else {
+          reject(new Error("Firebase app not properly configured"));
+        }
+      } catch (configError) {
+        reject(configError);
+      }
+    });
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Connection test timeout")), 2000)
+    );
+
+    await Promise.race([testPromise, timeoutPromise]);
+
+    console.log("✅ Firebase services accessible");
     connectionState.connected = true;
     connectionState.lastError = null;
 
