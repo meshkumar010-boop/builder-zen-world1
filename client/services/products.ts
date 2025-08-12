@@ -493,25 +493,63 @@ export async function updateProduct(
     updatedAt: new Date(),
   };
 
+  // Check data size before Firebase upload
+  const dataSize = JSON.stringify(updateData).length;
+  const dataSizeKB = dataSize / 1024;
+
+  console.log(`📏 Product data size: ${Math.round(dataSizeKB)}KB`);
+
   try {
     console.log("Updating product in Firebase:", id);
+
+    // Firebase Firestore document limit is 1MB
+    if (dataSizeKB > 900) { // Stay under 1MB limit with buffer
+      console.warn(`⚠️ Product data too large for Firebase (${Math.round(dataSizeKB)}KB). Storing locally only.`);
+      throw new Error(`Product data exceeds Firebase limits (${Math.round(dataSizeKB)}KB). Please use smaller images or reduce content.`);
+    }
+
     const docRef = doc(db, PRODUCTS_COLLECTION, id);
     await updateDoc(docRef, updateData);
-    console.log("Product updated in Firebase successfully");
-  } catch (error) {
+    console.log("✅ Product updated in Firebase successfully");
+  } catch (error: any) {
     console.error(
-      "Error updating product in Firebase, using localStorage fallback:",
-      error,
+      "❌ Error updating product in Firebase, using localStorage fallback:",
+      error.message,
     );
+
+    // Don't throw for size limit errors - continue with localStorage
+    if (!error.message.includes("longer than") && !error.message.includes("exceeds Firebase limits")) {
+      // Only log other Firebase errors, don't fail the operation
+      console.warn("📱 Continuing with localStorage-only mode");
+    }
   }
 
-  // Always update localStorage for immediate UI updates
-  const existingProducts = await getProducts();
-  const updatedProducts = existingProducts.map((p) =>
-    p.id === id ? { ...p, ...updateData } : p,
-  );
-  localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
-  console.log("Product updated in localStorage");
+  try {
+    // Update localStorage for immediate UI updates
+    const existingProducts = await getProducts();
+    const updatedProducts = existingProducts.map((p) =>
+      p.id === id ? { ...p, ...updateData } : p,
+    );
+
+    // Check localStorage capacity
+    const updatedDataString = JSON.stringify(updatedProducts);
+    const updatedSizeKB = new Blob([updatedDataString]).size / 1024;
+
+    if (updatedSizeKB > 4500) { // Approaching 5MB localStorage limit
+      throw new Error(`Storage quota almost exceeded (${Math.round(updatedSizeKB)}KB). Please delete some products or use smaller images.`);
+    }
+
+    localStorage.setItem("s2-wear-products", updatedDataString);
+    console.log(`💾 Product updated in localStorage (${Math.round(updatedSizeKB)}KB total)`);
+  } catch (storageError: any) {
+    console.error("❌ localStorage update failed:", storageError);
+
+    if (storageError.name === 'QuotaExceededError' || storageError.message.includes('quota')) {
+      throw new Error("Storage quota exceeded. Please delete some products or use smaller images to continue.");
+    }
+
+    throw storageError;
+  }
 }
 
 // Delete product
