@@ -13,7 +13,6 @@ import {
   addProduct,
   updateProduct,
   getProduct,
-  uploadProductImage,
   type Product,
 } from "@/services/products";
 import {
@@ -24,12 +23,6 @@ import {
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
-import {
-  optimizeImage,
-  fileToOptimizedBase64,
-  needsOptimization,
-  checkStorageCapacity,
-} from "@/utils/imageOptimizer";
 import {
   ArrowLeft,
   Upload,
