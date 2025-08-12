@@ -11,7 +11,11 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
 
   // Show loading spinner while checking authentication
   if (loading) {
-    return <S2LoaderFullscreen text="Verifying admin access..." />;
+    return (
+      <div className="min-h-screen relative">
+        <S2LoaderFullscreen text="Verifying admin access..." />
+      </div>
+    );
   }
 
   // Redirect to admin login if not authenticated or not an admin
