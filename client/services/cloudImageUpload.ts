@@ -208,11 +208,20 @@ export async function uploadMultipleImagesToCloud(
  * Get cloud service configuration status
  */
 export function getCloudServiceStatus() {
+  const isDemo = !CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET ||
+                 CLOUDINARY_CLOUD_NAME === 'demo' || CLOUDINARY_UPLOAD_PRESET === 'demo';
+
   return {
-    configured: !!(CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET),
-    serviceName: "Cloudinary",
+    configured: !isDemo,
+    serviceName: isDemo ? "Cloudinary (Demo Mode)" : "Cloudinary",
     maxSizeMB: 10,
-    features: [
+    features: isDemo ? [
+      "Demo mode active - images converted to data URLs",
+      "10MB per file size limit",
+      "Local image processing and optimization",
+      "Fallback storage for development",
+      "⚠️ Configure Cloudinary for production use",
+    ] : [
       "10MB per file size limit",
       "Multiple image upload support",
       "Professional image optimization",
@@ -224,8 +233,9 @@ export function getCloudServiceStatus() {
         "1. Create account at https://cloudinary.com/",
         "2. Get your Cloud Name from dashboard",
         "3. Create an upload preset (unsigned)",
-        "4. Add to .env: VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name",
-        "5. Add to .env: VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset",
+        "4. Use DevServerControl to set: VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name",
+        "5. Use DevServerControl to set: VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset",
+        "6. Restart the dev server to apply changes",
       ],
     },
   };
