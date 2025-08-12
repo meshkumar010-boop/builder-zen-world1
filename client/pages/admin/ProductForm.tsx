@@ -30,6 +30,12 @@ import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
 import {
+  optimizeImage,
+  fileToOptimizedBase64,
+  needsOptimization,
+  checkStorageCapacity
+} from "@/utils/imageOptimizer";
+import {
   ArrowLeft,
   Upload,
   X,
@@ -280,14 +286,25 @@ function ProductFormContent() {
     }
   };
 
-  // Helper function to convert file to base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
+  // Helper function to convert file to optimized base64
+  const fileToBase64 = async (file: File): Promise<string> => {
+    try {
+      // Check if optimization is needed
+      if (needsOptimization(file)) {
+        console.log(`🔄 Image needs optimization: ${file.name} (${Math.round(file.size / 1024)}KB)`);
+        return await fileToOptimizedBase64(file);
+      } else {
+        // Small image, use as-is
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+        });
+      }
+    } catch (error: any) {
+      throw new Error(`Image processing failed: ${error.message}`);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -295,6 +312,15 @@ function ProductFormContent() {
     if (!files) return;
 
     console.log("Starting image upload for", files.length, "files");
+
+    // Check storage capacity first
+    const storageCheck = checkStorageCapacity();
+    if (!storageCheck.available) {
+      setError(storageCheck.message || "Storage quota exceeded");
+      e.target.value = ""; // Clear input
+      return;
+    }
+
     setUploadingImages(true);
     setError("");
 
