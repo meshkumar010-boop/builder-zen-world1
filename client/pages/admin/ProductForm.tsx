@@ -82,6 +82,8 @@ function ProductFormContent() {
   const [integratedUploading, setIntegratedUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{current: number, total: number, file: string}>({current: 0, total: 0, file: ''});
   const [showServiceStatus, setShowServiceStatus] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string>('');
+  const [showDebug, setShowDebug] = useState(false);
 
   // For development/demo purposes, allow access without authentication
   const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('builder.codes');
