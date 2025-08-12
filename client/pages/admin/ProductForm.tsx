@@ -290,11 +290,15 @@ function ProductFormContent() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log("Starting cloud upload for:", file.name);
+    console.log("🚀 Starting cloud upload for:", file.name, `(${(file.size / 1024 / 1024).toFixed(2)}MB)`);
     setCloudUploading(true);
     setError("");
 
     try {
+      // Show progress feedback
+      const progressMessage = `Uploading ${file.name} to Cloudinary...`;
+      console.log(progressMessage);
+
       const result = await uploadImageToCloud(file);
 
       if (result.success && result.url) {
@@ -305,17 +309,27 @@ function ProductFormContent() {
         }));
 
         console.log("✅ Image uploaded successfully:", result.url);
+
+        // Show success message briefly
+        const successMessage = `✅ Image uploaded successfully to Cloudinary CDN`;
+        console.log(successMessage);
+
+        // Could add a toast notification here in the future
       } else {
-        setError(result.error || "Upload failed. Please try again.");
+        const errorMessage = result.error || "Upload failed. Please try again.";
+        console.error("❌ Upload failed:", errorMessage);
+        setError(errorMessage);
       }
 
       // Clear the file input
       e.target.value = "";
     } catch (err: any) {
-      console.error("Cloud upload error:", err);
-      setError("Upload failed. Please try again.");
+      console.error("❌ Cloud upload error:", err);
+      const errorMessage = err.message || "Upload failed. Please check your connection and try again.";
+      setError(errorMessage);
     } finally {
       setCloudUploading(false);
+      console.log("🏁 Upload process completed");
     }
   };
 
