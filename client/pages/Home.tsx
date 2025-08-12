@@ -52,12 +52,26 @@ export default function Home() {
 
   const loadFeaturedProducts = async () => {
     try {
-      const products = await getProducts();
+      console.log("🏠 Loading featured products...");
+
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Products loading timeout")), 5000)
+      );
+
+      const productsPromise = getProducts();
+
+      const products = await Promise.race([productsPromise, timeoutPromise]);
+      console.log("✅ Loaded", products.length, "products");
+
       // Show up to 4 products as featured
       setFeaturedProducts(products.slice(0, 4));
     } catch (error) {
-      console.error("Error loading featured products:", error);
+      console.error("❌ Error loading featured products:", error);
+      // Still show empty state instead of infinite loading
+      setFeaturedProducts([]);
     } finally {
+      console.log("🏠 Setting loading to false");
       setLoading(false);
     }
   };
