@@ -12,13 +12,15 @@ export function setupFirebaseDevHelper() {
   console.log("🔧 Setting up Firebase development helper...");
 
   // Clean up on page unload
-  window.addEventListener("beforeunload", () => {
+  const handleBeforeUnload = () => {
     try {
       cleanupFirebase();
     } catch (error) {
       console.warn("⚠️ Firebase cleanup warning:", error);
     }
-  });
+  };
+
+  window.addEventListener("beforeunload", handleBeforeUnload);
 
   // Handle hot module replacement (HMR)
   if (import.meta.hot) {
