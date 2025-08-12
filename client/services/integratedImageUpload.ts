@@ -283,7 +283,7 @@ export async function uploadImageIntegrated(
     ];
   }
 
-  // Try each service
+  // Try each service with fast fallback
   for (let i = 0; i < uploadServices.length; i++) {
     const uploadService = uploadServices[i];
     const serviceNames = ['Firebase', 'Cloudinary', 'ImgBB', 'Imgur'];
@@ -292,9 +292,9 @@ export async function uploadImageIntegrated(
     try {
       console.log(`📤 Attempting ${serviceName} upload (${i + 1}/${uploadServices.length})...`);
 
-      // Dynamic timeout based on file size and service priority
-      const baseTimeout = 20000; // 20 seconds base (reduced for faster fallbacks)
-      const sizeBonus = Math.min(file.size / 1024 / 1024 * 8000, 40000); // +8s per MB, max 40s bonus
+      // Dynamic timeout based on file size and service priority (optimized for speed)
+      const baseTimeout = 8000; // 8 seconds base for faster fallbacks
+      const sizeBonus = Math.min(file.size / 1024 / 1024 * 3000, 15000); // +3s per MB, max 15s bonus
       const timeout = baseTimeout + sizeBonus;
 
       console.log(`⏱️ ${serviceName} timeout: ${timeout}ms for ${(file.size / 1024 / 1024).toFixed(2)}MB file`);
@@ -315,7 +315,7 @@ export async function uploadImageIntegrated(
         // Skip remaining cloud services if this was a network/CORS error
         if (result.error?.includes('blocked by network') || result.error?.includes('CORS')) {
           console.warn(`🚫 Network restrictions detected, skipping remaining external services`);
-          // Continue to Firebase or Base64 fallback
+          break; // Skip to base64 fallback immediately
         }
       }
     } catch (error) {
