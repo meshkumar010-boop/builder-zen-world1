@@ -108,6 +108,54 @@ export async function uploadImageToCloud(file: File): Promise<CloudUploadResult>
 }
 
 /**
+ * Upload multiple images to Cloudinary with progress tracking
+ */
+export async function uploadMultipleImagesToCloud(
+  files: File[],
+  onProgress?: (progress: MultipleUploadProgress) => void
+): Promise<CloudUploadResult[]> {
+  const results: CloudUploadResult[] = [];
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const current = i + 1;
+    const percentage = (current / files.length) * 100;
+
+    // Report progress
+    onProgress?.({
+      current,
+      total: files.length,
+      fileName: file.name,
+      percentage
+    });
+
+    try {
+      const result = await uploadImageToCloud(file);
+      results.push({
+        ...result,
+        fileName: file.name
+      });
+    } catch (error) {
+      results.push({
+        success: false,
+        error: error instanceof Error ? error.message : 'Upload failed',
+        fileName: file.name
+      });
+    }
+  }
+
+  // Report completion
+  onProgress?.({
+    current: files.length,
+    total: files.length,
+    fileName: 'Complete',
+    percentage: 100
+  });
+
+  return results;
+}
+
+/**
  * Get cloud service configuration status
  */
 export function getCloudServiceStatus() {
@@ -116,7 +164,8 @@ export function getCloudServiceStatus() {
     serviceName: 'Cloudinary',
     maxSizeMB: 10,
     features: [
-      '10MB file size limit',
+      '10MB per file size limit',
+      'Multiple image upload support',
       'Professional image optimization',
       'Global CDN delivery',
       'Automatic format conversion'
