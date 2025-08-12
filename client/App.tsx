@@ -132,4 +132,25 @@ const App = () => (
   </ErrorBoundary>
 );
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Properly manage React root to avoid createRoot warnings during HMR
+const container = document.getElementById("root")!;
+
+// Check if we already have a root instance (for HMR compatibility)
+let root = (container as any)._reactRoot;
+
+if (!root) {
+  root = createRoot(container);
+  (container as any)._reactRoot = root;
+}
+
+root.render(<App />);
+
+// Clean up on hot module replacement
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    if (root) {
+      root.unmount();
+      delete (container as any)._reactRoot;
+    }
+  });
+}
