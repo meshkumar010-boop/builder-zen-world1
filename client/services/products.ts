@@ -134,6 +134,40 @@ export function sanitizeProduct(product: any): Product {
 
 const PRODUCTS_COLLECTION = "products";
 
+// Safe Firebase operation wrapper
+async function safeFirebaseOperation<T>(
+  operation: () => Promise<T>,
+  fallback: () => T,
+  operationName: string
+): Promise<T> {
+  try {
+    const result = await Promise.race([
+      operation(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Operation timeout")), 5000)
+      )
+    ]);
+    return result;
+  } catch (error: any) {
+    console.warn(`🚨 Firebase ${operationName} failed:`, error.message);
+
+    // Handle specific Firebase internal errors
+    if (error.message.includes("INTERNAL ASSERTION FAILED") ||
+        error.message.includes("Unexpected state")) {
+      console.warn("🔄 Using fallback due to Firebase internal error");
+      return fallback();
+    }
+
+    // Handle other Firebase errors
+    if (error.code === 'unavailable' || error.code === 'permission-denied') {
+      console.warn("🔄 Using fallback due to Firebase service error");
+      return fallback();
+    }
+
+    throw error;
+  }
+}
+
 // Get all products
 export async function getProducts(): Promise<Product[]> {
   console.log("📦 Loading products...");
