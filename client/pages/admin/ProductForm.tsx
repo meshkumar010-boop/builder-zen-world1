@@ -341,6 +341,31 @@ function ProductFormContent() {
     const fileArray = Array.from(files);
     console.log(`🚀 Starting upload for ${fileArray.length} file(s)`);
 
+    // Validate files first
+    const { valid: validFiles, errors: validationErrors } = validateFiles(fileArray);
+
+    if (validationErrors.length > 0) {
+      setError(`File validation failed:\n${validationErrors.join('\n')}`);
+      e.target.value = ""; // Clear the input
+      return;
+    }
+
+    if (validFiles.length === 0) {
+      setError("No valid files selected for upload.");
+      e.target.value = "";
+      return;
+    }
+
+    // Check total image limit
+    const currentImageCount = formData.images.length;
+    const maxImages = 10; // Reasonable limit for product images
+
+    if (currentImageCount + validFiles.length > maxImages) {
+      setError(`Too many images. Maximum ${maxImages} images allowed. You currently have ${currentImageCount} images.`);
+      e.target.value = "";
+      return;
+    }
+
     setCloudUploading(true);
     setError("");
     setUploadProgress(null);
