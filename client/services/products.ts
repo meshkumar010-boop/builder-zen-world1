@@ -456,17 +456,40 @@ export async function addProduct(
       ...existingProducts.filter((p) => p.id !== productId), // Remove duplicates
     ];
 
-    localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
+    // Check data size before saving
+    const updatedDataString = JSON.stringify(updatedProducts);
+    const productDataSize = JSON.stringify(productWithId).length / 1024;
+    const totalSizeKB = new Blob([updatedDataString]).size / 1024;
+
+    console.log(`📏 Product size: ${Math.round(productDataSize)}KB, Total storage: ${Math.round(totalSizeKB)}KB`);
+
+    // Check for storage limits
+    if (totalSizeKB > 4500) { // Approaching 5MB localStorage limit
+      throw new Error(`Storage quota almost exceeded (${Math.round(totalSizeKB)}KB/~5MB). Please delete some products or use smaller images.`);
+    }
+
+    if (productDataSize > 900) { // Large individual product
+      console.warn(`⚠️ Large product detected (${Math.round(productDataSize)}KB). Consider using smaller images.`);
+    }
+
+    localStorage.setItem("s2-wear-products", updatedDataString);
 
     console.log("💾 Product saved to localStorage:");
     console.log(`  - Product ID: ${productId}`);
+    console.log(`  - Product size: ${Math.round(productDataSize)}KB`);
     console.log(`  - Total products: ${updatedProducts.length}`);
+    console.log(`  - Total storage: ${Math.round(totalSizeKB)}KB`);
     console.log(
       `  - Firebase status: ${firebaseSuccess ? "✅ Synced" : "⚠️ Local only"}`,
     );
-  } catch (localError) {
+  } catch (localError: any) {
     console.error("❌ localStorage save failed:", localError);
-    throw new Error("Failed to save product locally. Please try again.");
+
+    if (localError.name === 'QuotaExceededError' || localError.message.includes('quota')) {
+      throw new Error("Storage quota exceeded. Please delete some products or use smaller images to continue.");
+    }
+
+    throw new Error(`Failed to save product locally: ${localError.message}`);
   }
 
   // Return success message with context
