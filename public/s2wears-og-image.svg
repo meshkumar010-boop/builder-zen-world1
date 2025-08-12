@@ -1,0 +1,89 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b00"/>
+      <stop offset="50%" style="stop-color:#ff8533"/>
+      <stop offset="100%" style="stop-color:#ffaa66"/>
+    </linearGradient>
+    <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative Circles -->
+  <circle cx="1000" cy="100" r="100" fill="rgba(255,255,255,0.15)"/>
+  <circle cx="200" cy="500" r="75" fill="rgba(255,255,255,0.15)"/>
+  <circle cx="300" cy="150" r="40" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="900" cy="450" r="60" fill="rgba(255,255,255,0.08)"/>
+  
+  <!-- Pattern Overlay -->
+  <g opacity="0.1">
+    <circle cx="25" cy="25" r="2" fill="white"/>
+    <circle cx="75" cy="25" r="2" fill="white"/>
+    <circle cx="125" cy="25" r="2" fill="white"/>
+    <circle cx="175" cy="25" r="2" fill="white"/>
+    <circle cx="225" cy="25" r="2" fill="white"/>
+    <circle cx="275" cy="25" r="2" fill="white"/>
+    <circle cx="325" cy="25" r="2" fill="white"/>
+    <circle cx="375" cy="25" r="2" fill="white"/>
+    <circle cx="425" cy="25" r="2" fill="white"/>
+    <circle cx="475" cy="25" r="2" fill="white"/>
+    <circle cx="525" cy="25" r="2" fill="white"/>
+    <circle cx="575" cy="25" r="2" fill="white"/>
+    <circle cx="625" cy="25" r="2" fill="white"/>
+    <circle cx="675" cy="25" r="2" fill="white"/>
+    <circle cx="725" cy="25" r="2" fill="white"/>
+    <circle cx="775" cy="25" r="2" fill="white"/>
+    <circle cx="825" cy="25" r="2" fill="white"/>
+    <circle cx="875" cy="25" r="2" fill="white"/>
+    <circle cx="925" cy="25" r="2" fill="white"/>
+    <circle cx="975" cy="25" r="2" fill="white"/>
+    <circle cx="1025" cy="25" r="2" fill="white"/>
+    <circle cx="1075" cy="25" r="2" fill="white"/>
+    <circle cx="1125" cy="25" r="2" fill="white"/>
+    <circle cx="1175" cy="25" r="2" fill="white"/>
+  </g>
+  
+  <!-- Main Content -->
+  <g transform="translate(600, 315)">
+    <!-- S2 Logo -->
+    <text x="0" y="-50" text-anchor="middle" 
+          font-family="Arial, sans-serif" 
+          font-size="140" 
+          font-weight="bold" 
+          fill="white" 
+          filter="url(#textShadow)">S2</text>
+    
+    <!-- Decorative line -->
+    <rect x="-40" y="-10" width="80" height="4" fill="rgba(255,255,255,0.8)" rx="2"/>
+    
+    <!-- Tagline -->
+    <text x="0" y="30" text-anchor="middle" 
+          font-family="Arial, sans-serif" 
+          font-size="42" 
+          font-weight="bold" 
+          fill="white" 
+          filter="url(#textShadow)">Fashion That Defines You</text>
+    
+    <!-- Description -->
+    <text x="0" y="75" text-anchor="middle" 
+          font-family="Arial, sans-serif" 
+          font-size="26" 
+          font-weight="normal" 
+          fill="white" 
+          opacity="0.95" 
+          filter="url(#textShadow)">Premium Clothing • Modern Style • Quality Guaranteed</text>
+    
+    <!-- Website Badge -->
+    <rect x="-140" y="95" width="280" height="40" fill="rgba(255,255,255,0.2)" 
+          stroke="rgba(255,255,255,0.4)" stroke-width="2" rx="20"/>
+    <text x="0" y="120" text-anchor="middle" 
+          font-family="Arial, sans-serif" 
+          font-size="20" 
+          font-weight="bold" 
+          fill="white">s2wears-store.netlify.app</text>
+  </g>
+</svg>
