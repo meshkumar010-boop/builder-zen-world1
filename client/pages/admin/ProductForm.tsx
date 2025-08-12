@@ -28,6 +28,7 @@ import {
 } from "@/services/integratedImageUpload";
 import { S2LoaderSmall } from "@/components/S2Loader";
 import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
+import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
 import {
   ArrowLeft,
   Upload,
