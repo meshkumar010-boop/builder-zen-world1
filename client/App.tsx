@@ -73,13 +73,33 @@ const App = () => (
                   />
 
                   {/* Admin routes without main layout */}
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin/signup" element={<AdminSignup />} />
-                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                  <Route path="/admin/products/new" element={<ProductForm />} />
+                  <Route path="/admin/login" element={
+                    <ErrorBoundary>
+                      <AdminLogin />
+                    </ErrorBoundary>
+                  } />
+                  <Route path="/admin/signup" element={
+                    <ErrorBoundary>
+                      <AdminSignup />
+                    </ErrorBoundary>
+                  } />
+                  <Route path="/admin/dashboard" element={
+                    <ErrorBoundary>
+                      <AdminDashboard />
+                    </ErrorBoundary>
+                  } />
+                  <Route path="/admin/products/new" element={
+                    <ErrorBoundary>
+                      <ProductForm />
+                    </ErrorBoundary>
+                  } />
                   <Route
                     path="/admin/products/edit/:id"
-                    element={<ProductForm />}
+                    element={
+                      <ErrorBoundary>
+                        <ProductForm />
+                      </ErrorBoundary>
+                    }
                   />
 
                   <Route
