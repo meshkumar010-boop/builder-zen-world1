@@ -79,6 +79,7 @@ function ProductFormContent() {
   const [newFeature, setNewFeature] = useState("");
   const [newColor, setNewColor] = useState({ name: "", value: "#000000" });
   const [cloudUploading, setCloudUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<MultipleUploadProgress | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
@@ -411,7 +412,7 @@ ${testResult.totalProducts ? `📊 Total Products: ${testResult.totalProducts}` 
 
 📋 Form Debug Info:
 📱 Form State: ${debugResult.formState}
-☁��� Service Status: ${debugResult.serviceStatus}
+����� Service Status: ${debugResult.serviceStatus}
 ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}` : "✅ No errors detected"}
 
 🔧 Development Info:
