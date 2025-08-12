@@ -120,11 +120,14 @@ export const S2LoaderLarge = ({ className, text }: { className?: string; text?: 
   <S2Loader size="lg" variant="glow" className={className} text={text} />
 );
 
-export const S2LoaderFullscreen = ({ text = "Loading..." }: { text?: string }) => (
-  <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-    <S2Loader size="xl" variant="glow" text={text} />
-  </div>
-);
+export const S2LoaderFullscreen = ({ text = "Loading..." }: { text?: string }) => {
+  // Use a non-fixed approach to avoid DOM removal conflicts
+  return (
+    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 min-h-screen">
+      <S2Loader size="xl" variant="glow" text={text} />
+    </div>
+  );
+};
 
 // Loading skeleton for product cards
 export const S2ProductCardSkeleton = () => (
