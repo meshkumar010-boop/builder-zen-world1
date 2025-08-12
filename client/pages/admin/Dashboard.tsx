@@ -159,6 +159,11 @@ function AdminDashboardContent() {
           </div>
         </div>
 
+        {/* Firebase Status */}
+        <div className="mb-6">
+          <FirebaseStatus />
+        </div>
+
         {/* Quick Guide */}
         <Card className="border-0 bg-gradient-to-r from-primary/5 to-orange-500/5 shadow-soft mb-8">
           <CardContent className="p-6">
