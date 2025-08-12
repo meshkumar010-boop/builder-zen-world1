@@ -99,26 +99,58 @@ if (typeof window !== "undefined") {
 // Export helper function to check connection status
 export async function checkFirebaseConnection(): Promise<boolean> {
   try {
-    await enableNetwork(db);
+    // Use a simple operation that doesn't trigger complex state changes
+    if (!connectionState.connected) {
+      return await testFirebaseConnection();
+    }
     return true;
   } catch (error) {
     console.warn("Firebase connection check failed:", error);
+    connectionState.connected = false;
     return false;
   }
 }
 
-// Helper to force Firebase reconnection
+// Helper to force Firebase reconnection with proper cleanup
 export async function reconnectFirebase(): Promise<boolean> {
   try {
     console.log("🔄 Attempting Firebase reconnection...");
+
+    // Reset connection state
+    connectionState.connected = false;
+    connectionState.lastError = null;
+
+    // Try graceful reconnection
     await disableNetwork(db);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Wait for cleanup
     await enableNetwork(db);
+
+    connectionState.connected = true;
     console.log("✅ Firebase reconnected successfully");
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Firebase reconnection failed:", error);
+    connectionState.lastError = error;
     return false;
   }
+}
+
+// Clean up Firebase connections (for hot reload/development)
+export async function cleanupFirebase(): Promise<void> {
+  try {
+    console.log("🧹 Cleaning up Firebase connections...");
+    await disableNetwork(db);
+    await terminate(db);
+    connectionState.initialized = false;
+    connectionState.connected = false;
+  } catch (error) {
+    console.warn("⚠️ Firebase cleanup warning:", error);
+  }
+}
+
+// Get current connection state
+export function getConnectionState() {
+  return { ...connectionState };
 }
 
 export default app;
