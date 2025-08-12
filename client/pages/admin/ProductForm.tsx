@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link, Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
-import { 
-  addProduct, 
-  updateProduct, 
-  getProduct, 
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, Link, Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import {
+  addProduct,
+  updateProduct,
+  getProduct,
   uploadProductImage,
-  type Product 
-} from '@/services/products';
+  type Product,
+} from "@/services/products";
 import {
   uploadImageIntegrated,
   uploadMultipleImages,
@@ -24,10 +24,10 @@ import {
   isValidImageUrl,
   FREE_IMAGE_HOSTS,
   type UploadResult,
-  type UploadOptions
-} from '@/services/integratedImageUpload';
-import { S2LoaderSmall } from '@/components/S2Loader';
-import { testProductAddition, debugProductForm } from '@/utils/debugProduct';
+  type UploadOptions,
+} from "@/services/integratedImageUpload";
+import { S2LoaderSmall } from "@/components/S2Loader";
+import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import {
   ArrowLeft,
   Upload,
@@ -38,18 +38,25 @@ import {
   Link as LinkIcon,
   Cloud,
   Info,
-  Bug
-} from 'lucide-react';
+  Bug,
+} from "lucide-react";
 
-const CATEGORIES = ['T-Shirts', 'Hoodies', 'Jackets', 'Sweatshirts', 'Pants', 'Accessories'];
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const CATEGORIES = [
+  "T-Shirts",
+  "Hoodies",
+  "Jackets",
+  "Sweatshirts",
+  "Pants",
+  "Accessories",
+];
+const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const DEFAULT_COLORS = [
-  { name: 'White', value: '#FFFFFF' },
-  { name: 'Black', value: '#000000' },
-  { name: 'Navy', value: '#1E3A8A' },
-  { name: 'Gray', value: '#6B7280' },
-  { name: 'Red', value: '#DC2626' },
-  { name: 'Green', value: '#16A34A' },
+  { name: "White", value: "#FFFFFF" },
+  { name: "Black", value: "#000000" },
+  { name: "Navy", value: "#1E3A8A" },
+  { name: "Gray", value: "#6B7280" },
+  { name: "Red", value: "#DC2626" },
+  { name: "Green", value: "#16A34A" },
 ];
 
 function ProductFormContent() {
@@ -59,34 +66,40 @@ function ProductFormContent() {
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [uploadingImages, setUploadingImages] = useState(false);
 
   // Form state
-  const [formData, setFormData] = useState<Omit<Product, 'id'>>({
-    name: '',
+  const [formData, setFormData] = useState<Omit<Product, "id">>({
+    name: "",
     originalPrice: 2999, // Default original price in INR
     price: 2299, // Default discounted price in INR
-    description: '',
+    description: "",
     category: CATEGORIES[0],
-    sizes: ['M', 'L'], // Default common sizes
-    colors: [{ name: 'White', value: '#FFFFFF' }], // Default color
+    sizes: ["M", "L"], // Default common sizes
+    colors: [{ name: "White", value: "#FFFFFF" }], // Default color
     images: [],
-    features: ['100% Cotton', 'Machine Washable'] // Default features
+    features: ["100% Cotton", "Machine Washable"], // Default features
   });
 
-  const [newFeature, setNewFeature] = useState('');
-  const [newColor, setNewColor] = useState({ name: '', value: '#000000' });
-  const [imageUrl, setImageUrl] = useState('');
+  const [newFeature, setNewFeature] = useState("");
+  const [newColor, setNewColor] = useState({ name: "", value: "#000000" });
+  const [imageUrl, setImageUrl] = useState("");
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [integratedUploading, setIntegratedUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{current: number, total: number, file: string}>({current: 0, total: 0, file: ''});
+  const [uploadProgress, setUploadProgress] = useState<{
+    current: number;
+    total: number;
+    file: string;
+  }>({ current: 0, total: 0, file: "" });
   const [showServiceStatus, setShowServiceStatus] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<string>('');
+  const [debugInfo, setDebugInfo] = useState<string>("");
   const [showDebug, setShowDebug] = useState(false);
 
   // For development/demo purposes, allow access without authentication
-  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('builder.codes');
+  const isDevelopment =
+    window.location.hostname === "localhost" ||
+    window.location.hostname.includes("builder.codes");
 
   // Redirect if not logged in (except in development mode)
   if (!user && !isDevelopment) {
@@ -102,8 +115,8 @@ function ProductFormContent() {
   // Cleanup blob URLs on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
-      formData.images.forEach(image => {
-        if (image.startsWith('blob:')) {
+      formData.images.forEach((image) => {
+        if (image.startsWith("blob:")) {
           URL.revokeObjectURL(image);
         }
       });
@@ -124,11 +137,11 @@ function ProductFormContent() {
           sizes: product.sizes,
           colors: product.colors,
           images: product.images,
-          features: product.features
+          features: product.features,
         });
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to load product');
+      setError(err.message || "Failed to load product");
     } finally {
       setLoading(false);
     }
@@ -136,82 +149,91 @@ function ProductFormContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submission started');
-    console.log('Form data:', formData);
+    console.log("Form submission started");
+    console.log("Form data:", formData);
 
     setLoading(true);
-    setError('');
+    setError("");
 
     // Basic validation
     if (!formData.name.trim()) {
-      setError('Product name is required');
+      setError("Product name is required");
       setLoading(false);
       return;
     }
 
     if (formData.price <= 0) {
-      setError('Discounted price must be greater than 0');
+      setError("Discounted price must be greater than 0");
       setLoading(false);
       return;
     }
 
     if (formData.originalPrice <= 0) {
-      setError('Original price must be greater than 0');
+      setError("Original price must be greater than 0");
       setLoading(false);
       return;
     }
 
     if (formData.originalPrice < formData.price) {
-      setError('Original price must be greater than or equal to discounted price');
+      setError(
+        "Original price must be greater than or equal to discounted price",
+      );
       setLoading(false);
       return;
     }
 
     if (formData.sizes.length === 0) {
-      setError('Please select at least one size');
+      setError("Please select at least one size");
       setLoading(false);
       return;
     }
 
     try {
-      console.log('Attempting to save product...');
+      console.log("Attempting to save product...");
       if (isEdit && id) {
-        console.log('Updating product with ID:', id);
+        console.log("Updating product with ID:", id);
         await updateProduct(id, formData);
-        console.log('Product updated successfully');
+        console.log("Product updated successfully");
       } else {
-        console.log('Adding new product');
+        console.log("Adding new product");
         const newId = await addProduct(formData);
-        console.log('Product added successfully with ID:', newId);
+        console.log("Product added successfully with ID:", newId);
       }
 
       // Show success message and refresh
-      alert(isEdit ? 'Product updated successfully!' : 'Product added successfully!');
+      alert(
+        isEdit
+          ? "Product updated successfully!"
+          : "Product added successfully!",
+      );
 
       // Force a page refresh to ensure data sync
       if (!isEdit) {
         // For new products, clear form and reset to new state
         setFormData({
-          name: '',
+          name: "",
           originalPrice: 2999,
           price: 2299,
-          description: '',
-          category: 'T-Shirts',
-          sizes: ['M', 'L'],
-          colors: [{ name: 'White', value: '#FFFFFF' }],
+          description: "",
+          category: "T-Shirts",
+          sizes: ["M", "L"],
+          colors: [{ name: "White", value: "#FFFFFF" }],
           images: [],
-          features: ['100% Cotton', 'Machine Washable']
+          features: ["100% Cotton", "Machine Washable"],
         });
 
         // Stay on form for adding more products
         // navigate('/admin/dashboard');
       } else {
         // For edits, go back to dashboard
-        navigate('/admin/dashboard');
+        navigate("/admin/dashboard");
       }
     } catch (err: any) {
-      console.error('Error saving product:', err);
-      setError(err.message || 'Failed to save product. Please check your Firebase configuration.');
+      console.error("Error saving product:", err);
+      setError(
+        err.message ||
+          "Failed to save product. Please check your Firebase configuration.",
+      );
     } finally {
       setLoading(false);
     }
@@ -223,7 +245,7 @@ function ProductFormContent() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   };
 
@@ -231,24 +253,26 @@ function ProductFormContent() {
     const files = e.target.files;
     if (!files) return;
 
-    console.log('Starting image upload for', files.length, 'files');
+    console.log("Starting image upload for", files.length, "files");
     setUploadingImages(true);
-    setError('');
+    setError("");
 
     try {
       const newImages: string[] = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`Processing file ${i + 1}:`, file.name, 'Size:', file.size);
+        console.log(`Processing file ${i + 1}:`, file.name, "Size:", file.size);
 
         // Validate file size (5MB limit for base64)
         if (file.size > 5 * 1024 * 1024) {
-          throw new Error(`File ${file.name} is too large. Maximum size is 5MB.`);
+          throw new Error(
+            `File ${file.name} is too large. Maximum size is 5MB.`,
+          );
         }
 
         // Validate file type
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith("image/")) {
           throw new Error(`File ${file.name} is not a valid image file.`);
         }
 
@@ -259,40 +283,52 @@ function ProductFormContent() {
           console.log(`File ${file.name} uploaded to Firebase:`, firebaseUrl);
           newImages.push(firebaseUrl);
         } catch (firebaseError) {
-          console.warn('Firebase upload failed, converting to base64:', firebaseError);
+          console.warn(
+            "Firebase upload failed, converting to base64:",
+            firebaseError,
+          );
 
           // Fallback: Convert to base64 for persistence
           const base64Url = await fileToBase64(file);
-          console.log(`File ${file.name} converted to base64 (${Math.round(base64Url.length / 1024)}KB)`);
+          console.log(
+            `File ${file.name} converted to base64 (${Math.round(base64Url.length / 1024)}KB)`,
+          );
           newImages.push(base64Url);
         }
       }
 
       // Update UI with all processed images
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        images: [...prev.images, ...newImages]
+        images: [...prev.images, ...newImages],
       }));
 
-      console.log('Image processing completed, added', newImages.length, 'images');
+      console.log(
+        "Image processing completed, added",
+        newImages.length,
+        "images",
+      );
 
       // Clear the file input
-      e.target.value = '';
+      e.target.value = "";
     } catch (err: any) {
-      console.error('Image upload error:', err);
-      setError(err.message || 'Failed to upload images. Please try again.');
+      console.error("Image upload error:", err);
+      setError(err.message || "Failed to upload images. Please try again.");
     } finally {
       setUploadingImages(false);
     }
   };
 
-  const handleIntegratedUpload = async (e: React.ChangeEvent<HTMLInputElement>, preferredService: 'firebase' | 'cloud' | 'auto' = 'auto') => {
+  const handleIntegratedUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    preferredService: "firebase" | "cloud" | "auto" = "auto",
+  ) => {
     const files = e.target.files;
     if (!files) return;
 
     setIntegratedUploading(true);
-    setError('');
-    setUploadProgress({current: 0, total: files.length, file: ''});
+    setError("");
+    setUploadProgress({ current: 0, total: files.length, file: "" });
 
     try {
       const fileArray = Array.from(files);
@@ -303,33 +339,41 @@ function ProductFormContent() {
         tempId,
         { preferredService, fallbackToBase64: true },
         (current, total, fileName) => {
-          setUploadProgress({current, total, file: fileName});
-        }
+          setUploadProgress({ current, total, file: fileName });
+        },
       );
 
-      const successfulUploads = results.filter(result => result.success);
-      const failedUploads = results.filter(result => !result.success);
+      const successfulUploads = results.filter((result) => result.success);
+      const failedUploads = results.filter((result) => !result.success);
 
       if (successfulUploads.length > 0) {
         // Update UI with successful uploads
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          images: [...prev.images, ...successfulUploads.map(result => result.url!)]
+          images: [
+            ...prev.images,
+            ...successfulUploads.map((result) => result.url!),
+          ],
         }));
 
-        console.log(`✅ Successfully uploaded ${successfulUploads.length}/${results.length} images`);
+        console.log(
+          `✅ Successfully uploaded ${successfulUploads.length}/${results.length} images`,
+        );
 
         // Show upload summary
-        const sourceCounts = successfulUploads.reduce((acc, result) => {
-          acc[result.source] = (acc[result.source] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const sourceCounts = successfulUploads.reduce(
+          (acc, result) => {
+            acc[result.source] = (acc[result.source] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
 
-        console.log('Upload sources:', sourceCounts);
+        console.log("Upload sources:", sourceCounts);
       }
 
       if (failedUploads.length > 0) {
-        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map(f => f.error).join(', ')}`;
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => f.error).join(", ")}`;
         if (successfulUploads.length === 0) {
           setError(errorMessage);
         } else {
@@ -338,98 +382,100 @@ function ProductFormContent() {
       }
 
       // Clear the file input
-      e.target.value = '';
+      e.target.value = "";
     } catch (err: any) {
-      console.error('Integrated upload error:', err);
-      setError(err.message || 'Failed to upload images. Please try again.');
+      console.error("Integrated upload error:", err);
+      setError(err.message || "Failed to upload images. Please try again.");
     } finally {
       setIntegratedUploading(false);
-      setUploadProgress({current: 0, total: 0, file: ''});
+      setUploadProgress({ current: 0, total: 0, file: "" });
     }
   };
 
   const handleAddImageUrl = () => {
     if (!imageUrl.trim()) {
-      setError('Please enter a valid image URL');
+      setError("Please enter a valid image URL");
       return;
     }
 
     if (!isValidImageUrl(imageUrl)) {
-      setError('Please enter a valid image URL (must be http/https and end with image extension or be from a known image host)');
+      setError(
+        "Please enter a valid image URL (must be http/https and end with image extension or be from a known image host)",
+      );
       return;
     }
 
     // Add URL to images
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: [...prev.images, imageUrl.trim()]
+      images: [...prev.images, imageUrl.trim()],
     }));
 
     // Clear input
-    setImageUrl('');
+    setImageUrl("");
     setShowUrlInput(false);
-    setError('');
+    setError("");
   };
 
   const removeImage = (index: number) => {
     const imageToRemove = formData.images[index];
 
     // Clean up blob URLs to prevent memory leaks
-    if (imageToRemove && imageToRemove.startsWith('blob:')) {
+    if (imageToRemove && imageToRemove.startsWith("blob:")) {
       URL.revokeObjectURL(imageToRemove);
     }
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
   const toggleSize = (size: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       sizes: prev.sizes.includes(size)
-        ? prev.sizes.filter(s => s !== size)
-        : [...prev.sizes, size]
+        ? prev.sizes.filter((s) => s !== size)
+        : [...prev.sizes, size],
     }));
   };
 
   const addColor = () => {
     if (newColor.name && newColor.value) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        colors: [...prev.colors, newColor]
+        colors: [...prev.colors, newColor],
       }));
-      setNewColor({ name: '', value: '#000000' });
+      setNewColor({ name: "", value: "#000000" });
     }
   };
 
   const removeColor = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      colors: prev.colors.filter((_, i) => i !== index)
+      colors: prev.colors.filter((_, i) => i !== index),
     }));
   };
 
   const addFeature = () => {
     if (newFeature.trim()) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        features: [...prev.features, newFeature.trim()]
+        features: [...prev.features, newFeature.trim()],
       }));
-      setNewFeature('');
+      setNewFeature("");
     }
   };
 
   const removeFeature = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      features: prev.features.filter((_, i) => i !== index)
+      features: prev.features.filter((_, i) => i !== index),
     }));
   };
 
   const handleDebugTest = async () => {
-    setDebugInfo('Running debug test...');
+    setDebugInfo("Running debug test...");
 
     try {
       // Test product addition
@@ -440,18 +486,18 @@ function ProductFormContent() {
 
       const info = `
 🧪 Product Addition Test:
-${testResult.success ? '✅' : '❌'} Success: ${testResult.success}
-${testResult.error ? `❌ Error: ${testResult.error}` : ''}
-${testResult.productId ? `📦 Product ID: ${testResult.productId}` : ''}
-${testResult.totalProducts ? `📊 Total Products: ${testResult.totalProducts}` : ''}
+${testResult.success ? "✅" : "❌"} Success: ${testResult.success}
+${testResult.error ? `❌ Error: ${testResult.error}` : ""}
+${testResult.productId ? `📦 Product ID: ${testResult.productId}` : ""}
+${testResult.totalProducts ? `📊 Total Products: ${testResult.totalProducts}` : ""}
 
 📋 Form Debug Info:
 📱 Form State: ${debugResult.formState}
 ☁��� Service Status: ${debugResult.serviceStatus}
-${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}` : '✅ No errors detected'}
+${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}` : "✅ No errors detected"}
 
 🔧 Development Info:
-🌐 Environment: ${import.meta.env.DEV ? 'Development' : 'Production'}
+🌐 Environment: ${import.meta.env.DEV ? "Development" : "Production"}
 🏠 Hostname: ${window.location.hostname}
 🔗 Current URL: ${window.location.href}
 `;
@@ -468,7 +514,10 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
       <header className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <Link to="/admin/dashboard" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground">
+            <Link
+              to="/admin/dashboard"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Dashboard</span>
             </Link>
@@ -479,17 +528,20 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="font-poppins font-bold text-3xl text-foreground">
-            {isEdit ? 'Edit Product' : 'Add New Product'}
+            {isEdit ? "Edit Product" : "Add New Product"}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit ? 'Update product details and inventory' : 'Create a new product for your store'}
+            {isEdit
+              ? "Update product details and inventory"
+              : "Create a new product for your store"}
           </p>
 
           {/* Status indicator */}
           <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-200">
-              💡 <strong>Admin Panel Status:</strong> Your product data will be saved {' '}
-              (Firebase integration active with localStorage fallback for reliability)
+              💡 <strong>Admin Panel Status:</strong> Your product data will be
+              saved (Firebase integration active with localStorage fallback for
+              reliability)
             </p>
           </div>
 
@@ -518,7 +570,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     onClick={() => setShowDebug(!showDebug)}
                     className="text-yellow-600 dark:text-yellow-400"
                   >
-                    {showDebug ? 'Hide' : 'Show'} Debug
+                    {showDebug ? "Hide" : "Show"} Debug
                   </Button>
                 </div>
               </div>
@@ -553,7 +605,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     placeholder="Premium Cotton T-Shirt"
                     required
                   />
@@ -561,14 +615,21 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="originalPrice">Original Price (���) *</Label>
+                    <Label htmlFor="originalPrice">
+                      Original Price (���) *
+                    </Label>
                     <Input
                       id="originalPrice"
                       type="number"
                       step="1"
                       min="0"
                       value={formData.originalPrice}
-                      onChange={(e) => setFormData(prev => ({ ...prev, originalPrice: parseInt(e.target.value) || 0 }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          originalPrice: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       placeholder="2999"
                       required
                     />
@@ -582,21 +643,33 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                       step="1"
                       min="0"
                       value={formData.price}
-                      onChange={(e) => setFormData(prev => ({ ...prev, price: parseInt(e.target.value) || 0 }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          price: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       placeholder="2299"
                       required
                     />
                   </div>
                 </div>
 
-                {formData.originalPrice > 0 && formData.price > 0 && formData.originalPrice > formData.price && (
-                  <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                    <p className="text-sm text-green-800 dark:text-green-200">
-                      💰 <strong>Discount:</strong> {Math.round(((formData.originalPrice - formData.price) / formData.originalPrice) * 100)}% OFF
-                      (Save ₹{formData.originalPrice - formData.price})
-                    </p>
-                  </div>
-                )}
+                {formData.originalPrice > 0 &&
+                  formData.price > 0 &&
+                  formData.originalPrice > formData.price && (
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm text-green-800 dark:text-green-200">
+                        💰 <strong>Discount:</strong>{" "}
+                        {Math.round(
+                          ((formData.originalPrice - formData.price) /
+                            formData.originalPrice) *
+                            100,
+                        )}
+                        % OFF (Save ₹{formData.originalPrice - formData.price})
+                      </p>
+                    </div>
+                  )}
               </div>
 
               <div className="space-y-2">
@@ -604,12 +677,19 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                 <select
                   id="category"
                   value={formData.category}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   required
                 >
-                  {CATEGORIES.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                  {CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -619,14 +699,20 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="Write a detailed description of your product. Include materials, fit, style, and key features that customers should know about..."
                   rows={5}
                   required
                   className="resize-none"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {formData.description.length}/500 characters (Be descriptive but concise)
+                  {formData.description.length}/500 characters (Be descriptive
+                  but concise)
                 </p>
               </div>
             </CardContent>
@@ -636,10 +722,12 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
           <Card className="border-0 shadow-soft">
             <CardHeader>
               <CardTitle>Product Images</CardTitle>
-              <p className="text-sm text-muted-foreground">Upload high-quality images that showcase your product from different angles</p>
+              <p className="text-sm text-muted-foreground">
+                Upload high-quality images that showcase your product from
+                different angles
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
-
               {/* Upload Service Status */}
               <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
@@ -656,23 +744,37 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     onClick={() => setShowServiceStatus(!showServiceStatus)}
                     className="text-blue-600 dark:text-blue-400"
                   >
-                    {showServiceStatus ? 'Hide' : 'Show'} Services
+                    {showServiceStatus ? "Hide" : "Show"} Services
                   </Button>
                 </div>
                 <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                  Automatically tries Firebase, Cloudinary, Imgur, and ImgBB with smart fallbacks
+                  Automatically tries Firebase, Cloudinary, Imgur, and ImgBB
+                  with smart fallbacks
                 </p>
 
                 {showServiceStatus && (
                   <div className="mt-3 space-y-2">
-                    {Object.entries(getUploadServiceStatus()).map(([key, service]) => (
-                      <div key={key} className="flex items-center justify-between text-xs">
-                        <span className={service.available ? 'text-green-700 dark:text-green-300' : 'text-orange-700 dark:text-orange-300'}>
-                          {service.available ? '✅' : '⚠️'} {service.name}
-                        </span>
-                        <span className="text-blue-600 dark:text-blue-400">{service.description}</span>
-                      </div>
-                    ))}
+                    {Object.entries(getUploadServiceStatus()).map(
+                      ([key, service]) => (
+                        <div
+                          key={key}
+                          className="flex items-center justify-between text-xs"
+                        >
+                          <span
+                            className={
+                              service.available
+                                ? "text-green-700 dark:text-green-300"
+                                : "text-orange-700 dark:text-orange-300"
+                            }
+                          >
+                            {service.available ? "✅" : "⚠️"} {service.name}
+                          </span>
+                          <span className="text-blue-600 dark:text-blue-400">
+                            {service.description}
+                          </span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 )}
               </div>
@@ -688,7 +790,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                       id="auto-images"
                       multiple
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, 'auto')}
+                      onChange={(e) => handleIntegratedUpload(e, "auto")}
                       className="hidden"
                       disabled={integratedUploading}
                     />
@@ -701,7 +803,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                           {integratedUploading ? (
                             <S2LoaderSmall text="Uploading..." />
                           ) : (
-                            <p className="text-sm font-medium text-foreground">Auto Upload</p>
+                            <p className="text-sm font-medium text-foreground">
+                              Auto Upload
+                            </p>
                           )}
                           <p className="text-xs text-muted-foreground">
                             Tries best service first
@@ -721,7 +825,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                       id="firebase-images"
                       multiple
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, 'firebase')}
+                      onChange={(e) => handleIntegratedUpload(e, "firebase")}
                       className="hidden"
                       disabled={integratedUploading}
                     />
@@ -752,7 +856,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                       id="cloud-images"
                       multiple
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => handleIntegratedUpload(e, 'cloud')}
+                      onChange={(e) => handleIntegratedUpload(e, "cloud")}
                       className="hidden"
                       disabled={integratedUploading}
                     />
@@ -789,7 +893,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                   <div className="w-full bg-yellow-200 dark:bg-yellow-800 rounded-full h-2 mb-2">
                     <div
                       className="bg-yellow-600 dark:bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                      style={{
+                        width: `${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                      }}
                     />
                   </div>
                   {uploadProgress.file && (
@@ -809,7 +915,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                   className="w-full"
                 >
                   <LinkIcon className="h-4 w-4 mr-2" />
-                  {showUrlInput ? 'Hide' : 'Add'} Image URL
+                  {showUrlInput ? "Hide" : "Add"} Image URL
                 </Button>
               </div>
 
@@ -842,7 +948,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     <div className="flex items-start space-x-2">
                       <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
                       <div className="space-y-2">
-                        <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Free Image Hosting Services:</p>
+                        <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                          Free Image Hosting Services:
+                        </p>
                         <div className="grid grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-300">
                           {FREE_IMAGE_HOSTS.map((host, index) => (
                             <div key={index}>
@@ -854,7 +962,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                               >
                                 {host.name}
                               </a>
-                              <p className="text-blue-600 dark:text-blue-400">{host.limits}</p>
+                              <p className="text-blue-600 dark:text-blue-400">
+                                {host.limits}
+                              </p>
                             </div>
                           ))}
                         </div>
@@ -867,7 +977,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
               {formData.images.length > 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
-                    {formData.images.length} image{formData.images.length > 1 ? 's' : ''} added
+                    {formData.images.length} image
+                    {formData.images.length > 1 ? "s" : ""} added
                   </p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {formData.images.map((image, index) => (
@@ -878,12 +989,13 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                             alt={`Product ${index + 1}`}
                             className="w-full h-24 object-cover transition-transform group-hover:scale-105"
                             onError={(e) => {
-                              console.warn('Image failed to load:', image);
+                              console.warn("Image failed to load:", image);
                               // Replace with placeholder on error
-                              (e.target as HTMLImageElement).src = '/placeholder.svg';
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder.svg";
                             }}
                             onLoad={() => {
-                              console.log('Image loaded successfully:', image);
+                              console.log("Image loaded successfully:", image);
                             }}
                           />
                           <div className="absolute top-1 left-1 flex gap-1">
@@ -894,41 +1006,67 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                             )}
                           </div>
                           <div className="absolute top-1 right-1 flex gap-1">
-                            {image.startsWith('data:') && (
-                              <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Base64 Fallback">
+                            {image.startsWith("data:") && (
+                              <div
+                                className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Base64 Fallback"
+                              >
                                 💾
                               </div>
                             )}
-                            {image.includes('firebase') && (
-                              <div className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded" title="Firebase Storage">
+                            {image.includes("firebase") && (
+                              <div
+                                className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Firebase Storage"
+                              >
                                 🔥
                               </div>
                             )}
-                            {image.includes('cloudinary') && (
-                              <div className="bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded" title="Cloudinary">
+                            {image.includes("cloudinary") && (
+                              <div
+                                className="bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Cloudinary"
+                              >
                                 ☁️
                               </div>
                             )}
-                            {image.includes('imgur') && (
-                              <div className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded" title="Imgur">
+                            {image.includes("imgur") && (
+                              <div
+                                className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Imgur"
+                              >
                                 📷
                               </div>
                             )}
-                            {image.includes('imgbb') && (
-                              <div className="bg-yellow-600 text-white text-xs px-1.5 py-0.5 rounded" title="ImgBB">
+                            {image.includes("imgbb") && (
+                              <div
+                                className="bg-yellow-600 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="ImgBB"
+                              >
                                 🖼️
                               </div>
                             )}
-                            {image.includes('pexels') && (
-                              <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded" title="Demo/Stock image">
+                            {image.includes("pexels") && (
+                              <div
+                                className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Demo/Stock image"
+                              >
                                 🎭
                               </div>
                             )}
-                            {image.startsWith('https://') && !image.includes('firebase') && !image.includes('cloudinary') && !image.includes('imgur') && !image.includes('imgbb') && !image.includes('pexels') && (
-                              <div className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded" title="External URL">
-                                🔗
-                              </div>
-                            )}
+                            {image.startsWith("https://") &&
+                              !image.includes("firebase") &&
+                              !image.includes("cloudinary") &&
+                              !image.includes("imgur") &&
+                              !image.includes("imgbb") &&
+                              !image.includes("pexels") && (
+                                <div
+                                  className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                  title="External URL"
+                                >
+                                  🔗
+                                </div>
+                              )}
                           </div>
                         </div>
                         <Button
@@ -944,7 +1082,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    💡 Tip: 🔥 Firebase, ☁️ Cloudinary, 📷 Imgur, 🖼️ ImgBB, 💾 Base64, 🔗 URL, 🎭 Demo. First image is the main product image.
+                    💡 Tip: 🔥 Firebase, ☁️ Cloudinary, 📷 Imgur, 🖼️ ImgBB, 💾
+                    Base64, 🔗 URL, 🎭 Demo. First image is the main product
+                    image.
                   </p>
                 </div>
               )}
@@ -955,15 +1095,19 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
           <Card className="border-0 shadow-soft">
             <CardHeader>
               <CardTitle>Available Sizes</CardTitle>
-              <p className="text-sm text-muted-foreground">Select all sizes that will be available for this product</p>
+              <p className="text-sm text-muted-foreground">
+                Select all sizes that will be available for this product
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {SIZES.map(size => (
+                {SIZES.map((size) => (
                   <Button
                     key={size}
                     type="button"
-                    variant={formData.sizes.includes(size) ? "default" : "outline"}
+                    variant={
+                      formData.sizes.includes(size) ? "default" : "outline"
+                    }
                     onClick={() => toggleSize(size)}
                     className="h-12 text-base font-medium"
                   >
@@ -973,7 +1117,10 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
               </div>
               <div className="bg-accent/50 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Selected sizes:</strong> {formData.sizes.length > 0 ? formData.sizes.join(', ') : 'None selected'}
+                  <strong>Selected sizes:</strong>{" "}
+                  {formData.sizes.length > 0
+                    ? formData.sizes.join(", ")
+                    : "None selected"}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Tip: Most products should offer at least S, M, L, and XL sizes
@@ -986,7 +1133,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
           <Card className="border-0 shadow-soft">
             <CardHeader>
               <CardTitle>Available Colors</CardTitle>
-              <p className="text-sm text-muted-foreground">Add colors that customers can choose from</p>
+              <p className="text-sm text-muted-foreground">
+                Add colors that customers can choose from
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
@@ -996,7 +1145,12 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     <Input
                       placeholder="Enter color name (e.g., Navy Blue)"
                       value={newColor.name}
-                      onChange={(e) => setNewColor(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) =>
+                        setNewColor((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -1004,7 +1158,12 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     <Input
                       type="color"
                       value={newColor.value}
-                      onChange={(e) => setNewColor(prev => ({ ...prev, value: e.target.value }))}
+                      onChange={(e) =>
+                        setNewColor((prev) => ({
+                          ...prev,
+                          value: e.target.value,
+                        }))
+                      }
                       className="w-16 h-10 p-1 border rounded"
                     />
                   </div>
@@ -1022,7 +1181,11 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
 
               <div className="flex flex-wrap gap-2">
                 {formData.colors.map((color, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center space-x-2">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center space-x-2"
+                  >
                     <div
                       className="w-3 h-3 rounded-full border"
                       style={{ backgroundColor: color.value }}
@@ -1044,17 +1207,19 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
-                  {DEFAULT_COLORS.map(color => (
+                  {DEFAULT_COLORS.map((color) => (
                     <Button
                       key={color.name}
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        if (!formData.colors.some(c => c.name === color.name)) {
-                          setFormData(prev => ({
+                        if (
+                          !formData.colors.some((c) => c.name === color.name)
+                        ) {
+                          setFormData((prev) => ({
                             ...prev,
-                            colors: [...prev.colors, color]
+                            colors: [...prev.colors, color],
                           }));
                         }
                       }}
@@ -1076,7 +1241,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
           <Card className="border-0 shadow-soft">
             <CardHeader>
               <CardTitle>Product Features</CardTitle>
-              <p className="text-sm text-muted-foreground">Highlight key features and benefits of your product</p>
+              <p className="text-sm text-muted-foreground">
+                Highlight key features and benefits of your product
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -1086,7 +1253,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
                     placeholder="Enter a feature (e.g., 100% Organic Cotton, Machine Washable)"
                     value={newFeature}
                     onChange={(e) => setNewFeature(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && (e.preventDefault(), addFeature())
+                    }
                     className="flex-1"
                   />
                   <Button
@@ -1103,7 +1272,11 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
 
               <div className="flex flex-wrap gap-2">
                 {formData.features.map((feature, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center space-x-2">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center space-x-2"
+                  >
                     <span>{feature}</span>
                     <Button
                       type="button"
@@ -1133,7 +1306,7 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}`
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  {isEdit ? 'Update Product' : 'Create Product'}
+                  {isEdit ? "Update Product" : "Create Product"}
                 </>
               )}
             </Button>
