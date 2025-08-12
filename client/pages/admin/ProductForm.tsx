@@ -915,114 +915,42 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
               {formData.images.length > 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
-                    {formData.images.length} image
-                    {formData.images.length > 1 ? "s" : ""} added
+                    Product image uploaded
                   </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {formData.images.map((image, index) => (
-                      <div key={index} className="relative group">
-                        <div className="relative overflow-hidden rounded-lg border border-border bg-accent">
-                          <img
-                            src={image}
-                            alt={`Product ${index + 1}`}
-                            className="w-full h-24 object-cover transition-transform group-hover:scale-105"
-                            onError={(e) => {
-                              console.warn("Image failed to load:", image);
-                              // Replace with placeholder on error
-                              (e.target as HTMLImageElement).src =
-                                "/placeholder.svg";
-                            }}
-                            onLoad={() => {
-                              console.log("Image loaded successfully:", image);
-                            }}
-                          />
-                          <div className="absolute top-1 left-1 flex gap-1">
-                            {index === 0 && (
-                              <div className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded">
-                                Main
-                              </div>
-                            )}
-                          </div>
-                          <div className="absolute top-1 right-1 flex gap-1">
-                            {image.startsWith("data:") && (
-                              <div
-                                className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="Base64 Fallback"
-                              >
-                                💾
-                              </div>
-                            )}
-                            {image.includes("firebase") && (
-                              <div
-                                className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="Firebase Storage"
-                              >
-                                🔥
-                              </div>
-                            )}
-                            {image.includes("cloudinary") && (
-                              <div
-                                className="bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="Cloudinary"
-                              >
-                                ☁️
-                              </div>
-                            )}
-                            {image.includes("imgur") && (
-                              <div
-                                className="bg-green-600 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="Imgur"
-                              >
-                                📷
-                              </div>
-                            )}
-                            {image.includes("imgbb") && (
-                              <div
-                                className="bg-yellow-600 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="ImgBB"
-                              >
-                                🖼️
-                              </div>
-                            )}
-                            {image.includes("pexels") && (
-                              <div
-                                className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded"
-                                title="Demo/Stock image"
-                              >
-                                🎭
-                              </div>
-                            )}
-                            {image.startsWith("https://") &&
-                              !image.includes("firebase") &&
-                              !image.includes("cloudinary") &&
-                              !image.includes("imgur") &&
-                              !image.includes("imgbb") &&
-                              !image.includes("pexels") && (
-                                <div
-                                  className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded"
-                                  title="External URL"
-                                >
-                                  🔗
-                                </div>
-                              )}
+                  <div className="flex justify-center">
+                    <div className="relative group max-w-sm">
+                      <div className="relative overflow-hidden rounded-lg border border-border bg-accent">
+                        <img
+                          src={formData.images[0]}
+                          alt="Product image"
+                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
+                          onError={(e) => {
+                            console.warn("Image failed to load:", formData.images[0]);
+                            (e.target as HTMLImageElement).src = "/placeholder.svg";
+                          }}
+                          onLoad={() => {
+                            console.log("Image loaded successfully:", formData.images[0]);
+                          }}
+                        />
+                        <div className="absolute top-2 right-2">
+                          <div className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+                            ☁️ Cloud Hosted
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
                       </div>
-                    ))}
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeImage(0)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    💡 Tip: 🔥 Firebase, ☁️ Cloudinary, 📷 Imgur, 🖼️ ImgBB, 💾
-                    Base64, 🔗 URL, 🎭 Demo. First image is the main product
-                    image.
+                  <p className="text-xs text-muted-foreground text-center">
+                    💡 Hosted on Cloudinary CDN for fast global delivery
                   </p>
                 </div>
               )}
