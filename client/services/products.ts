@@ -210,7 +210,7 @@ export async function getProducts(): Promise<Product[]> {
         "s2-wear-products",
         JSON.stringify(firebaseProducts),
       );
-      console.log("💾 Updated localStorage with Firebase data");
+      console.log("�� Updated localStorage with Firebase data");
       return firebaseProducts;
     } else {
       console.log("ℹ️ Using local data");
@@ -450,11 +450,27 @@ export async function deleteProduct(id: string): Promise<void> {
   if (!isFirebaseBlocked() && isOnline()) {
     try {
       console.log("Attempting to delete from Firebase...");
-      const docRef = doc(db, PRODUCTS_COLLECTION, id);
-      await deleteDoc(docRef);
+
+      await safeFirebaseOperation(
+        async () => {
+          const docRef = doc(db, PRODUCTS_COLLECTION, id);
+          await deleteDoc(docRef);
+          return true;
+        },
+        () => {
+          console.warn("Firebase delete failed, continuing with localStorage cleanup");
+          return false;
+        },
+        "deleteProduct"
+      );
+
       console.log("Product deleted from Firebase successfully");
-    } catch (error) {
-      console.warn("Failed to delete from Firebase:", error);
+    } catch (error: any) {
+      if (error?.message?.includes("INTERNAL ASSERTION FAILED")) {
+        console.warn("🚨 Firebase internal error during delete, continuing with localStorage");
+      } else {
+        console.warn("Failed to delete from Firebase:", error);
+      }
       // Continue with localStorage deletion even if Firebase fails
     }
   }
