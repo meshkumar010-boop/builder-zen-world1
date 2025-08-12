@@ -254,14 +254,6 @@ export async function uploadImageIntegrated(
     };
   }
 
-  if (file.size > 10 * 1024 * 1024) { // 10MB limit
-    return {
-      success: false,
-      source: 'error',
-      error: 'File size must be 10MB or less'
-    };
-  }
-
   console.log(`🚀 Starting integrated upload for: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
 
   let uploadServices: Array<() => Promise<UploadResult>> = [];
