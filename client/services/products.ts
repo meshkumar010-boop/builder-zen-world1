@@ -151,6 +151,12 @@ async function safeFirebaseOperation<T>(
   } catch (error: any) {
     console.warn(`🚨 Firebase ${operationName} failed:`, error.message);
 
+    // Handle terminated client specifically
+    if (error.message?.includes('terminated')) {
+      console.warn("🔄 Firebase client terminated, using fallback");
+      return fallback();
+    }
+
     // Handle specific Firebase internal errors
     if (
       error.message.includes("INTERNAL ASSERTION FAILED") ||
