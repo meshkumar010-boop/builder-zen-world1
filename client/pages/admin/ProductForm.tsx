@@ -940,58 +940,113 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       {formData.images.length} image
                       {formData.images.length > 1 ? "s" : ""} uploaded
                     </p>
-                    <p className="text-xs text-primary">
-                      ☁️ Cloud Hosted on Cloudinary CDN
-                    </p>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-xs text-green-600">
+                        ☁️ Secure Cloud Storage
+                      </p>
+                      {useIntegratedUpload && (
+                        <p className="text-xs text-blue-600">
+                          💾 Smart Upload
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {formData.images.map((image, index) => (
-                      <div key={index} className="relative group">
-                        <div className="relative overflow-hidden rounded-lg border border-border bg-accent aspect-square">
-                          <img
-                            src={image}
-                            alt={`Product image ${index + 1}`}
-                            className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                            onError={(e) => {
-                              console.warn("Image failed to load:", image);
-                              (e.target as HTMLImageElement).src =
-                                "/placeholder.svg";
-                            }}
-                            onLoad={() => {
-                              console.log("Image loaded successfully:", image);
-                            }}
-                          />
-                          <div className="absolute top-2 left-2">
-                            {index === 0 && (
-                              <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
-                                Main
+                    {formData.images.map((image, index) => {
+                      const isBase64 = image.startsWith('data:');
+                      const isCloudImage = !isBase64;
+
+                      return (
+                        <div key={index} className="relative group">
+                          <div className="relative overflow-hidden rounded-lg border border-border bg-accent aspect-square">
+                            <img
+                              src={image}
+                              alt={`Product image ${index + 1}`}
+                              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                              onError={(e) => {
+                                console.warn("Image failed to load:", image);
+                                const target = e.target as HTMLImageElement;
+                                if (!target.src.includes('placeholder.svg')) {
+                                  target.src = "/placeholder.svg";
+                                  // Show error badge
+                                  const badge = target.parentElement?.querySelector('.error-badge');
+                                  if (badge) {
+                                    badge.classList.remove('hidden');
+                                  }
+                                }
+                              }}
+                              onLoad={() => {
+                                console.log("Image loaded successfully:", image.substring(0, 50) + '...');
+                              }}
+                            />
+
+                            {/* Image Type Indicators */}
+                            <div className="absolute top-2 left-2 space-y-1">
+                              {index === 0 && (
+                                <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                                  Main
+                                </div>
+                              )}
+                              {isBase64 && (
+                                <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded" title="Base64 Encoded">
+                                  💾 Local
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="absolute top-2 right-2 space-y-1">
+                              {isCloudImage && (
+                                <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Cloud Hosted">
+                                  ☁️
+                                </div>
+                              )}
+                              <div className="error-badge hidden bg-red-500 text-white text-xs px-1.5 py-0.5 rounded" title="Failed to Load">
+                                ❌
                               </div>
-                            )}
-                          </div>
-                          <div className="absolute top-2 right-2">
-                            <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded">
-                              ☁️
+                            </div>
+
+                            {/* Image Size Indicator */}
+                            <div className="absolute bottom-2 left-2">
+                              <div className="bg-black/50 text-white text-xs px-1.5 py-0.5 rounded" title="Image Type">
+                                {isBase64
+                                  ? `${Math.round((image.length * 0.75) / 1024)}KB`
+                                  : 'Cloud'
+                                }
+                              </div>
                             </div>
                           </div>
+
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => removeImage(index)}
+                            title="Remove Image"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
                         </div>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
-                  <p className="text-xs text-muted-foreground">
-                    💡 Tip: The first image will be used as the main product
-                    image. Drag to reorder if needed.
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground">
+                      💡 Tip: The first image will be used as the main product image. Drag to reorder if needed.
+                    </p>
+                    <div className="flex items-center space-x-4 text-xs">
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-green-500 rounded" />
+                        <span className="text-muted-foreground">Cloud hosted (fast loading)</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-orange-500 rounded" />
+                        <span className="text-muted-foreground">Local storage (reliable backup)</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </CardContent>
