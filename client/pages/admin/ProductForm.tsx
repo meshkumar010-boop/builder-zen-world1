@@ -428,6 +428,40 @@ function ProductFormContent() {
     }));
   };
 
+  const handleDebugTest = async () => {
+    setDebugInfo('Running debug test...');
+
+    try {
+      // Test product addition
+      const testResult = await testProductAddition();
+
+      // Get debug info
+      const debugResult = await debugProductForm();
+
+      const info = `
+🧪 Product Addition Test:
+${testResult.success ? '✅' : '❌'} Success: ${testResult.success}
+${testResult.error ? `❌ Error: ${testResult.error}` : ''}
+${testResult.productId ? `📦 Product ID: ${testResult.productId}` : ''}
+${testResult.totalProducts ? `📊 Total Products: ${testResult.totalProducts}` : ''}
+
+📋 Form Debug Info:
+📱 Form State: ${debugResult.formState}
+☁️ Service Status: ${debugResult.serviceStatus}
+${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(', ')}` : '✅ No errors detected'}
+
+🔧 Development Info:
+🌐 Environment: ${import.meta.env.DEV ? 'Development' : 'Production'}
+🏠 Hostname: ${window.location.hostname}
+🔗 Current URL: ${window.location.href}
+`;
+
+      setDebugInfo(info);
+    } catch (error: any) {
+      setDebugInfo(`Debug test failed: ${error.message}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
