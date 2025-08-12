@@ -5,6 +5,14 @@ export interface CloudUploadResult {
   success: boolean;
   url?: string;
   error?: string;
+  fileName?: string;
+}
+
+export interface MultipleUploadProgress {
+  current: number;
+  total: number;
+  fileName: string;
+  percentage: number;
 }
 
 // Environment configuration
