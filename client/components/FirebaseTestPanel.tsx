@@ -86,7 +86,9 @@ export function FirebaseTestPanel() {
 
     } catch (error: any) {
       console.error('❌ Comprehensive test failed:', error);
-      setError(error.message || 'Test failed with unknown error');
+      const errorMessage = error.message || 'Test failed with unknown error';
+      const troubleshooting = checkExpectedErrors(errorMessage);
+      setError(`${errorMessage}\n\n${troubleshooting}`);
     } finally {
       setTesting(false);
     }
