@@ -11,7 +11,9 @@ export function FirebaseStatus() {
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
   const [productCount, setProductCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [lastChecked, setLastChecked] = useState<Date>(new Date());
+  const [testResults, setTestResults] = useState<string>('');
 
   useEffect(() => {
     checkConnection();
