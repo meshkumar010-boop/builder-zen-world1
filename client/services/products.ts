@@ -231,6 +231,9 @@ export async function getProducts(): Promise<Product[]> {
       console.warn("⏱️ Firebase timeout - slow connection");
     } else if (error?.message?.includes("permission")) {
       console.warn("🔒 Firebase permission denied - check Firestore rules");
+    } else if (error?.message?.includes("INTERNAL ASSERTION FAILED") ||
+               error?.message?.includes("Unexpected state")) {
+      console.warn("🚨 Firebase internal error detected - using offline mode");
     }
 
     // Return localStorage data as fallback
