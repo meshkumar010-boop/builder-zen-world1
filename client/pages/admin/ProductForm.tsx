@@ -277,6 +277,40 @@ function ProductFormContent() {
     }
   };
 
+  // Helper function to validate files before upload
+  const validateFiles = (files: File[]): { valid: File[]; errors: string[] } => {
+    const valid: File[] = [];
+    const errors: string[] = [];
+
+    const maxSizeMB = 10;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+    files.forEach((file) => {
+      // Check file type
+      if (!allowedTypes.includes(file.type.toLowerCase())) {
+        errors.push(`${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`);
+        return;
+      }
+
+      // Check file size
+      if (file.size > maxSizeBytes) {
+        errors.push(`${file.name}: File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is ${maxSizeMB}MB.`);
+        return;
+      }
+
+      // Check for duplicate names in current batch
+      if (valid.some(v => v.name === file.name)) {
+        errors.push(`${file.name}: Duplicate file name in selection.`);
+        return;
+      }
+
+      valid.push(file);
+    });
+
+    return { valid, errors };
+  };
+
   // Helper function to convert file to optimized base64
   const fileToBase64 = async (file: File): Promise<string> => {
     try {
