@@ -369,6 +369,8 @@ export async function getProduct(id: string): Promise<Product | null> {
 export async function addProduct(
   product: Omit<Product, "id">,
 ): Promise<string> {
+  console.log("🚀 Starting product addition:", product.name);
+
   const productData = {
     ...product,
     rating: 4.5, // Default rating
@@ -378,39 +380,98 @@ export async function addProduct(
   };
 
   let productId: string;
+  let firebaseSuccess = false;
 
-  try {
-    console.log("Adding product to Firebase:", product.name);
-    const docRef = await addDoc(
-      collection(db, PRODUCTS_COLLECTION),
-      productData,
-    );
-    productId = docRef.id;
-    console.log("Product added to Firebase with ID:", productId);
-  } catch (error) {
-    console.error(
-      "Error adding product to Firebase, using localStorage fallback:",
-      error,
-    );
-    productId = Date.now().toString();
+  // Test Firebase connection before attempting to add
+  const isFirebaseAvailable = await testFirebaseConnection();
+  console.log("📡 Firebase connectivity test:", isFirebaseAvailable ? "✅ Connected" : "❌ Unavailable");
+
+  // Try Firebase first if available
+  if (isFirebaseAvailable && !isFirebaseBlocked() && isOnline()) {
+    try {
+      console.log("☁️ Adding product to Firebase:", product.name);
+
+      const result = await safeFirebaseOperation(
+        async () => {
+          const docRef = await addDoc(
+            collection(db, PRODUCTS_COLLECTION),
+            productData,
+          );
+          return docRef.id;
+        },
+        () => {
+          console.warn("🔄 Firebase add failed, generating local ID");
+          return `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        },
+        "addProduct"
+      );
+
+      productId = result;
+
+      // Check if this is a real Firebase ID (not our fallback)
+      if (!productId.startsWith('local_')) {
+        firebaseSuccess = true;
+        console.log("✅ Product added to Firebase with ID:", productId);
+      } else {
+        console.log("⚠️ Using local fallback ID:", productId);
+      }
+
+    } catch (error: any) {
+      console.error("❌ Firebase add operation failed:", error.message);
+      productId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Log specific error details for debugging
+      if (error.message.includes("INTERNAL ASSERTION FAILED")) {
+        console.warn("🚨 Firebase internal error - using offline mode");
+      } else if (error.message.includes("permission-denied")) {
+        console.warn("🔒 Firebase permission denied - check Firestore rules");
+      } else if (error.message.includes("unavailable")) {
+        console.warn("📡 Firebase service temporarily unavailable");
+      }
+    }
+  } else {
+    console.log("⚠️ Firebase unavailable, creating local product ID");
+    productId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Always update localStorage for immediate UI updates
+  // Always update localStorage for immediate UI updates and offline persistence
   const productWithId = {
     ...productData,
     id: productId,
   };
 
-  const existingProducts = await getProducts();
-  const updatedProducts = [
-    productWithId,
-    ...existingProducts.filter((p) => p.id !== productId),
-  ];
-  localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
-  console.log(
-    "Product saved to localStorage, total products:",
-    updatedProducts.length,
-  );
+  try {
+    // Get existing products from localStorage (faster than calling getProducts)
+    let existingProducts: Product[] = [];
+    const localData = localStorage.getItem("s2-wear-products");
+    if (localData) {
+      existingProducts = JSON.parse(localData);
+    }
+
+    // Add new product to the beginning of the array
+    const updatedProducts = [
+      productWithId,
+      ...existingProducts.filter((p) => p.id !== productId), // Remove duplicates
+    ];
+
+    localStorage.setItem("s2-wear-products", JSON.stringify(updatedProducts));
+
+    console.log("💾 Product saved to localStorage:");
+    console.log(`  - Product ID: ${productId}`);
+    console.log(`  - Total products: ${updatedProducts.length}`);
+    console.log(`  - Firebase status: ${firebaseSuccess ? '✅ Synced' : '⚠️ Local only'}`);
+
+  } catch (localError) {
+    console.error("❌ localStorage save failed:", localError);
+    throw new Error("Failed to save product locally. Please try again.");
+  }
+
+  // Return success message with context
+  if (firebaseSuccess) {
+    console.log("🎉 Product successfully added to both Firebase and localStorage");
+  } else {
+    console.log("📱 Product saved locally (will sync to Firebase when connection is restored)");
+  }
 
   return productId;
 }
