@@ -258,7 +258,7 @@ export async function uploadImageIntegrated(
     return {
       success: false,
       source: 'error',
-      error: 'File size must be less than 10MB'
+      error: 'File size must be 10MB or less'
     };
   }
 
