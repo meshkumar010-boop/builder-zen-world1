@@ -702,33 +702,41 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 );
               })()}
 
-              {/* Single Upload Option */}
-              <div className="space-y-2">
-                <Label>Upload Product Image (Max 10MB)</Label>
+              {/* Multiple Upload Option */}
+              <div className="space-y-4">
+                <Label>Upload Product Images (Max 10MB each)</Label>
                 <div className="border-2 border-dashed border-primary/30 rounded-lg p-6 text-center hover:border-primary/50 transition-colors bg-primary/5">
                   <input
                     type="file"
-                    id="cloud-image"
+                    id="cloud-images"
+                    multiple
                     accept="image/jpeg,image/png,image/webp"
                     onChange={handleCloudUpload}
                     className="hidden"
                     disabled={cloudUploading}
                   />
-                  <label htmlFor="cloud-image" className="cursor-pointer">
+                  <label htmlFor="cloud-images" className="cursor-pointer">
                     <div className="space-y-3">
                       <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
                         <Cloud className="h-8 w-8 text-primary" />
                       </div>
                       <div>
                         {cloudUploading ? (
-                          <S2LoaderSmall text="Uploading to cloud..." />
+                          <div className="space-y-2">
+                            <S2LoaderSmall text="Uploading to cloud..." />
+                            {uploadProgress && (
+                              <p className="text-xs text-muted-foreground">
+                                {uploadProgress.fileName} ({uploadProgress.current}/{uploadProgress.total})
+                              </p>
+                            )}
+                          </div>
                         ) : (
                           <>
                             <p className="text-base font-medium text-foreground">
-                              Click to Upload Image
+                              Click to Upload Images
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              JPEG, PNG, or WebP • Max 10MB
+                              Select multiple files • JPEG, PNG, or WebP • Max 10MB each
                             </p>
                             <p className="text-xs text-primary mt-1">
                               Powered by Cloudinary CDN
@@ -739,6 +747,29 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                     </div>
                   </label>
                 </div>
+
+                {/* Upload Progress Bar */}
+                {cloudUploading && uploadProgress && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-foreground">
+                        Upload Progress
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {uploadProgress.current} of {uploadProgress.total} files
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${uploadProgress.percentage}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Current: {uploadProgress.fileName}
+                    </p>
+                  </div>
+                )}
               </div>
 
 
