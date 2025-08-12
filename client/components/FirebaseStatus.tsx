@@ -49,7 +49,7 @@ export function FirebaseStatus() {
     try {
       setLoading(true);
       console.log("🔄 Attempting to reconnect to Firebase...");
-      
+
       const reconnected = await reconnectFirebase();
       if (reconnected) {
         await checkConnection();
@@ -61,6 +61,41 @@ export function FirebaseStatus() {
       console.error("❌ Reconnection error:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const runTests = async () => {
+    try {
+      setTesting(true);
+      setTestResults('Running comprehensive Firebase tests...');
+
+      const results = await runFirebaseTests();
+      const projectInfo = getFirebaseProjectInfo();
+
+      let resultsText = `Firebase Tests Completed:\n`;
+      resultsText += `• Read Test: ${results.read.success ? 'PASS' : 'FAIL'}\n`;
+      resultsText += `• Write Test: ${results.write.success ? 'PASS' : 'FAIL'}\n`;
+      resultsText += `• Overall: ${results.overall ? 'PASS' : 'FAIL'}\n\n`;
+      resultsText += `Project: ${projectInfo.projectId}\n`;
+      resultsText += `Console: ${projectInfo.consoleUrl}`;
+
+      if (!results.overall) {
+        resultsText += `\n\nErrors:\n`;
+        if (!results.read.success) resultsText += `• Read: ${results.read.error}\n`;
+        if (!results.write.success) resultsText += `• Write: ${results.write.error}\n`;
+      }
+
+      setTestResults(resultsText);
+      console.log("🔬 Firebase tests completed:", results);
+
+      // Update connection status based on test results
+      setConnectionStatus(results.overall ? 'connected' : 'disconnected');
+
+    } catch (error) {
+      setTestResults(`Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("❌ Firebase test error:", error);
+    } finally {
+      setTesting(false);
     }
   };
 
