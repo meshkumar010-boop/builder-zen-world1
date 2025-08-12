@@ -10,6 +10,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import { AuthProvider } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import { Layout } from "./components/layout";
+import { setupFirebaseDevHelper } from "./utils/firebaseDevHelper";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -19,6 +20,9 @@ import AdminSignup from "./pages/admin/Signup";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ProductForm from "./pages/admin/ProductForm";
 import NotFound from "./pages/NotFound";
+
+// Initialize Firebase development helper
+setupFirebaseDevHelper();
 
 const queryClient = new QueryClient();
 
