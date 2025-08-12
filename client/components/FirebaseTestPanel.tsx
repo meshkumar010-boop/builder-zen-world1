@@ -83,6 +83,8 @@ export function FirebaseTestPanel() {
       setResults({
         debug: debugResults,
         products: productTestResults,
+        network: networkResults,
+        environment: networkEnv,
         overall: overallSuccess,
         timestamp: new Date(),
         projectInfo: getFirebaseProjectInfo()
