@@ -1,12 +1,13 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import {
   getFirestore,
-  connectFirestoreEmulator,
   enableNetwork,
   disableNetwork,
+  terminate,
+  clearIndexedDbPersistence,
 } from "firebase/firestore";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
+import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
@@ -20,9 +21,15 @@ const firebaseConfig = {
   measurementId: "G-B5NPFHVCK2",
 };
 
-// Initialize Firebase
-console.log("🔥 Initializing Firebase with project:", firebaseConfig.projectId);
-const app = initializeApp(firebaseConfig);
+// Prevent multiple Firebase app initialization
+let app;
+if (getApps().length === 0) {
+  console.log("🔥 Initializing Firebase with project:", firebaseConfig.projectId);
+  app = initializeApp(firebaseConfig);
+} else {
+  console.log("🔥 Using existing Firebase app instance");
+  app = getApp();
+}
 
 // Initialize Firebase services with enhanced error handling
 export const auth = getAuth(app);
