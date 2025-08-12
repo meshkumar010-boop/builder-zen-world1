@@ -294,7 +294,7 @@ export async function uploadImageIntegrated(
       () => uploadToFirebase(file, productId),
       () => uploadToCloudinary(file),
       () => uploadToImgBB(file),
-      () => uploadToImgur(file),
+      // Skip Imgur due to frequent CORS issues
     ];
   } else if (preferredService === "cloud") {
     uploadServices = [
