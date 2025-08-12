@@ -290,38 +290,50 @@ function ProductFormContent() {
   };
 
   const handleCloudUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    console.log("🚀 Starting cloud upload for:", file.name, `(${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+    const fileArray = Array.from(files);
+    console.log(`🚀 Starting cloud upload for ${fileArray.length} file(s)`);
+
     setCloudUploading(true);
     setError("");
+    setUploadProgress(null);
 
     try {
-      // Show progress feedback
-      const progressMessage = `Uploading ${file.name} to Cloudinary...`;
-      console.log(progressMessage);
+      const results = await uploadMultipleImagesToCloud(
+        fileArray,
+        (progress) => {
+          console.log(`📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`);
+          setUploadProgress(progress);
+        }
+      );
 
-      const result = await uploadImageToCloud(file);
+      // Filter successful uploads
+      const successfulUploads = results.filter(result => result.success);
+      const failedUploads = results.filter(result => !result.success);
 
-      if (result.success && result.url) {
-        // Replace any existing image (single image only)
+      if (successfulUploads.length > 0) {
+        // Add new images to existing ones
+        const newImageUrls = successfulUploads.map(result => result.url!);
         setFormData((prev) => ({
           ...prev,
-          images: [result.url!],
+          images: [...prev.images, ...newImageUrls],
         }));
 
-        console.log("✅ Image uploaded successfully:", result.url);
+        console.log(`✅ ${successfulUploads.length} image(s) uploaded successfully`);
+      }
 
-        // Show success message briefly
-        const successMessage = `✅ Image uploaded successfully to Cloudinary CDN`;
-        console.log(successMessage);
+      if (failedUploads.length > 0) {
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map(f => `${f.fileName} (${f.error})`).join(', ')}`;
+        console.error("❌ Some uploads failed:", errorMessage);
 
-        // Could add a toast notification here in the future
-      } else {
-        const errorMessage = result.error || "Upload failed. Please try again.";
-        console.error("❌ Upload failed:", errorMessage);
-        setError(errorMessage);
+        if (successfulUploads.length === 0) {
+          setError(errorMessage);
+        } else {
+          // Show partial success message
+          setError(`${successfulUploads.length} uploaded successfully, ${failedUploads.length} failed`);
+        }
       }
 
       // Clear the file input
@@ -332,6 +344,7 @@ function ProductFormContent() {
       setError(errorMessage);
     } finally {
       setCloudUploading(false);
+      setUploadProgress(null);
       console.log("🏁 Upload process completed");
     }
   };
@@ -412,7 +425,7 @@ ${testResult.totalProducts ? `📊 Total Products: ${testResult.totalProducts}` 
 
 📋 Form Debug Info:
 📱 Form State: ${debugResult.formState}
-����� Service Status: ${debugResult.serviceStatus}
+☁��� Service Status: ${debugResult.serviceStatus}
 ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}` : "✅ No errors detected"}
 
 🔧 Development Info:
