@@ -329,38 +329,51 @@ function ProductFormContent() {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`Processing file ${i + 1}:`, file.name, "Size:", file.size);
-
-        // Validate file size (5MB limit for base64)
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error(
-            `File ${file.name} is too large. Maximum size is 5MB.`,
-          );
-        }
+        console.log(`Processing file ${i + 1}:`, file.name, "Size:", Math.round(file.size / 1024) + "KB");
 
         // Validate file type
         if (!file.type.startsWith("image/")) {
           throw new Error(`File ${file.name} is not a valid image file.`);
         }
 
+        // Optimize image if needed
+        let processedFile = file;
+        if (needsOptimization(file)) {
+          console.log(`🔄 Optimizing ${file.name}...`);
+          const optimized = await optimizeImage(file, { maxSizeKB: 300 });
+
+          if (optimized.success && optimized.file) {
+            processedFile = optimized.file;
+            console.log(`✅ ${file.name} optimized: ${Math.round(file.size / 1024)}KB → ${Math.round(optimized.file.size / 1024)}KB`);
+          } else {
+            console.warn(`⚠️ Failed to optimize ${file.name}: ${optimized.error}`);
+            // Continue with original file but warn user
+          }
+        }
+
         try {
-          // First try Firebase upload
+          // First try Firebase upload with optimized file
           const tempId = `${Date.now()}-${i}`;
-          const firebaseUrl = await uploadProductImage(file, tempId);
-          console.log(`File ${file.name} uploaded to Firebase:`, firebaseUrl);
+          const firebaseUrl = await uploadProductImage(processedFile, tempId);
+          console.log(`✅ ${file.name} uploaded to Firebase:`, firebaseUrl);
           newImages.push(firebaseUrl);
-        } catch (firebaseError) {
+        } catch (firebaseError: any) {
           console.warn(
-            "Firebase upload failed, converting to base64:",
-            firebaseError,
+            "🚨 Firebase upload failed, using base64 fallback:",
+            firebaseError.message,
           );
 
-          // Fallback: Convert to base64 for persistence
-          const base64Url = await fileToBase64(file);
-          console.log(
-            `File ${file.name} converted to base64 (${Math.round(base64Url.length / 1024)}KB)`,
-          );
-          newImages.push(base64Url);
+          try {
+            // Fallback: Convert to optimized base64
+            const base64Url = await fileToBase64(processedFile);
+            console.log(
+              `💾 ${file.name} converted to base64 (${Math.round(base64Url.length * 0.75 / 1024)}KB)`,
+            );
+            newImages.push(base64Url);
+          } catch (base64Error: any) {
+            console.error(`❌ Base64 conversion failed for ${file.name}:`, base64Error);
+            throw new Error(`Failed to process ${file.name}: ${base64Error.message}. Try using a smaller image.`);
+          }
         }
       }
 
