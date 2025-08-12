@@ -53,15 +53,17 @@ service cloud.firestore {
 
 export function getFirestoreRulesInfo() {
   return {
-    projectId: 's2-wear-3f5fe',
-    consoleUrl: 'https://console.firebase.google.com/project/s2-wear-3f5fe/firestore/rules',
-    adminEmail: 's2wearsofficial@gmail.com',
-    rulesDocUrl: 'https://firebase.google.com/docs/firestore/security/get-started'
+    projectId: "s2-wear-3f5fe",
+    consoleUrl:
+      "https://console.firebase.google.com/project/s2-wear-3f5fe/firestore/rules",
+    adminEmail: "s2wearsofficial@gmail.com",
+    rulesDocUrl:
+      "https://firebase.google.com/docs/firestore/security/get-started",
   };
 }
 
 export function checkExpectedErrors(error: string): string {
-  if (error.includes('permission-denied')) {
+  if (error.includes("permission-denied")) {
     return `❌ Permission Denied Error
 This usually means:
 1. Firestore security rules are blocking the operation
@@ -70,8 +72,8 @@ This usually means:
 
 🔧 Fix: Update Firestore rules in Firebase Console`;
   }
-  
-  if (error.includes('unavailable') || error.includes('network')) {
+
+  if (error.includes("unavailable") || error.includes("network")) {
     return `❌ Network/Connection Error
 This usually means:
 1. Firebase services are temporarily unavailable
@@ -79,15 +81,15 @@ This usually means:
 3. Browser extensions blocking Firebase
 4. CORS issues in development`;
   }
-  
-  if (error.includes('not-found')) {
+
+  if (error.includes("not-found")) {
     return `❌ Resource Not Found
 This usually means:
 1. Firebase project doesn't exist
 2. Collection/document doesn't exist
 3. Incorrect project configuration`;
   }
-  
+
   return `❌ Unknown Firebase Error: ${error}
 
 🔧 General troubleshooting:
@@ -99,7 +101,7 @@ This usually means:
 
 export function generateSetupInstructions(): string {
   const info = getFirestoreRulesInfo();
-  
+
   return `🔥 Firebase Setup Instructions for S2 Wears
 
 1. 📧 Admin Authentication:
