@@ -33,7 +33,7 @@ import {
   optimizeImage,
   fileToOptimizedBase64,
   needsOptimization,
-  checkStorageCapacity
+  checkStorageCapacity,
 } from "@/utils/imageOptimizer";
 import {
   ArrowLeft,
@@ -291,7 +291,9 @@ function ProductFormContent() {
     try {
       // Check if optimization is needed
       if (needsOptimization(file)) {
-        console.log(`🔄 Image needs optimization: ${file.name} (${Math.round(file.size / 1024)}KB)`);
+        console.log(
+          `🔄 Image needs optimization: ${file.name} (${Math.round(file.size / 1024)}KB)`,
+        );
         return await fileToOptimizedBase64(file);
       } else {
         // Small image, use as-is
@@ -329,7 +331,12 @@ function ProductFormContent() {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`Processing file ${i + 1}:`, file.name, "Size:", Math.round(file.size / 1024) + "KB");
+        console.log(
+          `Processing file ${i + 1}:`,
+          file.name,
+          "Size:",
+          Math.round(file.size / 1024) + "KB",
+        );
 
         // Validate file type
         if (!file.type.startsWith("image/")) {
@@ -344,9 +351,13 @@ function ProductFormContent() {
 
           if (optimized.success && optimized.file) {
             processedFile = optimized.file;
-            console.log(`✅ ${file.name} optimized: ${Math.round(file.size / 1024)}KB → ${Math.round(optimized.file.size / 1024)}KB`);
+            console.log(
+              `✅ ${file.name} optimized: ${Math.round(file.size / 1024)}KB → ${Math.round(optimized.file.size / 1024)}KB`,
+            );
           } else {
-            console.warn(`⚠️ Failed to optimize ${file.name}: ${optimized.error}`);
+            console.warn(
+              `⚠️ Failed to optimize ${file.name}: ${optimized.error}`,
+            );
             // Continue with original file but warn user
           }
         }
@@ -367,12 +378,17 @@ function ProductFormContent() {
             // Fallback: Convert to optimized base64
             const base64Url = await fileToBase64(processedFile);
             console.log(
-              `💾 ${file.name} converted to base64 (${Math.round(base64Url.length * 0.75 / 1024)}KB)`,
+              `💾 ${file.name} converted to base64 (${Math.round((base64Url.length * 0.75) / 1024)}KB)`,
             );
             newImages.push(base64Url);
           } catch (base64Error: any) {
-            console.error(`❌ Base64 conversion failed for ${file.name}:`, base64Error);
-            throw new Error(`Failed to process ${file.name}: ${base64Error.message}. Try using a smaller image.`);
+            console.error(
+              `❌ Base64 conversion failed for ${file.name}:`,
+              base64Error,
+            );
+            throw new Error(
+              `Failed to process ${file.name}: ${base64Error.message}. Try using a smaller image.`,
+            );
           }
         }
       }
@@ -628,12 +644,15 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
           {/* Storage capacity warning */}
           {(() => {
             const storageCheck = checkStorageCapacity();
-            if (storageCheck.usageKB > 3000) { // Warn at 3MB
+            if (storageCheck.usageKB > 3000) {
+              // Warn at 3MB
               return (
                 <div className="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    ⚠️ <strong>Storage Warning:</strong> Using {Math.round(storageCheck.usageKB)}KB of ~5MB storage limit.
-                    Consider using smaller images or deleting unused products to avoid quota issues.
+                    ⚠️ <strong>Storage Warning:</strong> Using{" "}
+                    {Math.round(storageCheck.usageKB)}KB of ~5MB storage limit.
+                    Consider using smaller images or deleting unused products to
+                    avoid quota issues.
                   </p>
                 </div>
               );
