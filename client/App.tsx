@@ -27,8 +27,9 @@ const firebaseCleanup = setupFirebaseDevHelper();
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <ErrorBoundary>
+function App() {
+  return (
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider defaultTheme="light" storageKey="s2-wear-theme">
@@ -129,8 +130,9 @@ const App = () => (
         </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
-  </ErrorBoundary>
-);
+    </ErrorBoundary>
+  );
+}
 
 // Properly manage React root to avoid createRoot warnings during HMR
 const container = document.getElementById("root")!;
