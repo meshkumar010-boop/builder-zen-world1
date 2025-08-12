@@ -25,12 +25,9 @@ import { testProductAddition, debugProductForm } from "@/utils/debugProduct";
 import FirebaseDebugPanel from "@/components/FirebaseDebugPanel";
 import {
   ArrowLeft,
-  Upload,
   X,
   Plus,
   Save,
-  ImageIcon,
-  Link as LinkIcon,
   Cloud,
   Info,
   Bug,
