@@ -112,11 +112,11 @@ export function FirebaseTestPanel() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div>
-            <Button 
-              onClick={runComprehensiveTest} 
+          <div className="flex gap-2">
+            <Button
+              onClick={runComprehensiveTest}
               disabled={testing}
-              className="w-full"
+              className="flex-1"
             >
               {testing ? (
                 <>
@@ -130,7 +130,24 @@ export function FirebaseTestPanel() {
                 </>
               )}
             </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowInstructions(!showInstructions)}
+              disabled={testing}
+            >
+              Setup Guide
+            </Button>
           </div>
+
+          {showInstructions && (
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-medium mb-2 text-blue-800 dark:text-blue-200">Firebase Setup Instructions</h4>
+              <pre className="text-xs text-blue-700 dark:text-blue-300 whitespace-pre-wrap">
+                {generateSetupInstructions()}
+              </pre>
+            </div>
+          )}
 
           {error && (
             <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
