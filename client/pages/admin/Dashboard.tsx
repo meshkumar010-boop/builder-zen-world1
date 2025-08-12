@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
 import { S2Loader } from '@/components/S2Loader';
+import { FirebaseStatus } from '@/components/FirebaseStatus';
 import { getProducts, deleteProduct, formatINR, type Product } from '@/services/products';
 import { addAllSampleProducts } from '@/utils/sampleProducts';
 import {
