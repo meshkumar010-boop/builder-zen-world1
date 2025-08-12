@@ -21,7 +21,11 @@ export function FirebaseTestPanel() {
 
     try {
       console.log('🔬 Starting comprehensive Firebase test...');
-      
+
+      // Step 0: Network connectivity test
+      const networkResults = await testFirebaseConnectivity();
+      const networkEnv = getNetworkEnvironmentInfo();
+
       // Step 1: Basic connectivity tests
       const debugResults = await runFirebaseTests();
       
