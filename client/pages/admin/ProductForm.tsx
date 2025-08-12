@@ -659,9 +659,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
           {/* Images */}
           <Card className="border-0 shadow-soft">
             <CardHeader>
-              <CardTitle>Product Image</CardTitle>
+              <CardTitle>Product Images</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Upload one high-quality image that showcases your product
+                Upload multiple high-quality images that showcase your product from different angles
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
