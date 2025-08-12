@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2 Wears Social Preview Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        #preview {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 50%, #ffaa66 100%);
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .decorative-circle {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .circle1 { width: 200px; height: 200px; top: 50px; right: 100px; }
+        .circle2 { width: 150px; height: 150px; bottom: 130px; left: 50px; }
+        .circle3 { width: 80px; height: 80px; top: 100px; left: 250px; }
+        .circle4 { width: 120px; height: 120px; bottom: 200px; right: 200px; opacity: 0.08; }
+        
+        .logo {
+            font-size: 120px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: 'Poppins', Arial, sans-serif;
+            letter-spacing: -5px;
+        }
+        .tagline {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+        .description {
+            font-size: 24px;
+            font-weight: 400;
+            opacity: 0.95;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+        #downloadBtn {
+            margin: 20px auto;
+            padding: 15px 30px;
+            background: #ff6b00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            display: block;
+        }
+        #downloadBtn:hover {
+            background: #e55a00;
+        }
+        .pattern-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 25px 25px, rgba(255,255,255,0.1) 2px, transparent 2px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #333;">S2 Wears Social Media Preview Generator</h1>
+    
+    <div id="preview">
+        <div class="decorative-circle circle1"></div>
+        <div class="decorative-circle circle2"></div>
+        <div class="decorative-circle circle3"></div>
+        <div class="decorative-circle circle4"></div>
+        <div class="pattern-overlay"></div>
+        
+        <div class="logo">S2</div>
+        <div class="tagline">Fashion That Defines You</div>
+        <div class="description">Premium Clothing • Modern Style • Quality Guaranteed</div>
+    </div>
+    
+    <button id="downloadBtn" onclick="downloadImage()">Download as JPG</button>
+    
+    <script>
+        function downloadImage() {
+            const preview = document.getElementById('preview');
+            
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 630;
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#ff6b00');
+            gradient.addColorStop(0.5, '#ff8533');
+            gradient.addColorStop(1, '#ffaa66');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add decorative circles
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            
+            // Circle 1
+            ctx.beginPath();
+            ctx.arc(1000, 100, 100, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Circle 2
+            ctx.beginPath();
+            ctx.arc(200, 500, 75, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Circle 3
+            ctx.beginPath();
+            ctx.arc(300, 150, 40, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Circle 4
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.beginPath();
+            ctx.arc(900, 430, 60, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Add pattern overlay
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+            for (let x = 0; x < canvas.width; x += 50) {
+                for (let y = 0; y < canvas.height; y += 50) {
+                    ctx.beginPath();
+                    ctx.arc(x + 25, y + 25, 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+            
+            // Add text with shadows
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            
+            // Main logo - S2
+            ctx.font = 'bold 120px Arial, sans-serif';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 4;
+            ctx.fillText('S2', canvas.width / 2, 280);
+            
+            // Tagline
+            ctx.font = 'bold 36px Arial, sans-serif';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 2;
+            ctx.fillText('Fashion That Defines You', canvas.width / 2, 350);
+            
+            // Description
+            ctx.font = '24px Arial, sans-serif';
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetY = 1;
+            ctx.fillText('Premium Clothing • Modern Style • Quality Guaranteed', canvas.width / 2, 400);
+            
+            // Download the image
+            const link = document.createElement('a');
+            link.download = 's2wears-social-preview.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+            
+            alert('S2 Wears social preview image downloaded! Please upload this to your website\'s public folder as "s2wears-social-preview.jpg"');
+        }
+    </script>
+</body>
+</html>
