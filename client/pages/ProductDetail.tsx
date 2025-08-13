@@ -205,6 +205,98 @@ export default function ProductDetail() {
     window.open(whatsappUrl, "_blank");
   };
 
+  // Zoom and Pan Helper Functions
+  const resetZoom = () => {
+    setZoomLevel(1);
+    setPanX(0);
+    setPanY(0);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev * 1.5, 5));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => {
+      const newZoom = prev / 1.5;
+      if (newZoom <= 1) {
+        setPanX(0);
+        setPanY(0);
+        return 1;
+      }
+      return newZoom;
+    });
+  };
+
+  const getTouchDistance = (touches: TouchList) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches);
+      setLastTouchDistance(distance);
+    } else if (e.touches.length === 1 && zoomLevel > 1) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+
+    if (e.touches.length === 2) {
+      // Pinch to zoom
+      const distance = getTouchDistance(e.touches);
+      if (lastTouchDistance > 0) {
+        const scale = distance / lastTouchDistance;
+        setZoomLevel(prev => Math.max(0.5, Math.min(prev * scale, 5)));
+      }
+      setLastTouchDistance(distance);
+    } else if (e.touches.length === 1 && isDragging && zoomLevel > 1) {
+      // Pan when zoomed in
+      const touch = e.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      setPanX(prev => prev + (touch.clientX - centerX) * 0.01);
+      setPanY(prev => prev + (touch.clientY - centerY) * 0.01);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setLastTouchDistance(0);
+  };
+
+  const handleMouseWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY;
+    if (delta < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
+  const handleDoubleClick = () => {
+    if (zoomLevel === 1) {
+      setZoomLevel(2.5);
+    } else {
+      resetZoom();
+    }
+  };
+
+  // Reset zoom when changing images
+  const changeZoomImage = (newIndex: number) => {
+    setZoomImageIndex(newIndex);
+    resetZoom();
+  };
+
   return (
     <div className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
