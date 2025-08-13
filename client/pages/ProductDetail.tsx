@@ -278,8 +278,10 @@ export default function ProductDetail() {
                   key={`thumbnail-${index}`}
                   onClick={() => setSelectedImage(index)}
                   onDoubleClick={() => {
-                    setZoomImageIndex(index);
-                    setIsZoomModalOpen(true);
+                    if (product?.images && product.images.length > 0) {
+                      setZoomImageIndex(index);
+                      setIsZoomModalOpen(true);
+                    }
                   }}
                   className={`group relative aspect-square bg-card rounded-lg overflow-hidden border-2 transition-all hover:border-primary/50 ${
                     selectedImage === index
