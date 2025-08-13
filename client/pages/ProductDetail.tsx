@@ -205,7 +205,11 @@ export default function ProductDetail() {
                   "/placeholder.svg"
                 }
                 alt={product.name}
-                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105 cursor-zoom-in"
+                onClick={() => {
+                  setZoomImageIndex(selectedImage);
+                  setIsZoomModalOpen(true);
+                }}
               />
 
               {/* Zoom Button */}
