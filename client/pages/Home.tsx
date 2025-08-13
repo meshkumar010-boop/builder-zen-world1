@@ -318,6 +318,12 @@ export default function Home() {
                                   % OFF
                                 </div>
                               )}
+                            {/* Shipping Badge */}
+                            {product.shipping?.isFree && (
+                              <div className="text-xs text-blue-600 font-medium bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+                                FREE SHIPPING
+                              </div>
+                            )}
                           </div>
                           <div className="flex gap-2">
                             <Button
