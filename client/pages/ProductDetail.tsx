@@ -164,7 +164,7 @@ export default function ProductDetail() {
         id: product.id!,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: product.images?.[0] || "/placeholder.svg",
         size: selectedSize,
         color: selectedColor.name,
         quantity: 1,
