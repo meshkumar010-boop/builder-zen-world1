@@ -793,7 +793,10 @@ export default function ProductDetail() {
           {/* Click outside to close */}
           <div
             className="absolute inset-0 -z-10"
-            onClick={() => setIsZoomModalOpen(false)}
+            onClick={() => {
+              setIsZoomModalOpen(false);
+              resetZoom();
+            }}
           />
         </div>
       )}
