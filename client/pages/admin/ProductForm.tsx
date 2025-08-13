@@ -77,6 +77,11 @@ function ProductFormContent() {
     colors: [{ name: "White", value: "#FFFFFF" }], // Default color
     images: [],
     features: ["100% Cotton", "Machine Washable"], // Default features
+    shipping: {
+      isFree: true, // Default to free shipping
+      charge: 0,
+      description: "Free delivery across India",
+    },
   });
 
   const [newFeature, setNewFeature] = useState("");
