@@ -265,17 +265,27 @@ export default function ProductDetail() {
                 <button
                   key={`thumbnail-${index}`}
                   onClick={() => setSelectedImage(index)}
-                  className={`aspect-square bg-card rounded-lg overflow-hidden border-2 transition-colors ${
+                  onDoubleClick={() => {
+                    setZoomImageIndex(index);
+                    setIsZoomModalOpen(true);
+                  }}
+                  className={`group relative aspect-square bg-card rounded-lg overflow-hidden border-2 transition-all hover:border-primary/50 ${
                     selectedImage === index
                       ? "border-primary"
                       : "border-transparent"
                   }`}
+                  title="Click to select, double-click to zoom"
                 >
                   <img
                     src={image}
                     alt={`${product.name} ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
                   />
+
+                  {/* Mini zoom indicator */}
+                  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="h-3 w-3 text-white drop-shadow-lg" />
+                  </div>
                 </button>
               ))}
             </div>
