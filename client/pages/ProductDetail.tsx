@@ -823,14 +823,19 @@ export default function ProductDetail() {
             <img
               src={product.images?.[zoomImageIndex] || "/placeholder.svg"}
               alt={`${product.name} - Image ${zoomImageIndex + 1}`}
-              className="transition-transform duration-300 ease-out select-none"
+              className="transition-transform duration-200 ease-out select-none"
               style={{
                 transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`,
                 maxWidth: zoomLevel === 1 ? '90vw' : 'none',
                 maxHeight: zoomLevel === 1 ? '90vh' : 'none',
-                cursor: zoomLevel > 1 ? 'grab' : 'zoom-in'
+                imageRendering: zoomLevel > 2 ? 'pixelated' : 'auto',
+                filter: 'none',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+                transformOrigin: 'center center'
               }}
               draggable={false}
+              onDragStart={(e) => e.preventDefault()}
               onClick={(e) => e.stopPropagation()}
             />
           </div>
