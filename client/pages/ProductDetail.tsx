@@ -13,6 +13,9 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Plus,
+  Minus,
+  RotateCcw,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/useCart";
