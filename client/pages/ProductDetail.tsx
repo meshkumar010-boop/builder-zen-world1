@@ -298,7 +298,7 @@ export default function ProductDetail() {
             </div>
 
             {/* View All Images Button */}
-            {product.images && product.images.length > 1 && (
+            {product?.images && product.images.length > 1 && (
               <Button
                 variant="outline"
                 size="sm"
