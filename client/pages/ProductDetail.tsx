@@ -415,6 +415,7 @@ export default function ProductDetail() {
                 className="w-full mt-4"
                 onClick={() => {
                   setZoomImageIndex(0);
+                  resetZoom();
                   setIsZoomModalOpen(true);
                 }}
               >
