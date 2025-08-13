@@ -762,7 +762,7 @@ export default function ProductDetail() {
               {product.images.map((_, index) => (
                 <button
                   key={`zoom-dot-${index}`}
-                  onClick={() => setZoomImageIndex(index)}
+                  onClick={() => changeZoomImage(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === zoomImageIndex
                       ? "bg-white"
