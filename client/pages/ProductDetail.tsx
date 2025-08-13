@@ -92,9 +92,12 @@ export default function ProductDetail() {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [id]);
 
-  // Keyboard navigation for zoom modal
+  // Keyboard navigation and body scroll prevention for zoom modal
   useEffect(() => {
     if (!isZoomModalOpen) return;
+
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = "hidden";
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -115,7 +118,11 @@ export default function ProductDetail() {
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset"; // Restore scroll
+    };
   }, [isZoomModalOpen, zoomImageIndex, product.images]);
 
   if (loading) {
