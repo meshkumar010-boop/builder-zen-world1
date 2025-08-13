@@ -64,6 +64,8 @@ export default function ProductDetail() {
   const [panY, setPanY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [lastTouchDistance, setLastTouchDistance] = useState(0);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const loadProduct = async () => {
