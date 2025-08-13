@@ -203,7 +203,7 @@ export default function ProductDetail() {
       product.price +
       (product.shipping?.isFree ? 0 : product.shipping?.charge || 0);
 
-    const message = `Hello! 👋\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
+    const message = `Hello! ���\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
 
     const phoneNumber = "919009880838";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -242,12 +242,41 @@ export default function ProductDetail() {
     return Math.sqrt(dx * dx + dy * dy);
   };
 
+  // Mouse event handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setLastMousePos({ x: e.clientX, y: e.clientY });
+      e.preventDefault();
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      const deltaX = e.clientX - lastMousePos.x;
+      const deltaY = e.clientY - lastMousePos.y;
+
+      setPanX(prev => prev + deltaX / zoomLevel);
+      setPanY(prev => prev + deltaY / zoomLevel);
+
+      setLastMousePos({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch event handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       const distance = getTouchDistance(e.touches);
       setLastTouchDistance(distance);
+      setIsDragging(false);
     } else if (e.touches.length === 1 && zoomLevel > 1) {
       setIsDragging(true);
+      const touch = e.touches[0];
+      setDragStart({ x: touch.clientX, y: touch.clientY });
     }
   };
 
@@ -259,18 +288,20 @@ export default function ProductDetail() {
       const distance = getTouchDistance(e.touches);
       if (lastTouchDistance > 0) {
         const scale = distance / lastTouchDistance;
-        setZoomLevel(prev => Math.max(0.5, Math.min(prev * scale, 5)));
+        const newZoom = Math.max(0.5, Math.min(zoomLevel * scale, 8));
+        setZoomLevel(newZoom);
       }
       setLastTouchDistance(distance);
     } else if (e.touches.length === 1 && isDragging && zoomLevel > 1) {
       // Pan when zoomed in
       const touch = e.touches[0];
-      const rect = e.currentTarget.getBoundingClientRect();
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+      const deltaX = touch.clientX - dragStart.x;
+      const deltaY = touch.clientY - dragStart.y;
 
-      setPanX(prev => prev + (touch.clientX - centerX) * 0.01);
-      setPanY(prev => prev + (touch.clientY - centerY) * 0.01);
+      setPanX(prev => prev + deltaX / zoomLevel);
+      setPanY(prev => prev + deltaY / zoomLevel);
+
+      setDragStart({ x: touch.clientX, y: touch.clientY });
     }
   };
 
