@@ -56,6 +56,11 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
   const [zoomImageIndex, setZoomImageIndex] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastTouchDistance, setLastTouchDistance] = useState(0);
 
   useEffect(() => {
     const loadProduct = async () => {
