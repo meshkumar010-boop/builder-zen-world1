@@ -141,6 +141,11 @@ function ProductFormContent() {
           colors: product.colors,
           images: product.images,
           features: product.features,
+          shipping: product.shipping || {
+            isFree: true,
+            charge: 0,
+            description: "Free delivery across India",
+          },
         });
       }
     } catch (err: any) {
