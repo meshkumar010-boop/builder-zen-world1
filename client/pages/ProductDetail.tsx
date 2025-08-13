@@ -774,8 +774,12 @@ export default function ProductDetail() {
           )}
 
           {/* Instructions */}
-          <div className="absolute bottom-4 right-4 text-white text-xs bg-black/50 px-3 py-2 rounded">
-            Press ESC to close • Use arrow keys to navigate
+          <div className="absolute bottom-4 right-4 text-white text-xs bg-black/50 px-3 py-2 rounded max-w-xs">
+            <div className="space-y-1">
+              <div>ESC to close • Arrow keys to navigate</div>
+              <div>Double-click to zoom • Pinch or scroll to zoom</div>
+              <div>Drag to pan when zoomed in</div>
+            </div>
           </div>
 
           {/* Click outside to close */}
