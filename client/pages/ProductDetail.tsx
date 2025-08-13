@@ -265,8 +265,12 @@ export default function ProductDetail() {
       const deltaX = e.clientX - lastMousePos.x;
       const deltaY = e.clientY - lastMousePos.y;
 
-      setPanX(prev => prev + deltaX / zoomLevel);
-      setPanY(prev => prev + deltaY / zoomLevel);
+      const newX = panX + deltaX / zoomLevel;
+      const newY = panY + deltaY / zoomLevel;
+      const constrained = constrainPan(newX, newY, zoomLevel);
+
+      setPanX(constrained.x);
+      setPanY(constrained.y);
 
       setLastMousePos({ x: e.clientX, y: e.clientY });
     }
