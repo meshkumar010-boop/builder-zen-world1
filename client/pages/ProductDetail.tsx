@@ -111,6 +111,7 @@ export default function ProductDetail() {
       switch (e.key) {
         case "Escape":
           setIsZoomModalOpen(false);
+          resetZoom();
           break;
         case "ArrowLeft":
           if (product?.images && zoomImageIndex > 0) {
