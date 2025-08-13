@@ -87,6 +87,12 @@ export interface Product {
   reviews?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  // Shipping configuration
+  shipping: {
+    isFree: boolean; // If true, shipping is free
+    charge?: number; // Shipping charge in INR (only when isFree is false)
+    description?: string; // Custom shipping description
+  };
 }
 
 // Utility function to format INR currency
