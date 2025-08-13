@@ -54,6 +54,8 @@ export default function ProductDetail() {
   } | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+  const [zoomImageIndex, setZoomImageIndex] = useState(0);
 
   useEffect(() => {
     const loadProduct = async () => {
