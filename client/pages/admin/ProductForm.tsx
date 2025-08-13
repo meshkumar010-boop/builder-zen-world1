@@ -821,6 +821,195 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
             </CardContent>
           </Card>
 
+          {/* Rating & Reviews */}
+          <Card className="border-0 shadow-soft">
+            <CardHeader>
+              <CardTitle>Customer Rating & Reviews</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Set the product rating and number of reviews to display to customers
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Rating Section */}
+                <div className="space-y-4">
+                  <Label className="text-base font-medium">Product Rating</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Label htmlFor="rating" className="text-sm">Rating (1-5):</Label>
+                      <Input
+                        id="rating"
+                        type="number"
+                        min="1"
+                        max="5"
+                        step="0.1"
+                        value={formData.rating || 4.5}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            rating: parseFloat(e.target.value) || 4.5,
+                          }))
+                        }
+                        className="w-24"
+                      />
+                    </div>
+
+                    {/* Visual Star Rating */}
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                rating: star,
+                              }))
+                            }
+                            className="p-1 hover:scale-110 transition-transform"
+                          >
+                            <span
+                              className={`text-2xl ${
+                                star <= Math.floor(formData.rating || 0)
+                                  ? "text-yellow-500"
+                                  : star <= (formData.rating || 0)
+                                  ? "text-yellow-300"
+                                  : "text-gray-300"
+                              }`}
+                            >
+                              ★
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {formData.rating?.toFixed(1) || "4.5"} stars
+                      </span>
+                    </div>
+
+                    {/* Quick Rating Buttons */}
+                    <div className="flex flex-wrap gap-2">
+                      {[3.5, 4.0, 4.2, 4.5, 4.7, 4.9].map((rating) => (
+                        <Button
+                          key={rating}
+                          type="button"
+                          variant={formData.rating === rating ? "default" : "outline"}
+                          size="sm"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              rating,
+                            }))
+                          }
+                          className="text-xs px-2 py-1"
+                        >
+                          {rating}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reviews Count Section */}
+                <div className="space-y-4">
+                  <Label className="text-base font-medium">Number of Reviews</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Label htmlFor="reviews" className="text-sm">Review Count:</Label>
+                      <Input
+                        id="reviews"
+                        type="number"
+                        min="0"
+                        value={formData.reviews || 12}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            reviews: parseInt(e.target.value) || 0,
+                          }))
+                        }
+                        className="w-32"
+                        placeholder="12"
+                      />
+                    </div>
+
+                    {/* Quick Review Count Buttons */}
+                    <div className="flex flex-wrap gap-2">
+                      {[5, 12, 25, 50, 100, 250].map((count) => (
+                        <Button
+                          key={count}
+                          type="button"
+                          variant={formData.reviews === count ? "default" : "outline"}
+                          size="sm"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              reviews: count,
+                            }))
+                          }
+                          className="text-xs px-2 py-1"
+                        >
+                          {count}
+                        </Button>
+                      ))}
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">
+                      Higher review counts increase customer trust
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview */}
+              <div className="border rounded-lg p-4 bg-muted/30">
+                <p className="text-sm font-medium text-muted-foreground mb-3">Customer View Preview:</p>
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`text-lg ${
+                          star <= Math.floor(formData.rating || 0)
+                            ? "text-yellow-500"
+                            : star <= (formData.rating || 0)
+                            ? "text-yellow-300"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium">
+                    {formData.rating?.toFixed(1) || "4.5"}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    ({formData.reviews || 0} reviews)
+                  </span>
+                </div>
+              </div>
+
+              {/* Tips */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div className="flex items-start space-x-2">
+                  <span className="text-blue-600 dark:text-blue-400 text-lg">💡</span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                      Rating Tips for Better Sales:
+                    </p>
+                    <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                      <li>• Ratings above 4.0 are considered good</li>
+                      <li>• 4.5+ ratings significantly boost customer confidence</li>
+                      <li>• Higher review counts (50+) increase trust</li>
+                      <li>• Avoid perfect 5.0 ratings with low review counts (looks fake)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Images */}
           <Card className="border-0 shadow-soft">
             <CardHeader>
