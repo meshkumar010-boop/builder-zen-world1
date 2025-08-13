@@ -179,6 +179,12 @@ export default function Products() {
                               {getDiscountPercentage(product.originalPrice, product.price)}% OFF
                             </div>
                           )}
+                          {/* Shipping Badge */}
+                          {product.shipping?.isFree && (
+                            <div className="text-xs text-blue-600 font-medium bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+                              FREE SHIPPING
+                            </div>
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground text-right group-hover:text-foreground transition-colors duration-300">
                           <div>{product.sizes.length} sizes</div>
