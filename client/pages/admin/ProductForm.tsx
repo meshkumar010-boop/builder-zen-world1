@@ -1328,6 +1328,165 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
             </CardContent>
           </Card>
 
+          {/* Shipping Configuration */}
+          <Card className="border-0 shadow-soft">
+            <CardHeader>
+              <CardTitle>Shipping & Delivery</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Configure shipping charges and delivery options for this product
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Free Shipping Toggle */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-accent/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 dark:text-green-400 text-lg">🚚</span>
+                    </div>
+                    <div>
+                      <Label className="text-base font-medium">Free Shipping</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Offer free delivery for this product
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="freeShipping"
+                      checked={formData.shipping.isFree}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          shipping: {
+                            ...prev.shipping,
+                            isFree: e.target.checked,
+                            charge: e.target.checked ? 0 : (prev.shipping.charge || 49),
+                          },
+                        }))
+                      }
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <Label htmlFor="freeShipping" className="text-sm font-medium">
+                      {formData.shipping.isFree ? "Enabled" : "Disabled"}
+                    </Label>
+                  </div>
+                </div>
+
+                {/* Shipping Charge (when not free) */}
+                {!formData.shipping.isFree && (
+                  <div className="space-y-3 p-4 border border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50 dark:bg-orange-900/10">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-orange-600 dark:text-orange-400 text-lg">💰</span>
+                      <Label className="font-medium text-orange-800 dark:text-orange-200">
+                        Shipping Charges
+                      </Label>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="shippingCharge">Shipping Charge (₹)</Label>
+                        <Input
+                          id="shippingCharge"
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={formData.shipping.charge || 0}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              shipping: {
+                                ...prev.shipping,
+                                charge: parseInt(e.target.value) || 0,
+                              },
+                            }))
+                          }
+                          placeholder="49"
+                          className="border-orange-300 dark:border-orange-600"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Typical shipping charges: ₹29-₹99
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="shippingDesc">Delivery Description</Label>
+                        <Input
+                          id="shippingDesc"
+                          value={formData.shipping.description || ""}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              shipping: {
+                                ...prev.shipping,
+                                description: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="Delivery in 3-5 business days"
+                          className="border-orange-300 dark:border-orange-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Free Shipping Description */}
+                {formData.shipping.isFree && (
+                  <div className="p-4 border border-green-200 dark:border-green-800 rounded-lg bg-green-50 dark:bg-green-900/10">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
+                      <Label className="font-medium text-green-800 dark:text-green-200">
+                        Free Delivery Message
+                      </Label>
+                    </div>
+                    <Input
+                      value={formData.shipping.description || ""}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          shipping: {
+                            ...prev.shipping,
+                            description: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="Free delivery across India"
+                      className="border-green-300 dark:border-green-600 bg-white dark:bg-background"
+                    />
+                    <p className="text-xs text-green-700 dark:text-green-300 mt-2">
+                      This message will be displayed to customers
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Preview */}
+              <div className="border rounded-lg p-4 bg-muted/30">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Preview:</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Product Price</span>
+                  <span className="font-medium">₹{formData.price}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Shipping</span>
+                  <span className={`font-medium ${formData.shipping.isFree ? 'text-green-600' : 'text-orange-600'}`}>
+                    {formData.shipping.isFree ? 'FREE' : `₹${formData.shipping.charge || 0}`}
+                  </span>
+                </div>
+                <hr className="my-2" />
+                <div className="flex items-center justify-between font-medium">
+                  <span>Total</span>
+                  <span>₹{formData.price + (formData.shipping.isFree ? 0 : (formData.shipping.charge || 0))}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {formData.shipping.description || "Delivery information"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Submit */}
           <div className="flex justify-end space-x-4">
             <Link to="/admin/dashboard">
