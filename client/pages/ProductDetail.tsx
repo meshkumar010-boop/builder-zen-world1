@@ -598,7 +598,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Image Navigation Dots */}
-          {product.images && product.images.length > 1 && (
+          {product?.images && product.images.length > 1 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
               {product.images.map((_, index) => (
                 <button
