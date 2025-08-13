@@ -123,7 +123,7 @@ export default function ProductDetail() {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset"; // Restore scroll
     };
-  }, [isZoomModalOpen, zoomImageIndex, product.images]);
+  }, [isZoomModalOpen, zoomImageIndex, product?.images]);
 
   if (loading) {
     return <S2LoaderFullscreen text="Loading product details..." />;
