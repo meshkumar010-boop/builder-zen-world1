@@ -105,12 +105,12 @@ export default function ProductDetail() {
           setIsZoomModalOpen(false);
           break;
         case "ArrowLeft":
-          if (product.images && zoomImageIndex > 0) {
+          if (product?.images && zoomImageIndex > 0) {
             setZoomImageIndex(zoomImageIndex - 1);
           }
           break;
         case "ArrowRight":
-          if (product.images && zoomImageIndex < product.images.length - 1) {
+          if (product?.images && zoomImageIndex < product.images.length - 1) {
             setZoomImageIndex(zoomImageIndex + 1);
           }
           break;
