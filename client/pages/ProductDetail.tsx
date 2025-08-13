@@ -576,7 +576,7 @@ export default function ProductDetail() {
           )}
 
           {/* Next Button */}
-          {product.images && product.images.length > 1 && zoomImageIndex < product.images.length - 1 && (
+          {product?.images && product.images.length > 1 && zoomImageIndex < product.images.length - 1 && (
             <Button
               variant="ghost"
               size="icon"
