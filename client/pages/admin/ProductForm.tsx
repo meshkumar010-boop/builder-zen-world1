@@ -82,6 +82,8 @@ function ProductFormContent() {
       charge: 0,
       description: "Free delivery across India",
     },
+    rating: 4.5, // Default rating
+    reviews: 12, // Default number of reviews
   });
 
   const [newFeature, setNewFeature] = useState("");
