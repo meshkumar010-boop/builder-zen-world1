@@ -665,7 +665,10 @@ export default function ProductDetail() {
             variant="ghost"
             size="icon"
             className="absolute top-4 right-4 text-white hover:bg-white/20 z-10"
-            onClick={() => setIsZoomModalOpen(false)}
+            onClick={() => {
+              setIsZoomModalOpen(false);
+              resetZoom();
+            }}
           >
             <X className="h-6 w-6" />
           </Button>
