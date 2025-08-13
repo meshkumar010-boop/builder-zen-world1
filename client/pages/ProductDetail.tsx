@@ -92,6 +92,32 @@ export default function ProductDetail() {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [id]);
 
+  // Keyboard navigation for zoom modal
+  useEffect(() => {
+    if (!isZoomModalOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "Escape":
+          setIsZoomModalOpen(false);
+          break;
+        case "ArrowLeft":
+          if (product.images && zoomImageIndex > 0) {
+            setZoomImageIndex(zoomImageIndex - 1);
+          }
+          break;
+        case "ArrowRight":
+          if (product.images && zoomImageIndex < product.images.length - 1) {
+            setZoomImageIndex(zoomImageIndex + 1);
+          }
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isZoomModalOpen, zoomImageIndex, product.images]);
+
   if (loading) {
     return <S2LoaderFullscreen text="Loading product details..." />;
   }
