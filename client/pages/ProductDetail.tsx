@@ -197,7 +197,7 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div className="space-y-4">
-            <div className="aspect-square bg-card rounded-2xl overflow-hidden">
+            <div className="relative aspect-square bg-card rounded-2xl overflow-hidden group">
               <img
                 src={
                   product.images?.[selectedImage] ||
@@ -205,8 +205,28 @@ export default function ProductDetail() {
                   "/placeholder.svg"
                 }
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
               />
+
+              {/* Zoom Button */}
+              <Button
+                variant="secondary"
+                size="icon"
+                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/90 hover:bg-white shadow-lg"
+                onClick={() => {
+                  setZoomImageIndex(selectedImage);
+                  setIsZoomModalOpen(true);
+                }}
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+
+              {/* Click to zoom hint */}
+              <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <div className="bg-black/70 text-white text-xs px-2 py-1 rounded">
+                  Click to zoom
+                </div>
+              </div>
             </div>
 
             {/* Thumbnail Images */}
