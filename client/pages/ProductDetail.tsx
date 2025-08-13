@@ -840,11 +840,34 @@ export default function ProductDetail() {
             />
           </div>
 
-          {/* Zoom Level Indicator */}
+          {/* Zoom Level and Pan Indicator */}
           {zoomLevel !== 1 && (
-            <div className="absolute top-16 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full z-10">
-              {Math.round(zoomLevel * 100)}%
+            <div className="absolute top-16 left-4 text-white text-sm bg-black/70 px-3 py-2 rounded-lg z-10 space-y-1">
+              <div className="font-medium">{Math.round(zoomLevel * 100)}%</div>
+              {zoomLevel > 1 && (
+                <div className="text-xs text-gray-300">
+                  {isDragging ? '🤏 Dragging' : '👆 Drag to pan'}
+                </div>
+              )}
             </div>
+          )}
+
+          {/* Pan Center Indicator (when zoomed and not at center) */}
+          {zoomLevel > 1 && (Math.abs(panX) > 10 || Math.abs(panY) > 10) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white hover:bg-white/20 bg-black/50"
+              onClick={() => {
+                setPanX(0);
+                setPanY(0);
+              }}
+              title="Center Image"
+            >
+              <div className="w-4 h-4 border border-white rounded-full relative">
+                <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+            </Button>
           )}
 
           {/* Image Navigation Dots */}
