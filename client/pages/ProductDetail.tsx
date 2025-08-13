@@ -129,13 +129,14 @@ export default function ProductDetail() {
     return <S2LoaderFullscreen text="Loading product details..." />;
   }
 
-  if (!product) {
+  if (!product || !product.id) {
     return (
       <div className="min-h-screen py-12 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground">Product not found</p>
-          <Link to="/products" className="mt-4 inline-block">
-            <Button variant="outline">Back to Products</Button>
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground">Product Not Found</h2>
+          <p className="text-muted-foreground">The product you're looking for doesn't exist or has been removed.</p>
+          <Link to="/products" className="inline-block">
+            <Button variant="outline">← Back to Products</Button>
           </Link>
         </div>
       </div>
