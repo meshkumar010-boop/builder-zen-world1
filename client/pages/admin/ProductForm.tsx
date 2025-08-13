@@ -299,29 +299,35 @@ function ProductFormContent() {
   };
 
   // Helper function to validate files before upload
-  const validateFiles = (files: File[]): { valid: File[]; errors: string[] } => {
+  const validateFiles = (
+    files: File[],
+  ): { valid: File[]; errors: string[] } => {
     const valid: File[] = [];
     const errors: string[] = [];
 
     const maxSizeMB = 10;
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
     files.forEach((file) => {
       // Check file type
       if (!allowedTypes.includes(file.type.toLowerCase())) {
-        errors.push(`${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`);
+        errors.push(
+          `${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`,
+        );
         return;
       }
 
       // Check file size
       if (file.size > maxSizeBytes) {
-        errors.push(`${file.name}: File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is ${maxSizeMB}MB.`);
+        errors.push(
+          `${file.name}: File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is ${maxSizeMB}MB.`,
+        );
         return;
       }
 
       // Check for duplicate names in current batch
-      if (valid.some(v => v.name === file.name)) {
+      if (valid.some((v) => v.name === file.name)) {
         errors.push(`${file.name}: Duplicate file name in selection.`);
         return;
       }
@@ -363,10 +369,11 @@ function ProductFormContent() {
     console.log(`🚀 Starting upload for ${fileArray.length} file(s)`);
 
     // Validate files first
-    const { valid: validFiles, errors: validationErrors } = validateFiles(fileArray);
+    const { valid: validFiles, errors: validationErrors } =
+      validateFiles(fileArray);
 
     if (validationErrors.length > 0) {
-      setError(`File validation failed:\n${validationErrors.join('\n')}`);
+      setError(`File validation failed:\n${validationErrors.join("\n")}`);
       e.target.value = ""; // Clear the input
       return;
     }
@@ -382,7 +389,9 @@ function ProductFormContent() {
     const maxImages = 10; // Reasonable limit for product images
 
     if (currentImageCount + validFiles.length > maxImages) {
-      setError(`Too many images. Maximum ${maxImages} images allowed. You currently have ${currentImageCount} images.`);
+      setError(
+        `Too many images. Maximum ${maxImages} images allowed. You currently have ${currentImageCount} images.`,
+      );
       e.target.value = "";
       return;
     }
@@ -397,7 +406,9 @@ function ProductFormContent() {
 
       if (useIntegratedUpload) {
         // Use integrated upload service with fallback to base64
-        console.log("📤 Using integrated upload service (with base64 fallback)");
+        console.log(
+          "📤 Using integrated upload service (with base64 fallback)",
+        );
         results = await uploadMultipleImages(
           validFiles,
           `product_${Date.now()}`,
@@ -420,20 +431,17 @@ function ProductFormContent() {
       } else {
         // Use direct cloud upload
         console.log("☁️ Using direct cloud upload service");
-        results = await uploadMultipleImagesToCloud(
-          validFiles,
-          (progress) => {
-            console.log(
-              `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
-            );
-            setUploadProgress(progress);
-            setDetailedProgress({
-              stage: "Uploading to cloud",
-              file: progress.fileName,
-              percentage: progress.percentage,
-            });
-          },
-        );
+        results = await uploadMultipleImagesToCloud(validFiles, (progress) => {
+          console.log(
+            `📊 Progress: ${progress.current}/${progress.total} - ${progress.fileName}`,
+          );
+          setUploadProgress(progress);
+          setDetailedProgress({
+            stage: "Uploading to cloud",
+            file: progress.fileName,
+            percentage: progress.percentage,
+          });
+        });
       }
 
       // Filter successful uploads
@@ -454,14 +462,12 @@ function ProductFormContent() {
 
         // Show detailed success info
         const uploadSources = successfulUploads.map((result) => {
-          if ('source' in result) {
+          if ("source" in result) {
             return result.source;
           }
-          return 'cloud';
+          return "cloud";
         });
-        const sourcesSummary = [
-          ...new Set(uploadSources),
-        ].join(", ");
+        const sourcesSummary = [...new Set(uploadSources)].join(", ");
 
         setDetailedProgress({
           stage: `Complete (via ${sourcesSummary})`,
@@ -471,7 +477,7 @@ function ProductFormContent() {
       }
 
       if (failedUploads.length > 0) {
-        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => `${f.fileName || 'unknown'} (${f.error})`).join(", ")}`;
+        const errorMessage = `${failedUploads.length} upload(s) failed: ${failedUploads.map((f) => `${f.fileName || "unknown"} (${f.error})`).join(", ")}`;
         console.error("❌ Some uploads failed:", errorMessage);
 
         if (successfulUploads.length === 0) {
@@ -826,17 +832,22 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
             <CardHeader>
               <CardTitle>Customer Rating & Reviews</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Set the product rating and number of reviews to display to customers
+                Set the product rating and number of reviews to display to
+                customers
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Rating Section */}
                 <div className="space-y-4">
-                  <Label className="text-base font-medium">Product Rating</Label>
+                  <Label className="text-base font-medium">
+                    Product Rating
+                  </Label>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <Label htmlFor="rating" className="text-sm">Rating (1-5):</Label>
+                      <Label htmlFor="rating" className="text-sm">
+                        Rating (1-5):
+                      </Label>
                       <Input
                         id="rating"
                         type="number"
@@ -874,8 +885,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                                 star <= Math.floor(formData.rating || 0)
                                   ? "text-yellow-500"
                                   : star <= (formData.rating || 0)
-                                  ? "text-yellow-300"
-                                  : "text-gray-300"
+                                    ? "text-yellow-300"
+                                    : "text-gray-300"
                               }`}
                             >
                               ★
@@ -894,7 +905,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                         <Button
                           key={rating}
                           type="button"
-                          variant={formData.rating === rating ? "default" : "outline"}
+                          variant={
+                            formData.rating === rating ? "default" : "outline"
+                          }
                           size="sm"
                           onClick={() =>
                             setFormData((prev) => ({
@@ -913,10 +926,14 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
                 {/* Reviews Count Section */}
                 <div className="space-y-4">
-                  <Label className="text-base font-medium">Number of Reviews</Label>
+                  <Label className="text-base font-medium">
+                    Number of Reviews
+                  </Label>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <Label htmlFor="reviews" className="text-sm">Review Count:</Label>
+                      <Label htmlFor="reviews" className="text-sm">
+                        Review Count:
+                      </Label>
                       <Input
                         id="reviews"
                         type="number"
@@ -939,7 +956,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                         <Button
                           key={count}
                           type="button"
-                          variant={formData.reviews === count ? "default" : "outline"}
+                          variant={
+                            formData.reviews === count ? "default" : "outline"
+                          }
                           size="sm"
                           onClick={() =>
                             setFormData((prev) => ({
@@ -963,7 +982,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
               {/* Preview */}
               <div className="border rounded-lg p-4 bg-muted/30">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Customer View Preview:</p>
+                <p className="text-sm font-medium text-muted-foreground mb-3">
+                  Customer View Preview:
+                </p>
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -973,8 +994,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                           star <= Math.floor(formData.rating || 0)
                             ? "text-yellow-500"
                             : star <= (formData.rating || 0)
-                            ? "text-yellow-300"
-                            : "text-gray-300"
+                              ? "text-yellow-300"
+                              : "text-gray-300"
                         }`}
                       >
                         ★
@@ -993,16 +1014,23 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
               {/* Tips */}
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <div className="flex items-start space-x-2">
-                  <span className="text-blue-600 dark:text-blue-400 text-lg">💡</span>
+                  <span className="text-blue-600 dark:text-blue-400 text-lg">
+                    💡
+                  </span>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
                       Rating Tips for Better Sales:
                     </p>
                     <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
                       <li>• Ratings above 4.0 are considered good</li>
-                      <li>• 4.5+ ratings significantly boost customer confidence</li>
+                      <li>
+                        • 4.5+ ratings significantly boost customer confidence
+                      </li>
                       <li>• Higher review counts (50+) increase trust</li>
-                      <li>• Avoid perfect 5.0 ratings with low review counts (looks fake)</li>
+                      <li>
+                        • Avoid perfect 5.0 ratings with low review counts
+                        (looks fake)
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -1081,10 +1109,14 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       type="button"
                       variant={useIntegratedUpload ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setUseIntegratedUpload(!useIntegratedUpload)}
+                      onClick={() =>
+                        setUseIntegratedUpload(!useIntegratedUpload)
+                      }
                       className="text-xs px-2 py-1 h-7"
                     >
-                      {useIntegratedUpload ? "Smart (with fallback)" : "Cloud only"}
+                      {useIntegratedUpload
+                        ? "Smart (with fallback)"
+                        : "Cloud only"}
                     </Button>
                   </div>
                 </div>
@@ -1092,7 +1124,8 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 {useIntegratedUpload && (
                   <div className="text-xs p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
                     <p className="text-blue-800 dark:text-blue-200">
-                      💡 Smart upload tries cloud services first, then falls back to optimized base64 if needed
+                      💡 Smart upload tries cloud services first, then falls
+                      back to optimized base64 if needed
                     </p>
                   </div>
                 )}
@@ -1115,7 +1148,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       <div>
                         {cloudUploading ? (
                           <div className="space-y-2">
-                            <S2LoaderSmall text={detailedProgress?.stage || "Uploading..."} />
+                            <S2LoaderSmall
+                              text={detailedProgress?.stage || "Uploading..."}
+                            />
                             {uploadProgress && (
                               <p className="text-xs text-muted-foreground">
                                 {uploadProgress.fileName} (
@@ -1134,13 +1169,13 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                               Click to Upload Images
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              Select multiple files • JPEG, PNG, or WebP • Max 10MB each
+                              Select multiple files • JPEG, PNG, or WebP • Max
+                              10MB each
                             </p>
                             <p className="text-xs text-primary mt-1">
                               {useIntegratedUpload
                                 ? "Smart upload with automatic fallback"
-                                : "Direct cloud upload via Cloudinary CDN"
-                              }
+                                : "Direct cloud upload via Cloudinary CDN"}
                             </p>
                           </>
                         )}
@@ -1214,16 +1249,14 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                         ☁️ Secure Cloud Storage
                       </p>
                       {useIntegratedUpload && (
-                        <p className="text-xs text-blue-600">
-                          💾 Smart Upload
-                        </p>
+                        <p className="text-xs text-blue-600">💾 Smart Upload</p>
                       )}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {formData.images.map((image, index) => {
-                      const isBase64 = image.startsWith('data:');
+                      const isBase64 = image.startsWith("data:");
                       const isCloudImage = !isBase64;
 
                       return (
@@ -1236,17 +1269,23 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                               onError={(e) => {
                                 console.warn("Image failed to load:", image);
                                 const target = e.target as HTMLImageElement;
-                                if (!target.src.includes('placeholder.svg')) {
+                                if (!target.src.includes("placeholder.svg")) {
                                   target.src = "/placeholder.svg";
                                   // Show error badge
-                                  const badge = target.parentElement?.querySelector('.error-badge');
+                                  const badge =
+                                    target.parentElement?.querySelector(
+                                      ".error-badge",
+                                    );
                                   if (badge) {
-                                    badge.classList.remove('hidden');
+                                    badge.classList.remove("hidden");
                                   }
                                 }
                               }}
                               onLoad={() => {
-                                console.log("Image loaded successfully:", image.substring(0, 50) + '...');
+                                console.log(
+                                  "Image loaded successfully:",
+                                  image.substring(0, 50) + "...",
+                                );
                               }}
                             />
 
@@ -1258,7 +1297,10 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                                 </div>
                               )}
                               {isBase64 && (
-                                <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded" title="Base64 Encoded">
+                                <div
+                                  className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                  title="Base64 Encoded"
+                                >
                                   💾 Local
                                 </div>
                               )}
@@ -1266,22 +1308,30 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
                             <div className="absolute top-2 right-2 space-y-1">
                               {isCloudImage && (
-                                <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded" title="Cloud Hosted">
+                                <div
+                                  className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                  title="Cloud Hosted"
+                                >
                                   ☁️
                                 </div>
                               )}
-                              <div className="error-badge hidden bg-red-500 text-white text-xs px-1.5 py-0.5 rounded" title="Failed to Load">
+                              <div
+                                className="error-badge hidden bg-red-500 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Failed to Load"
+                              >
                                 ❌
                               </div>
                             </div>
 
                             {/* Image Size Indicator */}
                             <div className="absolute bottom-2 left-2">
-                              <div className="bg-black/50 text-white text-xs px-1.5 py-0.5 rounded" title="Image Type">
+                              <div
+                                className="bg-black/50 text-white text-xs px-1.5 py-0.5 rounded"
+                                title="Image Type"
+                              >
                                 {isBase64
                                   ? `${Math.round((image.length * 0.75) / 1024)}KB`
-                                  : 'Cloud'
-                                }
+                                  : "Cloud"}
                               </div>
                             </div>
                           </div>
@@ -1303,16 +1353,21 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
                   <div className="space-y-2">
                     <p className="text-xs text-muted-foreground">
-                      💡 Tip: The first image will be used as the main product image. Drag to reorder if needed.
+                      💡 Tip: The first image will be used as the main product
+                      image. Drag to reorder if needed.
                     </p>
                     <div className="flex items-center space-x-4 text-xs">
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-green-500 rounded" />
-                        <span className="text-muted-foreground">Cloud hosted (fast loading)</span>
+                        <span className="text-muted-foreground">
+                          Cloud hosted (fast loading)
+                        </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-orange-500 rounded" />
-                        <span className="text-muted-foreground">Local storage (reliable backup)</span>
+                        <span className="text-muted-foreground">
+                          Local storage (reliable backup)
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1537,10 +1592,14 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 <div className="flex items-center justify-between p-4 bg-accent/50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 dark:text-green-400 text-lg">🚚</span>
+                      <span className="text-green-600 dark:text-green-400 text-lg">
+                        🚚
+                      </span>
                     </div>
                     <div>
-                      <Label className="text-base font-medium">Free Shipping</Label>
+                      <Label className="text-base font-medium">
+                        Free Shipping
+                      </Label>
                       <p className="text-sm text-muted-foreground">
                         Offer free delivery for this product
                       </p>
@@ -1557,13 +1616,18 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                           shipping: {
                             ...prev.shipping,
                             isFree: e.target.checked,
-                            charge: e.target.checked ? 0 : (prev.shipping.charge || 49),
+                            charge: e.target.checked
+                              ? 0
+                              : prev.shipping.charge || 49,
                           },
                         }))
                       }
                       className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
                     />
-                    <Label htmlFor="freeShipping" className="text-sm font-medium">
+                    <Label
+                      htmlFor="freeShipping"
+                      className="text-sm font-medium"
+                    >
                       {formData.shipping.isFree ? "Enabled" : "Disabled"}
                     </Label>
                   </div>
@@ -1573,7 +1637,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 {!formData.shipping.isFree && (
                   <div className="space-y-3 p-4 border border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50 dark:bg-orange-900/10">
                     <div className="flex items-center space-x-2">
-                      <span className="text-orange-600 dark:text-orange-400 text-lg">💰</span>
+                      <span className="text-orange-600 dark:text-orange-400 text-lg">
+                        💰
+                      </span>
                       <Label className="font-medium text-orange-800 dark:text-orange-200">
                         Shipping Charges
                       </Label>
@@ -1581,7 +1647,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="shippingCharge">Shipping Charge (₹)</Label>
+                        <Label htmlFor="shippingCharge">
+                          Shipping Charge (₹)
+                        </Label>
                         <Input
                           id="shippingCharge"
                           type="number"
@@ -1606,7 +1674,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="shippingDesc">Delivery Description</Label>
+                        <Label htmlFor="shippingDesc">
+                          Delivery Description
+                        </Label>
                         <Input
                           id="shippingDesc"
                           value={formData.shipping.description || ""}
@@ -1631,7 +1701,9 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
                 {formData.shipping.isFree && (
                   <div className="p-4 border border-green-200 dark:border-green-800 rounded-lg bg-green-50 dark:bg-green-900/10">
                     <div className="flex items-center space-x-2 mb-3">
-                      <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
+                      <span className="text-green-600 dark:text-green-400 text-lg">
+                        ✅
+                      </span>
                       <Label className="font-medium text-green-800 dark:text-green-200">
                         Free Delivery Message
                       </Label>
@@ -1659,21 +1731,33 @@ ${debugResult.errors.length > 0 ? `❌ Errors: ${debugResult.errors.join(", ")}`
 
               {/* Preview */}
               <div className="border rounded-lg p-4 bg-muted/30">
-                <p className="text-sm font-medium text-muted-foreground mb-2">Preview:</p>
+                <p className="text-sm font-medium text-muted-foreground mb-2">
+                  Preview:
+                </p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Product Price</span>
                   <span className="font-medium">₹{formData.price}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Shipping</span>
-                  <span className={`font-medium ${formData.shipping.isFree ? 'text-green-600' : 'text-orange-600'}`}>
-                    {formData.shipping.isFree ? 'FREE' : `₹${formData.shipping.charge || 0}`}
+                  <span
+                    className={`font-medium ${formData.shipping.isFree ? "text-green-600" : "text-orange-600"}`}
+                  >
+                    {formData.shipping.isFree
+                      ? "FREE"
+                      : `₹${formData.shipping.charge || 0}`}
                   </span>
                 </div>
                 <hr className="my-2" />
                 <div className="flex items-center justify-between font-medium">
                   <span>Total</span>
-                  <span>₹{formData.price + (formData.shipping.isFree ? 0 : (formData.shipping.charge || 0))}</span>
+                  <span>
+                    ₹
+                    {formData.price +
+                      (formData.shipping.isFree
+                        ? 0
+                        : formData.shipping.charge || 0)}
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   {formData.shipping.description || "Delivery information"}

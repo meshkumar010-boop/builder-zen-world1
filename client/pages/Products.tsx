@@ -1,52 +1,66 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Star, Filter, ShoppingCart } from 'lucide-react'
-import { useCart } from '@/hooks/useCart'
-import { getProducts, formatINR, getDiscountPercentage, type Product } from '@/services/products'
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Star, Filter, ShoppingCart } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import {
+  getProducts,
+  formatINR,
+  getDiscountPercentage,
+  type Product,
+} from "@/services/products";
 
-const CATEGORIES = ['All', 'T-Shirts', 'Hoodies', 'Jackets', 'Sweatshirts', 'Pants', 'Accessories']
+const CATEGORIES = [
+  "All",
+  "T-Shirts",
+  "Hoodies",
+  "Jackets",
+  "Sweatshirts",
+  "Pants",
+  "Accessories",
+];
 
 export default function Products() {
-  const { addItem } = useCart()
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [activeCategory, setActiveCategory] = useState('All')
+  const { addItem } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
-    loadProducts()
+    loadProducts();
     // Prevent auto-scroll when products page loads
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [])
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
 
   const loadProducts = async () => {
     try {
-      setLoading(true)
-      const productsData = await getProducts()
-      setProducts(productsData)
+      setLoading(true);
+      const productsData = await getProducts();
+      setProducts(productsData);
     } catch (error) {
-      console.error('Error loading products:', error)
+      console.error("Error loading products:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const filteredProducts = activeCategory === 'All' 
-    ? products 
-    : products.filter(product => product.category === activeCategory)
+  const filteredProducts =
+    activeCategory === "All"
+      ? products
+      : products.filter((product) => product.category === activeCategory);
 
   const handleAddToCart = (product: Product) => {
     addItem({
       id: product.id!,
       name: product.name,
       price: product.price,
-      image: product.images[0] || '/placeholder.svg',
-      size: product.sizes[0] || 'M',
-      color: product.colors[0]?.name || 'Default',
-      quantity: 1
-    })
-  }
+      image: product.images[0] || "/placeholder.svg",
+      size: product.sizes[0] || "M",
+      color: product.colors[0]?.name || "Default",
+      quantity: 1,
+    });
+  };
 
   if (loading) {
     return (
@@ -55,14 +69,22 @@ export default function Products() {
           <div className="text-center">
             <div className="flex justify-center space-x-2 mb-4">
               <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
-              <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-              <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div
+                className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                style={{ animationDelay: "0.1s" }}
+              ></div>
+              <div
+                className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                style={{ animationDelay: "0.2s" }}
+              ></div>
             </div>
-            <p className="text-muted-foreground animate-pulse">Loading products...</p>
+            <p className="text-muted-foreground animate-pulse">
+              Loading products...
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -74,7 +96,8 @@ export default function Products() {
             Our Collection
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in stagger-delay-1">
-            Discover premium streetwear that combines comfort, style, and quality craftsmanship
+            Discover premium streetwear that combines comfort, style, and
+            quality craftsmanship
           </p>
         </div>
 
@@ -85,8 +108,8 @@ export default function Products() {
               key={category}
               variant={activeCategory === category ? "default" : "outline"}
               onClick={() => setActiveCategory(category)}
-              className={`font-medium transition-all duration-300 hover-lift ${activeCategory === category ? 'animate-pulse-glow' : 'hover-glow'}`}
-              style={{animationDelay: `${index * 0.1}s`}}
+              className={`font-medium transition-all duration-300 hover-lift ${activeCategory === category ? "animate-pulse-glow" : "hover-glow"}`}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <Filter className="h-4 w-4 mr-2" />
               {category}
@@ -98,12 +121,14 @@ export default function Products() {
         {filteredProducts.length === 0 ? (
           <div className="text-center py-16 animate-fade-in">
             <p className="text-muted-foreground mb-4">
-              {activeCategory === 'All'
-                ? 'No products available yet. Check back soon!'
+              {activeCategory === "All"
+                ? "No products available yet. Check back soon!"
                 : `No products found in ${activeCategory} category.`}
             </p>
             <Link to="/admin/dashboard">
-              <Button variant="outline" className="hover-lift">Add Products via Admin Panel</Button>
+              <Button variant="outline" className="hover-lift">
+                Add Products via Admin Panel
+              </Button>
             </Link>
           </div>
         ) : (
@@ -118,7 +143,7 @@ export default function Products() {
                   <CardContent className="p-0">
                     <div className="relative overflow-hidden rounded-t-lg">
                       <img
-                        src={product.images[0] || '/placeholder.svg'}
+                        src={product.images[0] || "/placeholder.svg"}
                         alt={product.name}
                         className="w-full h-64 object-cover group-hover:scale-110 transition-all duration-500"
                       />
@@ -151,7 +176,10 @@ export default function Products() {
                           <div
                             key={index}
                             className="w-4 h-4 rounded-full border border-border group-hover:scale-110 transition-transform duration-300 hover:scale-125"
-                            style={{ backgroundColor: color.value, animationDelay: `${index * 0.1}s` }}
+                            style={{
+                              backgroundColor: color.value,
+                              animationDelay: `${index * 0.1}s`,
+                            }}
                             title={color.name}
                           />
                         ))}
@@ -168,17 +196,23 @@ export default function Products() {
                             <span className="font-poppins font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-300">
                               {formatINR(product.price)}
                             </span>
-                            {product.originalPrice && product.originalPrice > product.price && (
-                              <span className="text-sm text-muted-foreground line-through">
-                                {formatINR(product.originalPrice)}
-                              </span>
-                            )}
+                            {product.originalPrice &&
+                              product.originalPrice > product.price && (
+                                <span className="text-sm text-muted-foreground line-through">
+                                  {formatINR(product.originalPrice)}
+                                </span>
+                              )}
                           </div>
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <div className="text-xs text-green-600 font-medium animate-pulse bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
-                              {getDiscountPercentage(product.originalPrice, product.price)}% OFF
-                            </div>
-                          )}
+                          {product.originalPrice &&
+                            product.originalPrice > product.price && (
+                              <div className="text-xs text-green-600 font-medium animate-pulse bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+                                {getDiscountPercentage(
+                                  product.originalPrice,
+                                  product.price,
+                                )}
+                                % OFF
+                              </div>
+                            )}
                           {/* Shipping Badge */}
                           {product.shipping?.isFree && (
                             <div className="text-xs text-blue-600 font-medium bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
@@ -200,5 +234,5 @@ export default function Products() {
         )}
       </div>
     </div>
-  )
+  );
 }

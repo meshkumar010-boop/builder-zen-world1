@@ -83,7 +83,7 @@ export default function ProductDetail() {
 
     loadProduct();
     // Prevent auto-scroll when navigating to product
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [id]);
 
   if (loading) {
@@ -148,7 +148,9 @@ export default function ProductDetail() {
       ? "\nShipping: FREE"
       : `\nShipping: ${formatINR(product.shipping?.charge || 0)}`;
 
-    const totalPrice = product.price + (product.shipping?.isFree ? 0 : (product.shipping?.charge || 0));
+    const totalPrice =
+      product.price +
+      (product.shipping?.isFree ? 0 : product.shipping?.charge || 0);
 
     const message = `Hello! 👋\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
 
@@ -287,7 +289,9 @@ export default function ProductDetail() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <span className="text-lg">🚚</span>
-                    <span className="font-medium text-foreground">Shipping</span>
+                    <span className="font-medium text-foreground">
+                      Shipping
+                    </span>
                   </div>
                   <div className="text-right">
                     {product.shipping?.isFree ? (
@@ -312,10 +316,15 @@ export default function ProductDetail() {
                 {/* Total Price */}
                 <div className="border-t border-border mt-3 pt-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground">Total Price:</span>
+                    <span className="font-semibold text-foreground">
+                      Total Price:
+                    </span>
                     <span className="font-bold text-xl text-primary">
                       {formatINR(
-                        product.price + (product.shipping?.isFree ? 0 : (product.shipping?.charge || 0))
+                        product.price +
+                          (product.shipping?.isFree
+                            ? 0
+                            : product.shipping?.charge || 0),
                       )}
                     </span>
                   </div>
