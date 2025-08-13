@@ -343,6 +343,7 @@ export default function ProductDetail() {
                 onClick={() => {
                   if (product?.images && product.images.length > 0) {
                     setZoomImageIndex(selectedImage);
+                    resetZoom();
                     setIsZoomModalOpen(true);
                   }
                 }}
