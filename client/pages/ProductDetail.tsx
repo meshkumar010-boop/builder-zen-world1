@@ -547,7 +547,7 @@ export default function ProductDetail() {
       </div>
 
       {/* Zoom Modal */}
-      {isZoomModalOpen && (
+      {isZoomModalOpen && product?.images && (
         <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
           {/* Close Button */}
           <Button
