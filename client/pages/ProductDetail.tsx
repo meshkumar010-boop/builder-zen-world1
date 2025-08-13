@@ -888,11 +888,16 @@ export default function ProductDetail() {
           )}
 
           {/* Instructions */}
-          <div className="absolute bottom-4 right-4 text-white text-xs bg-black/50 px-3 py-2 rounded max-w-xs">
-            <div className="space-y-1">
-              <div>ESC to close • Arrow keys to navigate</div>
-              <div>Double-click to zoom • Pinch or scroll to zoom</div>
-              <div>Drag to pan when zoomed in</div>
+          <div className="absolute bottom-4 right-4 text-white text-xs bg-black/70 px-4 py-3 rounded-lg max-w-sm">
+            <div className="space-y-1.5 text-center">
+              <div className="font-medium text-white/90">🔍 Zoom Controls</div>
+              <div>• Double-click = Quick zoom</div>
+              <div>• Mouse wheel = Zoom in/out</div>
+              <div>• 2 fingers = Pinch zoom</div>
+              <div>• Drag = Move around (जब zoom हो)</div>
+              <div className="pt-1 border-t border-white/20">
+                <div>ESC = Close • ←→ = Change image</div>
+              </div>
             </div>
           </div>
 
