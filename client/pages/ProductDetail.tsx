@@ -289,6 +289,22 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
+
+            {/* View All Images Button */}
+            {product.images && product.images.length > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full mt-4"
+                onClick={() => {
+                  setZoomImageIndex(0);
+                  setIsZoomModalOpen(true);
+                }}
+              >
+                <ZoomIn className="mr-2 h-4 w-4" />
+                View All Images ({product.images.length})
+              </Button>
+            )}
           </div>
 
           {/* Product Info */}
