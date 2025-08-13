@@ -241,6 +241,11 @@ function ProductFormContent() {
           colors: [{ name: "White", value: "#FFFFFF" }],
           images: [],
           features: ["100% Cotton", "Machine Washable"],
+          shipping: {
+            isFree: true,
+            charge: 0,
+            description: "Free delivery across India",
+          },
         });
 
         console.log("🔄 Form cleared for next product");
