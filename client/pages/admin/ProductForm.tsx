@@ -250,6 +250,8 @@ function ProductFormContent() {
             charge: 0,
             description: "Free delivery across India",
           },
+          rating: 4.5,
+          reviews: 12,
         });
 
         console.log("🔄 Form cleared for next product");
