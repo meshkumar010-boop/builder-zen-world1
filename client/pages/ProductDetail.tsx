@@ -111,12 +111,12 @@ export default function ProductDetail() {
           break;
         case "ArrowLeft":
           if (product?.images && zoomImageIndex > 0) {
-            setZoomImageIndex(zoomImageIndex - 1);
+            changeZoomImage(zoomImageIndex - 1);
           }
           break;
         case "ArrowRight":
           if (product?.images && zoomImageIndex < product.images.length - 1) {
-            setZoomImageIndex(zoomImageIndex + 1);
+            changeZoomImage(zoomImageIndex + 1);
           }
           break;
       }
