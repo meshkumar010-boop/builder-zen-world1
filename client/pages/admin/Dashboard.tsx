@@ -377,6 +377,12 @@ function AdminDashboardContent() {
                           <Badge variant="outline">
                             {product.colors.length} colors
                           </Badge>
+                          <Badge
+                            variant={product.shipping?.isFree ? "default" : "secondary"}
+                            className={product.shipping?.isFree ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : ""}
+                          >
+                            {product.shipping?.isFree ? "Free Shipping" : `₹${product.shipping?.charge || 0} Shipping`}
+                          </Badge>
                         </div>
                       </div>
                     </div>
