@@ -672,8 +672,8 @@ export default function ProductDetail() {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
-              onClick={() => setZoomImageIndex(zoomImageIndex - 1)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
+              onClick={() => changeZoomImage(zoomImageIndex - 1)}
             >
               <ChevronLeft className="h-8 w-8" />
             </Button>
@@ -684,22 +684,74 @@ export default function ProductDetail() {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
-              onClick={() => setZoomImageIndex(zoomImageIndex + 1)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
+              onClick={() => changeZoomImage(zoomImageIndex + 1)}
             >
               <ChevronRight className="h-8 w-8" />
             </Button>
           )}
 
-          {/* Zoomed Image */}
-          <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+          {/* Zoom Controls */}
+          <div className="absolute top-16 right-4 flex flex-col space-y-2 z-20">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 bg-black/50"
+              onClick={handleZoomIn}
+              title="Zoom In"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 bg-black/50"
+              onClick={handleZoomOut}
+              title="Zoom Out"
+            >
+              <Minus className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 bg-black/50"
+              onClick={resetZoom}
+              title="Reset Zoom"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Interactive Zoomed Image */}
+          <div
+            className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-move"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleMouseWheel}
+            onDoubleClick={handleDoubleClick}
+          >
             <img
               src={product.images?.[zoomImageIndex] || "/placeholder.svg"}
               alt={`${product.name} - Image ${zoomImageIndex + 1}`}
-              className="max-w-full max-h-full object-contain"
+              className="transition-transform duration-300 ease-out select-none"
+              style={{
+                transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`,
+                maxWidth: zoomLevel === 1 ? '90vw' : 'none',
+                maxHeight: zoomLevel === 1 ? '90vh' : 'none',
+                cursor: zoomLevel > 1 ? 'grab' : 'zoom-in'
+              }}
+              draggable={false}
               onClick={(e) => e.stopPropagation()}
             />
           </div>
+
+          {/* Zoom Level Indicator */}
+          {zoomLevel !== 1 && (
+            <div className="absolute top-16 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full z-10">
+              {Math.round(zoomLevel * 100)}%
+            </div>
+          )}
 
           {/* Image Navigation Dots */}
           {product?.images && product.images.length > 1 && (
