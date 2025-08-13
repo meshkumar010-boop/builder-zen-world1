@@ -485,6 +485,88 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Zoom Modal */}
+      {isZoomModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+          {/* Close Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 text-white hover:bg-white/20 z-10"
+            onClick={() => setIsZoomModalOpen(false)}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+
+          {/* Image Counter */}
+          <div className="absolute top-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full z-10">
+            {zoomImageIndex + 1} / {product.images?.length || 0}
+          </div>
+
+          {/* Previous Button */}
+          {product.images && product.images.length > 1 && zoomImageIndex > 0 && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+              onClick={() => setZoomImageIndex(zoomImageIndex - 1)}
+            >
+              <ChevronLeft className="h-8 w-8" />
+            </Button>
+          )}
+
+          {/* Next Button */}
+          {product.images && product.images.length > 1 && zoomImageIndex < product.images.length - 1 && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+              onClick={() => setZoomImageIndex(zoomImageIndex + 1)}
+            >
+              <ChevronRight className="h-8 w-8" />
+            </Button>
+          )}
+
+          {/* Zoomed Image */}
+          <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+            <img
+              src={product.images?.[zoomImageIndex] || "/placeholder.svg"}
+              alt={`${product.name} - Image ${zoomImageIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          {/* Image Navigation Dots */}
+          {product.images && product.images.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+              {product.images.map((_, index) => (
+                <button
+                  key={`zoom-dot-${index}`}
+                  onClick={() => setZoomImageIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === zoomImageIndex
+                      ? "bg-white"
+                      : "bg-white/50 hover:bg-white/75"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Instructions */}
+          <div className="absolute bottom-4 right-4 text-white text-xs bg-black/50 px-3 py-2 rounded">
+            Press ESC to close • Use arrow keys to navigate
+          </div>
+
+          {/* Click outside to close */}
+          <div
+            className="absolute inset-0 -z-10"
+            onClick={() => setIsZoomModalOpen(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
