@@ -806,12 +806,19 @@ export default function ProductDetail() {
 
           {/* Interactive Zoomed Image */}
           <div
-            className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-move"
+            className="relative w-full h-full flex items-center justify-center overflow-hidden select-none"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             onWheel={handleMouseWheel}
             onDoubleClick={handleDoubleClick}
+            style={{
+              cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
+            }}
           >
             <img
               src={product.images?.[zoomImageIndex] || "/placeholder.svg"}
