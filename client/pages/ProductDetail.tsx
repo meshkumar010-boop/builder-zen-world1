@@ -311,8 +311,12 @@ export default function ProductDetail() {
       const deltaX = touch.clientX - dragStart.x;
       const deltaY = touch.clientY - dragStart.y;
 
-      setPanX(prev => prev + deltaX / zoomLevel);
-      setPanY(prev => prev + deltaY / zoomLevel);
+      const newX = panX + deltaX / zoomLevel;
+      const newY = panY + deltaY / zoomLevel;
+      const constrained = constrainPan(newX, newY, zoomLevel);
+
+      setPanX(constrained.x);
+      setPanY(constrained.y);
 
       setDragStart({ x: touch.clientX, y: touch.clientY });
     }
