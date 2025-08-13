@@ -254,8 +254,10 @@ export default function ProductDetail() {
                 size="icon"
                 className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/90 hover:bg-white shadow-lg"
                 onClick={() => {
-                  setZoomImageIndex(selectedImage);
-                  setIsZoomModalOpen(true);
+                  if (product?.images && product.images.length > 0) {
+                    setZoomImageIndex(selectedImage);
+                    setIsZoomModalOpen(true);
+                  }
                 }}
               >
                 <ZoomIn className="h-4 w-4" />
