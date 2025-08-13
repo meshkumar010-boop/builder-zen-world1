@@ -275,6 +275,46 @@ export default function ProductDetail() {
                     </div>
                   )}
               </div>
+
+              {/* Shipping Information */}
+              <div className="bg-accent/30 border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">🚚</span>
+                    <span className="font-medium text-foreground">Shipping</span>
+                  </div>
+                  <div className="text-right">
+                    {product.shipping?.isFree ? (
+                      <div className="flex items-center space-x-2">
+                        <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-sm font-bold">
+                          FREE
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="font-semibold text-orange-600 dark:text-orange-400">
+                        {formatINR(product.shipping?.charge || 0)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {product.shipping?.description && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {product.shipping.description}
+                  </p>
+                )}
+
+                {/* Total Price */}
+                <div className="border-t border-border mt-3 pt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground">Total Price:</span>
+                    <span className="font-bold text-xl text-primary">
+                      {formatINR(
+                        product.price + (product.shipping?.isFree ? 0 : (product.shipping?.charge || 0))
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <p className="text-muted-foreground leading-relaxed">
