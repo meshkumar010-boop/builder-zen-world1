@@ -144,8 +144,12 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen py-12 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">Product Not Found</h2>
-          <p className="text-muted-foreground">The product you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-2xl font-semibold text-foreground">
+            Product Not Found
+          </h2>
+          <p className="text-muted-foreground">
+            The product you're looking for doesn't exist or has been removed.
+          </p>
           <Link to="/products" className="inline-block">
             <Button variant="outline">← Back to Products</Button>
           </Link>
@@ -219,7 +223,7 @@ export default function ProductDetail() {
   };
 
   const handleZoomIn = () => {
-    setZoomLevel(prev => {
+    setZoomLevel((prev) => {
       const newZoom = Math.min(prev * 1.5, 8);
       const constrained = constrainPan(panX, panY, newZoom);
       setPanX(constrained.x);
@@ -229,7 +233,7 @@ export default function ProductDetail() {
   };
 
   const handleZoomOut = () => {
-    setZoomLevel(prev => {
+    setZoomLevel((prev) => {
       const newZoom = prev / 1.5;
       if (newZoom <= 1) {
         setPanX(0);
@@ -334,10 +338,10 @@ export default function ProductDetail() {
 
     if (delta < 0) {
       // Zoom in
-      setZoomLevel(prev => Math.min(prev + zoomSpeed, 8));
+      setZoomLevel((prev) => Math.min(prev + zoomSpeed, 8));
     } else {
       // Zoom out
-      setZoomLevel(prev => {
+      setZoomLevel((prev) => {
         const newZoom = Math.max(prev - zoomSpeed, 0.5);
         if (newZoom <= 1) {
           setPanX(0);
@@ -354,7 +358,7 @@ export default function ProductDetail() {
     const maxPan = (zoom - 1) * 200; // Adjust this value for more/less movement
     return {
       x: Math.max(-maxPan, Math.min(maxPan, x)),
-      y: Math.max(-maxPan, Math.min(maxPan, y))
+      y: Math.max(-maxPan, Math.min(maxPan, y)),
     };
   };
 
@@ -750,28 +754,32 @@ export default function ProductDetail() {
           </div>
 
           {/* Previous Button */}
-          {product?.images && product.images.length > 1 && zoomImageIndex > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
-              onClick={() => changeZoomImage(zoomImageIndex - 1)}
-            >
-              <ChevronLeft className="h-8 w-8" />
-            </Button>
-          )}
+          {product?.images &&
+            product.images.length > 1 &&
+            zoomImageIndex > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
+                onClick={() => changeZoomImage(zoomImageIndex - 1)}
+              >
+                <ChevronLeft className="h-8 w-8" />
+              </Button>
+            )}
 
           {/* Next Button */}
-          {product?.images && product.images.length > 1 && zoomImageIndex < product.images.length - 1 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
-              onClick={() => changeZoomImage(zoomImageIndex + 1)}
-            >
-              <ChevronRight className="h-8 w-8" />
-            </Button>
-          )}
+          {product?.images &&
+            product.images.length > 1 &&
+            zoomImageIndex < product.images.length - 1 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 z-20"
+                onClick={() => changeZoomImage(zoomImageIndex + 1)}
+              >
+                <ChevronRight className="h-8 w-8" />
+              </Button>
+            )}
 
           {/* Zoom Controls */}
           <div className="absolute top-16 right-4 flex flex-col space-y-2 z-20">
@@ -817,7 +825,8 @@ export default function ProductDetail() {
             onWheel={handleMouseWheel}
             onDoubleClick={handleDoubleClick}
             style={{
-              cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
+              cursor:
+                zoomLevel > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
             }}
           >
             <img
@@ -826,13 +835,13 @@ export default function ProductDetail() {
               className="transition-transform duration-200 ease-out select-none"
               style={{
                 transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`,
-                maxWidth: zoomLevel === 1 ? '90vw' : 'none',
-                maxHeight: zoomLevel === 1 ? '90vh' : 'none',
-                imageRendering: zoomLevel > 2 ? 'pixelated' : 'auto',
-                filter: 'none',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                transformOrigin: 'center center'
+                maxWidth: zoomLevel === 1 ? "90vw" : "none",
+                maxHeight: zoomLevel === 1 ? "90vh" : "none",
+                imageRendering: zoomLevel > 2 ? "pixelated" : "auto",
+                filter: "none",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transformOrigin: "center center",
               }}
               draggable={false}
               onDragStart={(e) => e.preventDefault()}
@@ -846,7 +855,7 @@ export default function ProductDetail() {
               <div className="font-medium">{Math.round(zoomLevel * 100)}%</div>
               {zoomLevel > 1 && (
                 <div className="text-xs text-gray-300">
-                  {isDragging ? '🤏 Dragging' : '👆 Drag to pan'}
+                  {isDragging ? "🤏 Dragging" : "👆 Drag to pan"}
                 </div>
               )}
             </div>
