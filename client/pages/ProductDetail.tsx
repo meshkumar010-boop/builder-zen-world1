@@ -203,7 +203,7 @@ export default function ProductDetail() {
       product.price +
       (product.shipping?.isFree ? 0 : product.shipping?.charge || 0);
 
-    const message = `Hello! ���\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
+    const message = `Hello! 👋\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
 
     const phoneNumber = "919009880838";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -313,11 +313,32 @@ export default function ProductDetail() {
   const handleMouseWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY;
+    const zoomSpeed = 0.1;
+
     if (delta < 0) {
-      handleZoomIn();
+      // Zoom in
+      setZoomLevel(prev => Math.min(prev + zoomSpeed, 8));
     } else {
-      handleZoomOut();
+      // Zoom out
+      setZoomLevel(prev => {
+        const newZoom = Math.max(prev - zoomSpeed, 0.5);
+        if (newZoom <= 1) {
+          setPanX(0);
+          setPanY(0);
+          return 1;
+        }
+        return newZoom;
+      });
     }
+  };
+
+  // Pan limits to prevent image from going too far off screen
+  const constrainPan = (x: number, y: number, zoom: number) => {
+    const maxPan = (zoom - 1) * 200; // Adjust this value for more/less movement
+    return {
+      x: Math.max(-maxPan, Math.min(maxPan, x)),
+      y: Math.max(-maxPan, Math.min(maxPan, y))
+    };
   };
 
   const handleDoubleClick = () => {
