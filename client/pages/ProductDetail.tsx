@@ -219,7 +219,13 @@ export default function ProductDetail() {
   };
 
   const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev * 1.5, 5));
+    setZoomLevel(prev => {
+      const newZoom = Math.min(prev * 1.5, 8);
+      const constrained = constrainPan(panX, panY, newZoom);
+      setPanX(constrained.x);
+      setPanY(constrained.y);
+      return newZoom;
+    });
   };
 
   const handleZoomOut = () => {
@@ -230,6 +236,9 @@ export default function ProductDetail() {
         setPanY(0);
         return 1;
       }
+      const constrained = constrainPan(panX, panY, newZoom);
+      setPanX(constrained.x);
+      setPanY(constrained.y);
       return newZoom;
     });
   };
