@@ -241,8 +241,10 @@ export default function ProductDetail() {
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform group-hover:scale-105 cursor-zoom-in"
                 onClick={() => {
-                  setZoomImageIndex(selectedImage);
-                  setIsZoomModalOpen(true);
+                  if (product?.images && product.images.length > 0) {
+                    setZoomImageIndex(selectedImage);
+                    setIsZoomModalOpen(true);
+                  }
                 }}
               />
 
