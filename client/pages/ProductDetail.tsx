@@ -144,6 +144,12 @@ export default function ProductDetail() {
         ? `\n���� Special Offer: ${getDiscountPercentage(product.originalPrice, product.price)}% OFF! (Save ${formatINR(product.originalPrice - product.price)})`
         : "";
 
+    const shippingText = product.shipping?.isFree
+      ? "\nShipping: FREE"
+      : `\nShipping: ${formatINR(product.shipping?.charge || 0)}`;
+
+    const totalPrice = product.price + (product.shipping?.isFree ? 0 : (product.shipping?.charge || 0));
+
     const message = `Hello! 👋\n\nI want to place my order for this amazing product:\n\n���️ ${product.name}\n💰 Price: ${formatINR(product.price)}${discountText}\n🔗 Product Link: ${productUrl}\n\nPlease let me know how to place the order. Thank you! 😊`;
 
     const phoneNumber = "919009880838";
