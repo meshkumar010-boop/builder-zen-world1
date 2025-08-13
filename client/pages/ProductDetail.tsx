@@ -9,6 +9,10 @@ import {
   ArrowLeft,
   Check,
   MessageCircle,
+  ZoomIn,
+  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/useCart";
