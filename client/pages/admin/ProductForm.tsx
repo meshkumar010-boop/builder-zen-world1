@@ -148,6 +148,8 @@ function ProductFormContent() {
             charge: 0,
             description: "Free delivery across India",
           },
+          rating: product.rating || 4.5,
+          reviews: product.reviews || 12,
         });
       }
     } catch (err: any) {
